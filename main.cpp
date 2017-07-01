@@ -9,7 +9,7 @@
     }                                                                                                \
 
 template<class Derived, typename Delegate>
-class using_
+class using_ : public MemberFunctions<Delegate>
 {
 private:
     decltype(auto) delegate()
