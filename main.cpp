@@ -14,6 +14,7 @@ template<class Base>
 auto &delegate(Base &base)
 {
     using Derived = decltype(DerivedType(base));
+    static_assert(std::is_base_of_v<Base, Derived>);
 
     //! Downcast to the derived class
     auto &derived = static_cast<Derived &>(base);
