@@ -42,7 +42,10 @@ using Delayed = typename DelayedImpl<Class, T...>::type;
     }                                                                                           \
 
 template<class Derived, typename Delegate>
-class using_
+struct MemberFunctions {};
+
+template<class Derived, typename Delegate>
+class using_ : public MemberFunctions<Derived, Delegate>
 {
 public:
     MEMBER(push_back)
@@ -71,6 +74,12 @@ struct Foo
     }
 };
 
+template<typename Derived>
+struct MemberFunctions<Derived, Foo>
+{
+    MEMBER(bar)
+};
+
 int main()
 {
     std::cout << "Hello, Wandbox!" << std::endl;
@@ -96,5 +105,5 @@ int main()
     std::cout << typeid(z).name() << std::endl;
 
     Property<Foo> p_foo;
-    p_foo.bar(); // TODO: Doesn't work yet
+    p_foo.bar();
 }
