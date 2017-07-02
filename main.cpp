@@ -1,26 +1,39 @@
 #include <iostream>
 #include <vector>
 
-#define MEMBER(member)                                                                               \
-    template<typename... T>                                                                          \
-    auto member(T &&... args) -> decltype(std::declval<Delegate>().member(std::forward<T>(args)...)) \
-    {                                                                                                \
-        return delegate().member(std::forward<T>(args)...);                                          \
-    }                                                                                                \
+template<class Derived, typename Delegate>
+class using_;
 
 template<class Derived, typename Delegate>
-class using_ : public MemberFunctions<Delegate>
+auto DerivedType(using_<Derived, Delegate> &) -> Derived;
+
+template<class Derived, typename Delegate>
+auto DelegateType(using_<Derived, Delegate> &) -> Delegate;
+
+template<class Base>
+auto &delegate(Base &base)
 {
-private:
-    decltype(auto) delegate()
-    {
-        //! Downcast to the derived class
-        auto &derived = static_cast<Derived &>(*this);
+    using Derived = decltype(DerivedType(base));
 
-        //! Now invoke the conversion operator
-        return static_cast<Delegate &>(derived);
-    }
+    //! Downcast to the derived class
+    auto &derived = static_cast<Derived &>(base);
 
+    using Delegate = decltype(DelegateType(base));
+
+    //! Now invoke the conversion operator
+    return static_cast<Delegate &>(derived);
+}
+
+#define MEMBER(member)                                                                          \
+    template<typename... T>                                                                     \
+    auto member(T &&... args) -> decltype(DelegateType(*this).member(std::forward<T>(args)...)) \
+    {                                                                                           \
+        return delegate(*this).member(std::forward<T>(args)...);                                \
+    }                                                                                           \
+
+template<class Derived, typename Delegate>
+class using_
+{
 public:
     MEMBER(push_back)
     MEMBER(begin)
