@@ -52,16 +52,17 @@ public:
     std::vector<T> data;
 };
 
-template<typename NumericalType>
-class Number
+template<typename T>
+class Property
 {
 public:
-    operator NumericalType &()
+    operator T &()
     {
         return data;
     }
 
-    NumericalType data;
+private:
+    T data;
 };
 
 int main()
@@ -80,8 +81,8 @@ int main()
         std::cout << x << std::endl;
     }
 
-    Number<int> x{};
-    Number<int> y{};
+    Property<int> x{};
+    Property<int> y{};
 
     auto z = x + y;
 
