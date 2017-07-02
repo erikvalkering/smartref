@@ -41,19 +41,7 @@ public:
 };
 
 template<typename T>
-class MyVector : public using_<MyVector<T>, std::vector<T>>
-{
-public:
-    operator std::vector<T> &()
-    {
-        return data;
-    }
-
-    std::vector<T> data;
-};
-
-template<typename T>
-class Property
+class Property : public using_<Property<T>, T>
 {
 public:
     operator T &()
@@ -69,7 +57,7 @@ int main()
 {
     std::cout << "Hello, Wandbox!" << std::endl;
 
-    MyVector<int> v;
+    Property<std::vector<int>> v;
 
     v.push_back(1);
     v.push_back(2);
