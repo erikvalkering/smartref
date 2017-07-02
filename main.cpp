@@ -24,9 +24,18 @@ auto &delegate(Base &base)
     return static_cast<Delegate &>(derived);
 }
 
+template<class Class, typename... T>
+struct DelayedImpl
+{
+    using type = Class;
+};
+
+template<class Class, typename... T>
+using Delayed = typename DelayedImpl<Class, T...>::type;
+
 #define MEMBER(member)                                                                          \
     template<typename... T>                                                                     \
-    auto member(T &&... args) -> decltype(DelegateType(*this).member(std::forward<T>(args)...)) \
+    auto member(T &&... args) -> decltype(DelegateType(std::declval<Delayed<decltype(*this), T...>>()).member(std::forward<T>(args)...)) \
     {                                                                                           \
         return delegate(*this).member(std::forward<T>(args)...);                                \
     }                                                                                           \
