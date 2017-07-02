@@ -4,11 +4,11 @@
 template<class Derived, typename Delegate>
 class using_;
 
-template<class Derived, typename Delegate>
-auto DerivedType(using_<Derived, Delegate> &) -> Derived;
+template<template<typename, typename> class Class, class Derived, typename Delegate>
+auto DerivedType(Class<Derived, Delegate> &) -> Derived;
 
-template<class Derived, typename Delegate>
-auto DelegateType(using_<Derived, Delegate> &) -> Delegate;
+template<template<typename, typename> class Class, class Derived, typename Delegate>
+auto DelegateType(Class<Derived, Delegate> &) -> Delegate;
 
 template<class Base>
 auto &delegate(Base &base)
