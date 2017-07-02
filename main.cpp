@@ -63,6 +63,14 @@ private:
     T data;
 };
 
+struct Foo
+{
+    void bar()
+    {
+        std::cout << "Foo::bar" << std::endl;
+    }
+};
+
 int main()
 {
     std::cout << "Hello, Wandbox!" << std::endl;
@@ -86,4 +94,7 @@ int main()
 
     std::cout << z << std::endl;
     std::cout << typeid(z).name() << std::endl;
+
+    Property<Foo> p_foo;
+    p_foo.bar(); // TODO: Doesn't work yet
 }
