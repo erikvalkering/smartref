@@ -55,8 +55,8 @@ template<> struct reflected_member<Baz, 0> {using type = int;};
 template<> struct reflected_member<Baz, 1> {using type = int;};
 
 // static_assert(reflected_member_count_v<Foo> == 0);
-// static_assert(reflected_member_count_v<Bar> == 1);
-// static_assert(reflected_member_count_v<Baz> == 2);
+static_assert(reflected_member_count_v<Bar> == 1);
+static_assert(reflected_member_count_v<Baz> == 2);
 
 auto _ = []{
     // std::cout << reflected_member_count_lowerbound<Foo>::value << std::endl;
