@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+#include "foo.h"
 #include "using.h"
 
 template<typename T>
@@ -14,20 +15,6 @@ public:
 
 private:
     T data;
-};
-
-struct Foo
-{
-    void bar()
-    {
-        std::cout << "Foo::bar" << std::endl;
-    }
-};
-
-template<typename Derived>
-struct MemberFunctions<Derived, Foo>
-{
-    MEMBER(bar)
 };
 
 int main()
