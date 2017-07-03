@@ -10,11 +10,29 @@
 
 namespace reflection {
 
+template<typename default_type, typename T>
+struct reflected_member_default
+{
+    using type = nullptr_t;
+};
+
+template<typename T>
+using reflected_member_default_t = typename reflected_member_default<void, T>::type;
+
 template<typename T, size_t counter>
 struct reflected_member
 {
-    using type = void;
+    using type = reflected_member_default_t<T>;
 };
+
+// struct A {};
+// struct B {};
+
+// template<>
+// struct __is_reflected<A> {};
+
+// static_cast(decltype(is_reflected<A>())::value == true);
+// static_cast(decltype(is_reflected<A>())::value == false);
 
 template<typename T, size_t counter>
 using reflected_member_t = typename reflected_member<T, counter>::type;
@@ -67,11 +85,24 @@ struct Bar {};
 struct Baz {};
 struct Bat {};
 
-template<> struct reflected_member<Bar, 0> {using type = int;};
-template<> struct reflected_member<Baz, 0> {using type = int;};
-template<> struct reflected_member<Baz, 1> {using type = int;};
-template<> struct reflected_member<Bat, 1> {using type = int;};
+template<typename T>
+struct is_reflected
+{
+    static constexpr auto value = false;
+};
 
+template<typename T>
+constexpr auto is_reflected_v = is_reflected<T>::value;
+
+template<> struct reflected_member<Bar, 0> {using type = int;}; template<typename default_type> struct reflected_member_default<default_type, Bar> {using type = default_type;};
+template<> struct reflected_member<Baz, 0> {using type = int;}; template<typename default_type> struct reflected_member_default<default_type, Baz> {using type = default_type;};
+template<> struct reflected_member<Baz, 1> {using type = int;}; template<typename default_type> struct reflected_member_default<default_type, Baz> {using type = default_type;};
+template<> struct reflected_member<Bat, 1> {using type = int;}; template<typename default_type> struct reflected_member_default<default_type, Bat> {using type = default_type;};
+
+// static_assert(is_reflected_v<Foo> == false);
+// static_assert(is_reflected_v<Bar> == true);
+// static_assert(is_reflected_v<Baz> == true);
+// static_assert(is_reflected_v<Bat> == true);
 // static_assert(reflected_member_count_v<Foo> == 0);
 static_assert(reflected_member_count_v<Bar> == 1);
 static_assert(reflected_member_count_v<Baz> == 2);
