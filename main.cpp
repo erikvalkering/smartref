@@ -45,12 +45,17 @@ template<class Derived, typename Delegate>
 struct MemberFunctions {};
 
 template<class Derived, typename Delegate>
-class using_ : public MemberFunctions<Derived, Delegate>
+struct STL
 {
-public:
     MEMBER(push_back)
     MEMBER(begin)
     MEMBER(end)
+};
+
+template<class Derived, typename Delegate>
+class using_ : public MemberFunctions<Derived, Delegate>,
+               public STL<Derived, Delegate>
+{
 };
 
 template<typename T>
