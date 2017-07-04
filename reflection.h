@@ -46,6 +46,7 @@ struct Bar {};
 template<> struct reflected_member<Bar, CURRENT_COUNTER(Bar)> {using type = int;}; INC_COUNTER(Bar);
 static_assert(std::is_same_v<int, reflected_member_t<Bar, 0>>);
 static_assert(std::is_same_v<void, reflected_member_t<Bar, 1>>);
+static_assert(reflected_member_count_v<Bar> == 1);
 
 struct Baz {};
 template<> struct reflected_member<Baz, CURRENT_COUNTER(Baz)> {using type = int;}; INC_COUNTER(Baz);
@@ -53,10 +54,7 @@ template<> struct reflected_member<Baz, CURRENT_COUNTER(Baz)> {using type = int;
 static_assert(std::is_same_v<int, reflected_member_t<Baz, 0>>);
 static_assert(std::is_same_v<int, reflected_member_t<Baz, 1>>);
 static_assert(std::is_same_v<void, reflected_member_t<Baz, 2>>);
-
-// static_assert(reflected_member_count_v<Foo> == 0);
-// static_assert(reflected_member_count_v<Bar> == 1);
-// static_assert(reflected_member_count_v<Baz> == 2);
+static_assert(reflected_member_count_v<Baz> == 2);
 
 auto _ = []{
     // std::cout << "Foo" << std::endl;
