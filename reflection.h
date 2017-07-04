@@ -38,19 +38,28 @@ struct reflected_member_count<T, count, void>
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 
+#define REFLECT_MEMBER(Class, member)                       \
+    template<>                                              \
+    struct reflected_member<Class, CURRENT_COUNTER(Class)>  \
+    {                                                       \
+        using type = int;                                   \
+    };                                                      \
+                                                            \
+    INC_COUNTER(Class)                                      \
+
 struct Foo {};
 static_assert(std::is_same_v<void, reflected_member_t<Foo, 0>>);
 static_assert(reflected_member_count_v<Foo> == 0);
 
 struct Bar {};
-template<> struct reflected_member<Bar, CURRENT_COUNTER(Bar)> {using type = int;}; INC_COUNTER(Bar);
+REFLECT_MEMBER(Bar, TODO);
 static_assert(std::is_same_v<int, reflected_member_t<Bar, 0>>);
 static_assert(std::is_same_v<void, reflected_member_t<Bar, 1>>);
 static_assert(reflected_member_count_v<Bar> == 1);
 
 struct Baz {};
-template<> struct reflected_member<Baz, CURRENT_COUNTER(Baz)> {using type = int;}; INC_COUNTER(Baz);
-template<> struct reflected_member<Baz, CURRENT_COUNTER(Baz)> {using type = int;}; INC_COUNTER(Baz);
+REFLECT_MEMBER(Baz, TODO);
+REFLECT_MEMBER(Baz, TODO);
 static_assert(std::is_same_v<int, reflected_member_t<Baz, 0>>);
 static_assert(std::is_same_v<int, reflected_member_t<Baz, 1>>);
 static_assert(std::is_same_v<void, reflected_member_t<Baz, 2>>);
