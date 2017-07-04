@@ -27,14 +27,15 @@ using reflected_member_t = typename reflected_member<T, counter>::type;
 // constexpr auto reflected_member_count_v =;
 
 struct Foo {};
-struct Bar {};
-struct Baz {};
-
-// template<> struct reflection::reflected_member<Bar, 0> {using type = int;};
-// template<> struct reflected_member<Baz, CURRENT_COUNTER()> {using type = int;}; INC_COUNTER();
-// template<> struct reflected_member<Baz, CURRENT_COUNTER()> {using type = int;}; INC_COUNTER();
-
 static_assert(std::is_same_v<void, reflected_member_t<Foo, 0>>);
+
+struct Bar {};
+// template<> struct reflection::reflected_member<Bar, 0> {using type = int;};
+
+struct Baz {};
+// template<> struct reflected_member<Baz, CURRENT_COUNTER()> {using type = int;}; INC_COUNTER();
+// template<> struct reflected_member<Baz, CURRENT_COUNTER()> {using type = int;}; INC_COUNTER();
+
 // static_assert(reflected_member_count_v<Foo> == 0);
 // static_assert(reflected_member_count_v<Bar> == 1);
 // static_assert(reflected_member_count_v<Baz> == 2);
