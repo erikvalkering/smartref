@@ -22,8 +22,8 @@ Counter<0> counter(Counter<0>);
 #define CURRENT_COUNTER()                    \
     decltype(counter(Counter<255>{}))::value \
 
-#define INC_COUNTER()                                                              \
-    constexpr auto TOKENPASTE(value_, __LINE__) = CURRENT_COUNTER();                      \
+#define INC_COUNTER()                                                                            \
+    constexpr auto TOKENPASTE(value_, __LINE__) = CURRENT_COUNTER();                             \
     Counter<TOKENPASTE(value_, __LINE__) + 1> counter(Counter<TOKENPASTE(value_, __LINE__) + 1>) \
 
 static_assert(CURRENT_COUNTER() == 0);
