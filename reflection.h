@@ -30,7 +30,9 @@ struct Foo {};
 static_assert(std::is_same_v<void, reflected_member_t<Foo, 0>>);
 
 struct Bar {};
-// template<> struct reflection::reflected_member<Bar, 0> {using type = int;};
+template<> struct reflected_member<Bar, CURRENT_COUNTER(Bar)> {using type = int;}; INC_COUNTER(Bar);
+static_assert(std::is_same_v<int, reflected_member_t<Bar, 0>>);
+static_assert(std::is_same_v<void, reflected_member_t<Bar, 1>>);
 
 struct Baz {};
 template<> struct reflected_member<Baz, CURRENT_COUNTER(Baz)> {using type = int;}; INC_COUNTER(Baz);
