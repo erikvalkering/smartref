@@ -33,8 +33,11 @@ struct Bar {};
 // template<> struct reflection::reflected_member<Bar, 0> {using type = int;};
 
 struct Baz {};
-// template<> struct reflected_member<Baz, CURRENT_COUNTER()> {using type = int;}; INC_COUNTER();
-// template<> struct reflected_member<Baz, CURRENT_COUNTER()> {using type = int;}; INC_COUNTER();
+template<> struct reflected_member<Baz, CURRENT_COUNTER(Baz)> {using type = int;}; INC_COUNTER(Baz);
+template<> struct reflected_member<Baz, CURRENT_COUNTER(Baz)> {using type = int;}; INC_COUNTER(Baz);
+static_assert(std::is_same_v<int, reflected_member_t<Baz, 0>>);
+static_assert(std::is_same_v<int, reflected_member_t<Baz, 1>>);
+static_assert(std::is_same_v<void, reflected_member_t<Baz, 2>>);
 
 // static_assert(reflected_member_count_v<Foo> == 0);
 // static_assert(reflected_member_count_v<Bar> == 1);
