@@ -53,16 +53,16 @@ static_assert(reflected_member_count_v<Foo> == 0);
 
 struct Bar {};
 REFLECT_MEMBER(Bar, TODO);
-static_assert(std::is_same_v<int, reflected_member_t<Bar, 0>>);
-static_assert(std::is_same_v<void, reflected_member_t<Bar, 1>>);
+static_assert(!std::is_same_v<void, reflected_member_t<Bar, 0>>);
+static_assert( std::is_same_v<void, reflected_member_t<Bar, 1>>);
 static_assert(reflected_member_count_v<Bar> == 1);
 
 struct Baz {};
 REFLECT_MEMBER(Baz, TODO);
 REFLECT_MEMBER(Baz, TODO);
-static_assert(std::is_same_v<int, reflected_member_t<Baz, 0>>);
-static_assert(std::is_same_v<int, reflected_member_t<Baz, 1>>);
-static_assert(std::is_same_v<void, reflected_member_t<Baz, 2>>);
+static_assert(!std::is_same_v<void, reflected_member_t<Baz, 0>>);
+static_assert(!std::is_same_v<void, reflected_member_t<Baz, 1>>);
+static_assert( std::is_same_v<void, reflected_member_t<Baz, 2>>);
 static_assert(reflected_member_count_v<Baz> == 2);
 
 auto _ = []{
