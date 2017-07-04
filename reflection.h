@@ -1,3 +1,7 @@
+#pragma once
+
+#include "counter.h"
+
 #define REFLECT(name) \
   __reflection_tag_##name() \
   { \
