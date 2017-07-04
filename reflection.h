@@ -57,17 +57,14 @@ static_assert(std::is_same_v<void, reflected_member_t<Baz, 2>>);
 static_assert(reflected_member_count_v<Baz> == 2);
 
 auto _ = []{
-    // std::cout << "Foo" << std::endl;
-    // std::cout << reflected_member_count_v<Foo> << std::endl;
+    std::cout << "Foo" << std::endl;
+    std::cout << reflected_member_count_v<Foo> << std::endl;
 
-    // std::cout << "Bar" << std::endl;
-    // std::cout << reflected_member_count_v<Bar> << std::endl;
+    std::cout << "Bar" << std::endl;
+    std::cout << reflected_member_count_v<Bar> << std::endl;
 
-    // std::cout << "Baz" << std::endl;
-    // std::cout << reflected_member_count_v<Baz> << std::endl;
-
-    // std::cout << "Bat" << std::endl;
-    // std::cout << reflected_member_count_v<Bat> << std::endl;
+    std::cout << "Baz" << std::endl;
+    std::cout << reflected_member_count_v<Baz> << std::endl;
 
     return 0;
 }();
