@@ -38,14 +38,43 @@ struct reflected_member_count<T, count, void>
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 
-#define REFLECT_MEMBER(Class, member)                       \
-    template<>                                              \
-    struct reflected_member<Class, CURRENT_COUNTER(Class)>  \
-    {                                                       \
-        using type = int;                                   \
-    };                                                      \
-                                                            \
-    INC_COUNTER(Class)                                      \
+#define REFLECT_MEMBER(Class, member)                                                                                       \
+    template<>                                                                                                              \
+    struct reflected_member<Class, CURRENT_COUNTER(Class)>                                                                  \
+    {                                                                                                                       \
+        using type = struct                                                                                                 \
+        {                                                                                                                   \
+            static constexpr member_pointer = &Class::member;                                                               \
+                                                                                                                            \
+            template<typename F>                                                                                            \
+            struct reflect                                                                                                  \
+            {                                                                                                               \
+                template<typename... Args>                                                                                  \
+                auto member(Args &&... args) -> decltype(F{}(decltype(*this), member_pointer, std::forward<Args>(args)...)) \
+                {                                                                                                           \
+                    auto const f = F{};                                                                                     \
+                                                                                                                            \
+                    return f(*this, member_pointer, std::forward<Args>(args)...);                                           \
+                }                                                                                                           \
+            }                                                                                                               \
+        };                                                                                                                  \
+    };                                                                                                                      \
+                                                                                                                            \
+    INC_COUNTER(Class)                                                                                                      \
+
+template<typename T, size_t index>
+using using_member_t = typename reflected_member_t<T, index>::template reflect<decltype(
+    [](auto &self, auto member_pointer, auto &&... args)
+    {
+        return delegate(self).*member_pointer(std::forward<decltype(args)>(args)...);
+    })>;
+
+#define ___USING_MEMBER(member)                                                                    \
+    template<typename... T>                                                                     \
+    auto member(T &&... args) -> decltype(DelegateType(std::declval<Delayed<decltype(*this), T...>>()).member(std::forward<T>(args)...)) \
+    {                                                                                           \
+        return delegate(*this).member(std::forward<T>(args)...);                                \
+    }                                                                                           \
 
 struct Foo {};
 static_assert(std::is_same_v<void, reflected_member_t<Foo, 0>>);
