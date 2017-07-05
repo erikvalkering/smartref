@@ -52,7 +52,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
                 {                                                                                                           \
                     return F{}(*this, &Class::member, std::forward<Args>(args)...);                                         \
                 }                                                                                                           \
-            }                                                                                                               \
+            };                                                                                                              \
         };                                                                                                                  \
     };                                                                                                                      \
                                                                                                                             \
