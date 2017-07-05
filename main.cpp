@@ -4,7 +4,7 @@
 #include "using.h"
 #include "foobar.h"
 
-using delegate_using::using_;
+using using_delegate::using_;
 
 template<typename T>
 class Property : public using_<Property<T>, T>
