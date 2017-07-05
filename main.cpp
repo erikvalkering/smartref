@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 
-#include "reflection.h"
 #include "using.h"
+#include "foo.h"
 
 template<typename T>
 class Property : public using_<Property<T>, T>
