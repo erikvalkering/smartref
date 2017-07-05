@@ -45,4 +45,7 @@ int main()
 
     Property<foobar::Foo> foo;
     foo.foo();
+
+    Property<foobar::Bar> bar;
+    bar.bar();
 }
