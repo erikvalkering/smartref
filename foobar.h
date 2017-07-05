@@ -38,9 +38,3 @@ struct using_delegate::MemberFunctions<Derived, foobar::Foo>
 };
 
 REFLECT_MEMBER(foobar::Bar, bar);
-
-template<typename Derived>
-struct using_delegate::MemberFunctions<Derived, foobar::Bar>
-    : using_member_t<foobar::Bar, 0>
-{
-};
