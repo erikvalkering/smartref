@@ -48,11 +48,9 @@ constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
             struct reflect                                                                                                  \
             {                                                                                                               \
                 template<typename... Args>                                                                                  \
-                auto member(Args &&... args) -> decltype(F{}(decltype(*this), &Class::member, std::forward<Args>(args)...)) \
+                auto member(Args &&... args) -> decltype(F{}(*this, &Class::member, std::forward<Args>(args)...))           \
                 {                                                                                                           \
-                    auto const f = F{};                                                                                     \
-                                                                                                                            \
-                    return f(*this, &Class::member, std::forward<Args>(args)...);                                           \
+                    return F{}(*this, &Class::member, std::forward<Args>(args)...);                                         \
                 }                                                                                                           \
             }                                                                                                               \
         };                                                                                                                  \
