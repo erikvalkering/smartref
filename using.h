@@ -53,6 +53,10 @@ struct STL
     MEMBER(end)
 };
 
+// TODO: using a virtual conversion operation it would be possible to not require CRTP.
+//       can it be implemented such that this doesn't add a runtime penalty?
+//       what about not using a virtual function, and somehow detect at compile time
+//       the derived class.
 template<class Derived, typename Delegate>
 class using_ : public MemberFunctions<Derived, Delegate>,
                public STL<Derived, Delegate>
