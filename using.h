@@ -58,7 +58,7 @@ struct Forwarder
         //! Now invoke the conversion operator
         auto &delegate = static_cast<Delegate &>(derived);
 
-        return delegate.*member_pointer(std::forward<decltype(args)>(args)...);
+        return (delegate.*member_pointer)(std::forward<decltype(args)>(args)...);
     }
 };
 
