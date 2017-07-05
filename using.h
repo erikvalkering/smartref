@@ -44,6 +44,14 @@ using Delayed = typename DelayedImpl<Class, T...>::type;
         return delegate(*this).member(std::forward<T>(args)...);                                                                            \
     }                                                                                                                                       \
 
+constexpr auto forwarder = [](auto &self, auto member_pointer, auto &&... args)
+{
+    return delegate(self).*member_pointer(std::forward<decltype(args)>(args)...);
+};
+
+template<typename T, size_t index>
+using using_member_t = typename reflected_member_t<T, index>::template reflect<decltype(forwarder)>;
+
 template<class Derived, typename Delegate>
 struct MemberFunctions {};
 
