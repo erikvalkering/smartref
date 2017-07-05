@@ -19,6 +19,16 @@ struct Bar
     {
         std::cout << "Bar::bar" << std::endl;
     }
+
+    void bar2()
+    {
+        std::cout << "Bar::bar" << std::endl;
+    }
+
+    void bar3()
+    {
+        std::cout << "Bar::bar" << std::endl;
+    }
 };
 
 struct Baz

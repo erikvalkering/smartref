@@ -48,4 +48,6 @@ int main()
 
     Property<foobar::Bar> bar;
     bar.bar();
+    bar.bar2();
+    bar.bar3();
 }
