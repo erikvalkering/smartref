@@ -50,7 +50,7 @@ constexpr auto forwarder = [](auto &self, auto member_pointer, auto &&... args)
 };
 
 template<typename T, size_t index>
-using using_member_t = typename reflected_member_t<T, index>::template reflect<decltype(forwarder)>;
+using using_member_t = typename reflection::reflected_member_t<T, index>::template reflect<decltype(forwarder)>;
 
 template<class Derived, typename Delegate>
 struct MemberFunctions {};
