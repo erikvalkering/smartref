@@ -40,7 +40,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 
 #define REFLECT_MEMBER(Class, member)                                                                                       \
     template<>                                                                                                              \
-    struct reflected_member<Class, CURRENT_COUNTER(Class)>                                                                  \
+    struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>                                                      \
     {                                                                                                                       \
         using type = struct                                                                                                 \
         {                                                                                                                   \
