@@ -44,13 +44,26 @@ using Delayed = typename DelayedImpl<Class, T...>::type;
         return delegate(*this).member(std::forward<T>(args)...);                                                                            \
     }                                                                                                                                       \
 
-constexpr auto forwarder = [](auto &self, auto member_pointer, auto &&... args)
+template<class Derived, typename Delegate>
+struct Forwarder
 {
-    return delegate(self).*member_pointer(std::forward<decltype(args)>(args)...);
+    template<typename Self, typename MemberPointer, typename... Args>
+    auto operator()(Self &self, MemberPointer member_pointer, Args &&... args)
+    {
+        static_assert(std::is_base_of_v<Self, Derived>);
+
+        //! Downcast to the derived class
+        auto &derived = static_cast<Derived &>(self);
+
+        //! Now invoke the conversion operator
+        auto &delegate = static_cast<Delegate &>(derived);
+
+        return delegate.*member_pointer(std::forward<decltype(args)>(args)...);
+    }
 };
 
-template<typename T, size_t index>
-using using_member_t = typename reflection::reflected_member_t<T, index>::template reflect<decltype(forwarder)>;
+template<class Derived, typename Delegate, size_t index>
+using using_member_t = typename reflection::reflected_member_t<Delegate, index>::template reflect<Forwarder<Derived, Delegate>>;
 
 template<class Derived, typename Delegate>
 struct MemberFunctions {};
