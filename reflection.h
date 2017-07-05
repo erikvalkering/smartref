@@ -44,17 +44,15 @@ constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
     {                                                                                                                       \
         using type = struct                                                                                                 \
         {                                                                                                                   \
-            static constexpr member_pointer = &Class::member;                                                               \
-                                                                                                                            \
             template<typename F>                                                                                            \
             struct reflect                                                                                                  \
             {                                                                                                               \
                 template<typename... Args>                                                                                  \
-                auto member(Args &&... args) -> decltype(F{}(decltype(*this), member_pointer, std::forward<Args>(args)...)) \
+                auto member(Args &&... args) -> decltype(F{}(decltype(*this), &Class::member, std::forward<Args>(args)...)) \
                 {                                                                                                           \
                     auto const f = F{};                                                                                     \
                                                                                                                             \
-                    return f(*this, member_pointer, std::forward<Args>(args)...);                                           \
+                    return f(*this, &Class::member, std::forward<Args>(args)...);                                           \
                 }                                                                                                           \
             }                                                                                                               \
         };                                                                                                                  \
