@@ -14,7 +14,7 @@ struct Foo
 template<typename Derived>
 struct MemberFunctions<Derived, Foo>
 {
-    MEMBER(foo)
+    USING_MEMBER(foo)
 };
 
 struct Bar

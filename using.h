@@ -35,12 +35,12 @@ struct DelayedImpl
 template<class Class, typename... T>
 using Delayed = typename DelayedImpl<Class, T...>::type;
 
-#define MEMBER(member)                                                                          \
-    template<typename... T>                                                                     \
-    auto member(T &&... args) -> decltype(DelegateType(std::declval<Delayed<decltype(*this), T...>>()).member(std::forward<T>(args)...)) \
-    {                                                                                           \
-        return delegate(*this).member(std::forward<T>(args)...);                                \
-    }                                                                                           \
+#define USING_MEMBER(member)                                                                                                                \
+    template<typename... T>                                                                                                                 \
+    auto member(T &&... args) -> decltype(DelegateType(std::declval<Delayed<decltype(*this), T...>>()).member(std::forward<T>(args)...))    \
+    {                                                                                                                                       \
+        return delegate(*this).member(std::forward<T>(args)...);                                                                            \
+    }                                                                                                                                       \
 
 template<class Derived, typename Delegate>
 struct MemberFunctions {};
@@ -48,9 +48,9 @@ struct MemberFunctions {};
 template<class Derived, typename Delegate>
 struct STL
 {
-    MEMBER(push_back)
-    MEMBER(begin)
-    MEMBER(end)
+    USING_MEMBER(push_back)
+    USING_MEMBER(begin)
+    USING_MEMBER(end)
 };
 
 // TODO: using a virtual conversion operation it would be possible to not require CRTP.
