@@ -2,7 +2,9 @@
 
 #include "counter.h"
 
-#define REFLECT(name) \
+#define REFLECT(name) name
+
+#define REFLECT2(name) \
   __reflection_tag_##name() \
   { \
     throw std::logic_error{"__reflection_tag should never be called"}; \
