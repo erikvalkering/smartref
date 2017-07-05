@@ -3,18 +3,14 @@
 #include "using.h"
 #include "reflection.h"
 
+namespace foobar {
+
 struct Foo
 {
     void foo()
     {
         std::cout << "Foo::foo" << std::endl;
     }
-};
-
-template<typename Derived>
-struct MemberFunctions<Derived, Foo>
-{
-    USING_MEMBER(foo)
 };
 
 struct Bar
@@ -25,8 +21,6 @@ struct Bar
     }
 };
 
-REFLECT_MEMBER(Bar, bar);
-
 struct Baz
 {
     void REFLECT(baz)()
@@ -34,3 +28,13 @@ struct Baz
         std::cout << "Baz::baz" << std::endl;
     }
 };
+
+} // namespace foobar
+
+template<typename Derived>
+struct MemberFunctions<Derived, Foo>
+{
+    USING_MEMBER(foo)
+};
+
+REFLECT_MEMBER(Bar, bar);
