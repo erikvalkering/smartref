@@ -68,13 +68,6 @@ constexpr auto forwarder = [](auto &self, auto member_pointer, auto &&... args)
 template<typename T, size_t index>
 using using_member_t = typename reflected_member_t<T, index>::template reflect<decltype(forwarder)>;
 
-#define ___USING_MEMBER(member)                                                                    \
-    template<typename... T>                                                                     \
-    auto member(T &&... args) -> decltype(DelegateType(std::declval<Delayed<decltype(*this), T...>>()).member(std::forward<T>(args)...)) \
-    {                                                                                           \
-        return delegate(*this).member(std::forward<T>(args)...);                                \
-    }                                                                                           \
-
 } // namespace reflection
 
 struct Foo {};
