@@ -79,15 +79,22 @@ struct Foo {};
 static_assert(std::is_same_v<void, reflection::reflected_member_t<Foo, 0>>);
 static_assert(reflection::reflected_member_count_v<Foo> == 0);
 
-struct Bar {};
-REFLECT_MEMBER(Bar, TODO);
+struct Bar
+{
+    void bar();
+};
+REFLECT_MEMBER(Bar, bar);
 static_assert(!std::is_same_v<void, reflection::reflected_member_t<Bar, 0>>);
 static_assert( std::is_same_v<void, reflection::reflected_member_t<Bar, 1>>);
 static_assert(reflection::reflected_member_count_v<Bar> == 1);
 
-struct Baz {};
-REFLECT_MEMBER(Baz, TODO);
-REFLECT_MEMBER(Baz, TODO);
+struct Baz
+{
+    void baz();
+    void baz2();
+};
+REFLECT_MEMBER(Baz, baz);
+REFLECT_MEMBER(Baz, baz2);
 static_assert(!std::is_same_v<void, reflection::reflected_member_t<Baz, 0>>);
 static_assert(!std::is_same_v<void, reflection::reflected_member_t<Baz, 1>>);
 static_assert( std::is_same_v<void, reflection::reflected_member_t<Baz, 2>>);
