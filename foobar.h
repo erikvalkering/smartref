@@ -32,7 +32,7 @@ struct Baz
 } // namespace foobar
 
 template<typename Derived>
-struct using_delegate::MemberFunctions<Derived, Foo>
+struct using_delegate::MemberFunctions<Derived, foobar::Foo>
 {
     USING_MEMBER(foo)
 };
