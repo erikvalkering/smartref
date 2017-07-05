@@ -2,6 +2,8 @@
 
 //! Compile-time counter. Credits go to the folks at CopperSpice (see CppCon2015 talk).
 
+namespace counter {
+
 template<typename T, size_t count>
 struct Counter : Counter<T, count - 1>
 {
@@ -35,3 +37,5 @@ static_assert(CURRENT_COUNTER(void) == 1);
 INC_COUNTER(void);
 static_assert(CURRENT_COUNTER(void) == 2);
 static_assert(CURRENT_COUNTER(void) == 2);
+
+} // namespace counter

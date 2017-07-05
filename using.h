@@ -1,3 +1,7 @@
+#pragma once
+
+namespace using_delegate {
+
 template<class Derived, typename Delegate>
 class using_;
 
@@ -54,3 +58,5 @@ class using_ : public MemberFunctions<Derived, Delegate>,
                public STL<Derived, Delegate>
 {
 };
+
+} // namespace using_delegate
