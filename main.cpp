@@ -43,6 +43,6 @@ int main()
     std::cout << z << std::endl;
     std::cout << typeid(z).name() << std::endl;
 
-    Property<Foo> foo;
+    Property<foobar::Foo> foo;
     foo.foo();
 }
