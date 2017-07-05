@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "using.h"
-#include "foo.h"
+#include "foobar.h"
 
 template<typename T>
 class Property : public using_<Property<T>, T>
@@ -41,6 +41,6 @@ int main()
     std::cout << z << std::endl;
     std::cout << typeid(z).name() << std::endl;
 
-    Property<Foo> p_foo;
-    p_foo.bar();
+    Property<Foo> foo;
+    foo.foo();
 }
