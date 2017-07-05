@@ -1,5 +1,7 @@
 #pragma once
 
+#include "reflection.h"
+
 namespace using_delegate {
 
 template<class Derived, typename Delegate>
