@@ -48,3 +48,5 @@ struct using_delegate::MemberFunctions<Derived, foobar::Foo>
 };
 
 REFLECT_MEMBER(foobar::Bar, bar);
+REFLECT_MEMBER(foobar::Bar, bar2);
+REFLECT_MEMBER(foobar::Bar, bar3);
