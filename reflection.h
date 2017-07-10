@@ -47,12 +47,20 @@ constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
         using type = struct                                                                                                 \
         {                                                                                                                   \
             template<typename F>                                                                                            \
-            struct reflect                                                                                                  \
-            {                                                                                                               \
+            class reflect                                                                                                  \
+            {                 
+            private:                                                                                              \
                 template<typename... Args>                                                                                  \
-                auto member(Args &&... args) -> decltype(F{}(*this, &Class::member, std::forward<Args>(args)...))           \
+                decltype(auto) indirect(Args &&... args)                                                                    \
                 {                                                                                                           \
                     return F{}(*this, &Class::member, std::forward<Args>(args)...);                                         \
+                }                                                                                                           \
+
+            public:                                                                                                     \
+                template<typename... Args>                                                                                  \
+                auto member(Args &&... args) -> decltype(indirect(std::forward<Args>(args)...))                             \
+                {                                                                                                           \
+                    return indirect(std::forward<Args>(args)...);                                                           \
                 }                                                                                                           \
             };                                                                                                              \
         };                                                                                                                  \
