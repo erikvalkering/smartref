@@ -50,4 +50,7 @@ int main()
     bar.bar();
     bar.bar2();
     bar.bar3();
+
+    Property<foobar::Baz> baz;
+    baz.baz();
 }
