@@ -40,35 +40,35 @@ struct reflected_member_count<T, count, void>
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 
-#define REFLECT_MEMBER(Class, member)                                                                                       \
-    template<>                                                                                                              \
-    struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>                                                      \
-    {                                                                                                                       \
-        using type = struct                                                                                                 \
-        {                                                                                                                   \
-            template<typename F>                                                                                            \
-            class reflect                                                                                                   \
-            {                                                                                                               \
-            private:                                                                                                        \
-                template<typename... Args>                                                                                  \
-                decltype(auto) indirect(Args &&... args)                                                                    \
-                {                                                                                                           \
-                    return F{}(*this, &Class::member, std::forward<Args>(args)...);                                         \
-                }                                                                                                           \
-                                                                                                                            \
-            public:                                                                                                         \
-                template<typename... Args>                                                                                  \
-                auto member(Args &&... args) -> decltype(indirect(std::forward<Args>(args)...))                             \
-                {                                                                                                           \
-                    return indirect(std::forward<Args>(args)...);                                                           \
-                }                                                                                                           \
-            };                                                                                                              \
-        };                                                                                                                  \
-    };                                                                                                                      \
-                                                                                                                            \
-    INC_COUNTER(Class)                                                                                                      \
-
 } // namespace reflection
+
+#define REFLECT_MEMBER(Class, member)                                                           \
+    template<>                                                                                  \
+    struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>                          \
+    {                                                                                           \
+        using type = struct                                                                     \
+        {                                                                                       \
+            template<typename F>                                                                \
+            class reflect                                                                       \
+            {                                                                                   \
+            private:                                                                            \
+                template<typename... Args>                                                      \
+                decltype(auto) indirect(Args &&... args)                                        \
+                {                                                                               \
+                    return F{}(*this, &Class::member, std::forward<Args>(args)...);             \
+                }                                                                               \
+                                                                                                \
+            public:                                                                             \
+                template<typename... Args>                                                      \
+                auto member(Args &&... args) -> decltype(indirect(std::forward<Args>(args)...)) \
+                {                                                                               \
+                    return indirect(std::forward<Args>(args)...);                               \
+                }                                                                               \
+            };                                                                                  \
+        };                                                                                      \
+    };                                                                                          \
+                                                                                                \
+    INC_COUNTER(Class)                                                                          \
 
 struct Foo {};
 static_assert(std::is_same_v<void, reflection::reflected_member_t<Foo, 0>>);
