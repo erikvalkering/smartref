@@ -2,18 +2,6 @@
 
 #include "counter.h"
 
-#define REFLECT(name) name
-
-#define REFLECT2(name) \
-  __reflection_tag_##name() \
-  { \
-    throw std::logic_error{"__reflection_tag should never be called"}; \
-  } \
-  \
-  struct __reflection_##name \
-  { \
-  }; \
-
 namespace reflection {
 
 template<typename T, size_t counter>
@@ -39,6 +27,16 @@ struct reflected_member_count<T, count, void>
 
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
+
+// TODO: Copy-pasted from using.h --> factor out
+template<class Class, typename... T>
+struct DelayedImpl
+{
+    using type = Class;
+};
+
+template<class Class, typename... T>
+using Delayed = typename DelayedImpl<Class, T...>::type;
 
 } // namespace reflection
 
@@ -69,6 +67,29 @@ constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
     };                                                                                          \
                                                                                                 \
     INC_COUNTER(Class)                                                                          \
+
+// TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECT_MEMBER
+// TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECT_MEMBER
+// TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECT_MEMBER
+#define REFLECT(name)                                                                                   \
+  __reflect_tag_##name() {}                                                                             \
+                                                                                                        \
+  struct __reflect_thunker##name                                                                        \
+  {                                                                                                     \
+      template<typename Self, typename... Args>                                                         \
+      static auto thunk(Self &self, Args &&... args)                                                    \
+      {                                                                                                 \
+          return self.__reflect_thunk_##name(std::forward<Args>(args)...);                              \
+      }                                                                                                 \
+  };                                                                                                    \
+                                                                                                        \
+  template<typename... Args>                                                                            \
+  auto name(Args &&... args) -> decltype(__reflect_tag_##name(std::forward<Args>(args)...))             \
+  {                                                                                                     \
+    reflection::Delayed<__reflect_thunker##name, Args...>::thunk(*this, std::forward<Args>(args)...);   \
+  }                                                                                                     \
+                                                                                                        \
+  auto __reflect_thunk_##name                                                                           \
 
 struct Foo {};
 static_assert(std::is_same_v<void, reflection::reflected_member_t<Foo, 0>>);
