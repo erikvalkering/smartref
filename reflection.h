@@ -71,32 +71,32 @@ using Delayed = typename DelayedImpl<Class, T...>::type;
 // TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECT_MEMBER
 // TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECT_MEMBER
 // TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECT_MEMBER
-#define REFLECT(name)                                                                                   \
-  __reflect_tag_##name() {}                                                                             \
-                                                                                                        \
-  struct __reflect_thunker_##name                                                                       \
-  {                                                                                                     \
-      template<typename Self, typename... Args>                                                         \
-      static auto thunk(Self &self, Args &&... args)                                                    \
-      {                                                                                                 \
-          return self.__reflect_thunk_##name(std::forward<Args>(args)...);                              \
-      }                                                                                                 \
-  };                                                                                                    \
-                                                                                                        \
-  //! Here, we basically replace the reflected member-function,                                         \
-  //! by defining a new member-function template with the same name,                                    \
-  //! which simply forwards to the implementation of the reflect member-function.                       \
-  //! This forwarding happens indirectly, because at the point this function is defined,                \
-  //! the implementation function is not yet available.                                                 \
-  template<typename... Args>                                                                            \
-  auto name(Args &&... args) -> decltype(__reflect_tag_##name(std::forward<Args>(args)...))             \
-  {                                                                                                     \
-    reflection::Delayed<__reflect_thunker_##name, Args...>::thunk(*this, std::forward<Args>(args)...);  \
-  }                                                                                                     \
-                                                                                                        \
-  //! Here, we define a member-function that will contain the implementation                            \
-  //! of the reflected member-function.                                                                 \
-  auto __reflect_thunk_##name                                                                           \
+#define REFLECT(name)                                                                                       \
+    __reflect_tag_##name() {}                                                                               \
+                                                                                                            \
+    struct __reflect_thunker_##name                                                                         \
+    {                                                                                                       \
+        template<typename Self, typename... Args>                                                           \
+        static auto thunk(Self &self, Args &&... args)                                                      \
+        {                                                                                                   \
+            return self.__reflect_thunk_##name(std::forward<Args>(args)...);                                \
+        }                                                                                                   \
+    };                                                                                                      \
+                                                                                                            \
+    //! Here, we basically replace the reflected member-function,                                           \
+    //! by defining a new member-function template with the same name,                                      \
+    //! which simply forwards to the implementation of the reflect member-function.                         \
+    //! This forwarding happens indirectly, because at the point this function is defined,                  \
+    //! the implementation function is not yet available.                                                   \
+    template<typename... Args>                                                                              \
+    auto name(Args &&... args) -> decltype(__reflect_tag_##name(std::forward<Args>(args)...))               \
+    {                                                                                                       \
+        reflection::Delayed<__reflect_thunker_##name, Args...>::thunk(*this, std::forward<Args>(args)...);  \
+    }                                                                                                       \
+                                                                                                            \
+    //! Here, we define a member-function that will contain the implementation                              \
+    //! of the reflected member-function.                                                                   \
+    auto __reflect_thunk_##name                                                                             \
 
 struct Foo {};
 static_assert(std::is_same_v<void, reflection::reflected_member_t<Foo, 0>>);
