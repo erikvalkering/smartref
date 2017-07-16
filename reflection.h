@@ -74,7 +74,7 @@ using Delayed = typename DelayedImpl<Class, T...>::type;
 #define REFLECT(name)                                                                                   \
   __reflect_tag_##name() {}                                                                             \
                                                                                                         \
-  struct __reflect_thunker##name                                                                        \
+  struct __reflect_thunker_##name                                                                       \
   {                                                                                                     \
       template<typename Self, typename... Args>                                                         \
       static auto thunk(Self &self, Args &&... args)                                                    \
@@ -86,7 +86,7 @@ using Delayed = typename DelayedImpl<Class, T...>::type;
   template<typename... Args>                                                                            \
   auto name(Args &&... args) -> decltype(__reflect_tag_##name(std::forward<Args>(args)...))             \
   {                                                                                                     \
-    reflection::Delayed<__reflect_thunker##name, Args...>::thunk(*this, std::forward<Args>(args)...);   \
+    reflection::Delayed<__reflect_thunker_##name, Args...>::thunk(*this, std::forward<Args>(args)...);  \
   }                                                                                                     \
                                                                                                         \
   auto __reflect_thunk_##name                                                                           \
