@@ -24,8 +24,11 @@ Counter<T, 0> __counter(Counter<T, 0>);
 #define TOKENPASTE2(x, y) x ## y
 #define TOKENPASTE(x, y) TOKENPASTE2(x, y)
 
-#define CURRENT_COUNTER(T)                                  \
-    decltype(__counter(counter::Counter<T, 255>{}))::value  \
+#define CURRENT_COUNTER_IMPL(T, FUNCTION)                   \
+    decltype(FUNCTION(counter::Counter<T, 255>{}))::value   \
+
+#define CURRENT_COUNTER(T)              \
+    CURRENT_COUNTER_IMPL(T, __counter)  \
 
 #define INC_COUNTER(T)                                                                                      \
     namespace counter {                                                                                     \
