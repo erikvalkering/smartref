@@ -92,24 +92,33 @@ constexpr auto make_combiner(L1 &&l1, L2 &&l2)
 // TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECT_MEMBER
 // TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECT_MEMBER
 // TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECT_MEMBER
-#define REFLECT(name)                                                                                   \
-    __reflect_tag_##name() {}                                                                           \
-                                                                                                        \
-    static constexpr counter::Counter<void, 10> __reflectXY(counter::Counter<void, 10>) {return {};}   \
-                                                                                                        \
-    static constexpr auto __reflector_mine = [](auto counter) -> decltype(__reflectXY(counter))                                          \
-    {                                                                                                   \
-        return __reflectXY(counter);                                                                    \
-    };                                                                                                  \
-    static constexpr auto __reflector_fallback = [](counter::Counter<void, 0>)                                       \
-    {                                                                                                   \
-        return counter::Counter<void, 0>{};                                                                    \
-    };                                                                                                  \
-                                                                                                        \
-    static constexpr auto __reflector = reflection::make_combiner(__reflector_mine, __reflector_fallback);\
-                                                                                                        \
+#define REFLECT(name)                                                                                       \
+    __reflect_tag_##name() {}                                                                               \
+                                                                                                            \
+    static constexpr auto __reflector_mine = [](auto counter) -> decltype(__reflectXY(counter))             \
+    {                                                                                                       \
+        return __reflectXY(counter);                                                                        \
+    };                                                                                                      \
+    static constexpr auto __reflector_fallback = [](counter::Counter<void, 0>)                              \
+    {                                                                                                       \
+        return counter::Counter<void, 0>{};                                                                 \
+    };                                                                                                      \
+                                                                                                            \
+    static constexpr auto __reflector = reflection::make_combiner(__reflector_mine, __reflector_fallback);  \
+                                                                                                            \
     static constexpr const int value_42 = counter::current_value<void>(__reflector); \
-    static_assert(value_42 == 10);                                                                                                     \
+    static_assert(value_42 == 0);                                                                           \
+                                                                                                            \
+    static constexpr counter::Counter<void, 10> __reflectXY(counter::Counter<void, 10>) {return {};}        \
+                                                                                                            \
+    static constexpr auto __reflector_mine2 = [](auto counter) -> decltype(__reflectXY(counter))            \
+    {                                                                                                       \
+        return __reflectXY(counter);                                                                        \
+    };                                                                                                      \
+                                                                                                            \
+    static constexpr auto __reflector2 = reflection::make_combiner(__reflector_mine2, __reflector_fallback);\
+    static constexpr const int value_43 = counter::current_value2<void>(__reflector2);                      \
+    static_assert(value_43 == 10);                                                                           \
                                                                                                         \
     /* Here, we basically replace the reflected member-function,                                    */  \
     /* by defining a new member-function template with the same name,                               */  \
