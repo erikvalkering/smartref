@@ -19,10 +19,25 @@ struct Counter<T, 0>
 template<typename T>
 Counter<T, 0> __counter(Counter<T, 0>);
 
+template<typename T, typename F>
+constexpr auto current_value2(F f)
+{
+    return decltype(f(counter::Counter<void, 255>{}))::value;
+}
+
 } // namespace counter
 
 #define TOKENPASTE2(x, y) x ## y
 #define TOKENPASTE(x, y) TOKENPASTE2(x, y)
+
+#define CURRENT_COUNTER_IMPL2(T, FUNCTION)  \
+    decltype(                               \
+        counter::current_counter_helper<T>( \
+            [](auto counter)                \
+            {                               \
+                return FUNCTION(counter);   \
+            })                              \
+        )::value                            \
 
 #define CURRENT_COUNTER_IMPL(T, FUNCTION)                   \
     decltype(FUNCTION(counter::Counter<T, 255>{}))::value   \
