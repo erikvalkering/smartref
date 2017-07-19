@@ -28,6 +28,21 @@ struct reflected_member_count<T, count, void>
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 
+template<typename T, size_t counter, typename = void>
+struct reflected_class_member
+{
+    using type = void;
+};
+
+template<typename T, size_t counter>
+struct reflected_class_member<T, counter, std::enable_if_t<decltype(std::declval<T>().__reflect(counter::Counter<counter>{}))::value == counter>>
+{
+    using type = decltype(std::declval<T>().__reflect(counter::Counter<counter>{}));
+};
+
+template<typename T, size_t counter>
+using reflected_class_member_t = typename reflected_class_member<T, counter>::type;
+
 // TODO: Copy-pasted from using.h --> factor out
 template<class Class, typename... T>
 struct DelayedImpl
@@ -79,6 +94,13 @@ decltype(auto) delayed(Arg &&arg)
 // TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECT_MEMBER
 #define REFLECT(name)                                                                                   \
     __reflect_tag_##name() {}                                                                           \
+                                                                                                        \
+    auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)                                   \
+    {                                                                                                   \
+        return counter;                                                                                 \
+    }                                                                                                   \
+                                                                                                        \
+    INC_CLASS_COUNTER();                                                                                \
                                                                                                         \
     /* Here, we basically replace the reflected member-function,                                    */  \
     /* by defining a new member-function template with the same name,                               */  \
