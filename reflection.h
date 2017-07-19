@@ -122,6 +122,17 @@ static_assert(!std::is_same_v<void, reflection::reflected_member_t<Baz, 1>>);
 static_assert( std::is_same_v<void, reflection::reflected_member_t<Baz, 2>>);
 static_assert(reflection::reflected_member_count_v<Baz> == 2);
 
+struct Bat
+{
+    void REFLECT(bat)();
+    void REFLECT(bat2)();
+};
+
+static_assert(!std::is_same_v<void, reflection::reflected_class_member_t<Bat, 0>>);
+static_assert(!std::is_same_v<void, reflection::reflected_class_member_t<Bat, 1>>);
+static_assert( std::is_same_v<void, reflection::reflected_class_member_t<Bat, 2>>);
+static_assert(reflection::reflected_class_member_count_v<Baz> == 2);
+
 auto _ = []{
     using namespace reflection;
 
