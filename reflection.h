@@ -131,7 +131,7 @@ struct Bat
 static_assert(!std::is_same_v<void, reflection::reflected_class_member_t<Bat, 0>>);
 static_assert(!std::is_same_v<void, reflection::reflected_class_member_t<Bat, 1>>);
 static_assert( std::is_same_v<void, reflection::reflected_class_member_t<Bat, 2>>);
-static_assert(reflection::reflected_class_member_count_v<Baz> == 2);
+static_assert(reflection::reflected_class_member_count_v<Bat> == 2);
 
 auto _ = []{
     using namespace reflection;
