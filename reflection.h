@@ -4,6 +4,8 @@
 
 namespace reflection {
 
+// TODO: Create a constexpr_vector abstraction
+
 template<typename T, size_t counter>
 struct reflected_member
 {
