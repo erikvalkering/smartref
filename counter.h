@@ -4,25 +4,25 @@
 
 namespace counter {
 
-template<typename T, size_t count>
-struct Counter : Counter<T, count - 1>
+template<size_t count, typename T = void>
+struct Counter : Counter<count - 1, T>
 {
     static constexpr auto value = count;
 };
 
 template<typename T>
-struct Counter<T, 0>
+struct Counter<0, T>
 {
     static constexpr auto value = 0;
 };
 
 template<typename T>
-Counter<T, 0> __counter(Counter<T, 0>);
+Counter<0, T> __counter(Counter<0, T>);
 
 template<typename T, typename F>
 constexpr auto current_value2(F f)
 {
-    return decltype(f(counter::Counter<void, 255>{}))::value;
+    return decltype(f(counter::Counter<255>{}))::value;
 }
 
 } // namespace counter
@@ -40,7 +40,7 @@ constexpr auto current_value2(F f)
         )::value                            \
 
 #define CURRENT_COUNTER_IMPL(T, FUNCTION)                   \
-    decltype(FUNCTION(counter::Counter<T, 255>{}))::value   \
+    decltype(FUNCTION(counter::Counter<255, T>{}))::value   \
 
 #define CURRENT_COUNTER(T)              \
     CURRENT_COUNTER_IMPL(T, __counter)  \
@@ -48,7 +48,7 @@ constexpr auto current_value2(F f)
 #define INC_COUNTER(T)                                                                                      \
     namespace counter {                                                                                     \
     constexpr auto TOKENPASTE(value_, __LINE__) = CURRENT_COUNTER(T);                                       \
-    Counter<T, TOKENPASTE(value_, __LINE__) + 1> __counter(Counter<T, TOKENPASTE(value_, __LINE__) + 1>);   \
+    Counter<TOKENPASTE(value_, __LINE__) + 1, T> __counter(Counter<TOKENPASTE(value_, __LINE__) + 1, T>);   \
     } /* namespace counter */                                                                               \
 
 static_assert(CURRENT_COUNTER(void) == 0);
