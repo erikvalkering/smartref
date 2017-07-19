@@ -19,12 +19,6 @@ struct Counter<0, T>
 template<typename T>
 Counter<0, T> __counter(Counter<0, T>);
 
-template<typename T, typename F>
-constexpr auto current_value2(F f)
-{
-    return decltype(f(counter::Counter<255>{}))::value;
-}
-
 template<typename L1, typename L2>
 struct Combiner : L1, L2
 {
