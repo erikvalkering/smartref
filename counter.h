@@ -25,6 +25,34 @@ constexpr auto current_value2(F f)
     return decltype(f(counter::Counter<255>{}))::value;
 }
 
+template<typename L1, typename L2>
+struct Combiner : L1, L2
+{
+    constexpr Combiner(L1 l1, L2 l2) : L1(std::move(l1)), L2(std::move(l2)) {}
+
+    using L1::operator();
+    using L2::operator();
+};
+
+template<typename L1, typename L2>
+constexpr auto make_combiner(L1 &&l1, L2 &&l2)
+{
+    return Combiner<std::decay_t<L1>, std::decay_t<L2>>{std::forward<L1>(l1), std::forward<L2>(l2)};
+}
+
+template<typename F>
+constexpr auto current_class_counter(F f)
+{
+    auto fallback = [](counter::Counter<0> counter)
+    {
+        return counter;
+    };
+
+    auto combined = make_combiner(f, fallback);
+
+    return decltype(combined(counter::Counter<255>{}))::value;
+}
+
 } // namespace counter
 
 #define TOKENPASTE2(x, y) x ## y
@@ -51,6 +79,19 @@ constexpr auto current_value2(F f)
     Counter<TOKENPASTE(value_, __LINE__) + 1, T> __counter(Counter<TOKENPASTE(value_, __LINE__) + 1, T>);   \
     } /* namespace counter */                                                                               \
 
+#define CURRENT_CLASS_COUNTER()                                 \
+    counter::current_class_counter(                             \
+        [](auto counter) -> decltype(__class_counter(counter))  \
+        {                                                       \
+            return __class_counter(counter);                    \
+        })                                                      \
+
+#define INC_CLASS_COUNTER()                                                                                                                     \
+    static constexpr counter::Counter<CURRENT_CLASS_COUNTER() + 1> __class_counter(counter::Counter<CURRENT_CLASS_COUNTER() + 1>)   \
+    {                                                                                                                                           \
+        return {};                                                                                                                              \
+    }                                                                                                                                           \
+
 static_assert(CURRENT_COUNTER(void) == 0);
 static_assert(CURRENT_COUNTER(void) == 0);
 INC_COUNTER(void);
@@ -59,3 +100,27 @@ static_assert(CURRENT_COUNTER(void) == 1);
 INC_COUNTER(void);
 static_assert(CURRENT_COUNTER(void) == 2);
 static_assert(CURRENT_COUNTER(void) == 2);
+
+struct CounterTest
+{
+    static_assert(CURRENT_CLASS_COUNTER() == 0);
+    static_assert(CURRENT_CLASS_COUNTER() == 0);
+    INC_CLASS_COUNTER();
+    static_assert(CURRENT_CLASS_COUNTER() == 1);
+    static_assert(CURRENT_CLASS_COUNTER() == 1);
+    INC_CLASS_COUNTER();
+    static_assert(CURRENT_CLASS_COUNTER() == 2);
+    static_assert(CURRENT_CLASS_COUNTER() == 2);
+};
+
+struct DerivedTest : CounterTest
+{
+    static_assert(CURRENT_CLASS_COUNTER() == 2);
+    static_assert(CURRENT_CLASS_COUNTER() == 2);
+    INC_CLASS_COUNTER();
+    static_assert(CURRENT_CLASS_COUNTER() == 3);
+    static_assert(CURRENT_CLASS_COUNTER() == 3);
+    INC_CLASS_COUNTER()
+    static_assert(CURRENT_CLASS_COUNTER() == 4);
+    static_assert(CURRENT_CLASS_COUNTER() == 4);
+};
