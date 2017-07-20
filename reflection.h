@@ -113,9 +113,38 @@ decltype(auto) delayed(Arg &&arg)
 #define REFLECT(name)                                                                                   \
     __reflect_tag_##name() {}                                                                           \
                                                                                                         \
+    template<typename F, class Class>                                                                   \
+    class __reflect__##name                                                                             \
+    {                                                                                                   \
+    private:                                                                                            \
+        template<typename... Args>                                                                      \
+        decltype(auto) indirect(Args &&... args)                                                        \
+        {                                                                                               \
+            return F{}(*this, &Class::member, std::forward<Args>(args)...);                             \
+        }                                                                                               \
+                                                                                                        \
+    public:                                                                                             \
+        template<typename... Args>                                                                      \
+        auto member(Args &&... args) -> decltype(indirect(std::forward<Args>(args)...))                 \
+        {                                                                                               \
+            return indirect(std::forward<Args>(args)...);                                               \
+        }                                                                                               \
+    };                                                                                                  \
+                                                                                                        \
+    template<typename Counter, class Class>                                                             \
+    struct __type##name : Counter                                                                       \
+    {                                                                                                   \
+        template<typename F>                                                                            \
+        using reflect = __reflect__##name<F, Class>;                                                    \
+    };                                                                                                  \
+                                                                                                        \
     auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)                                   \
     {                                                                                                   \
-        return counter;                                                                                 \
+        using Class = std::decay_t<decltype(*this)>;                                                    \
+                                                                                                        \
+        using type = __type##name<decltype(counter), Class>;                                            \
+                                                                                                        \
+        return type{};                                                                                  \
     }                                                                                                   \
                                                                                                         \
     INC_CLASS_COUNTER();                                                                                \
