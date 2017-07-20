@@ -21,7 +21,7 @@ add_test(counter test_counter)
 ################################################################################
 add_library(libreflection INTERFACE)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/reflection.h)
-target_link_libraries(libreflection PRIVATE libcounter)
+target_link_libraries(libreflection INTERFACE libcounter)
 
 add_executable(test_reflection reflection.cpp)
 target_link_libraries(test_reflection PRIVATE libcounter)
@@ -34,7 +34,7 @@ add_test(reflection test_reflection)
 ################################################################################
 add_library(libdelegation INTERFACE)
 target_sources(libdelegation INTERFACE ${PROJECT_SOURCE_DIR}/using.h)
-target_link_libraries(libdelegation PRIVATE libreflection)
+target_link_libraries(libdelegation INTERFACE libreflection)
 
 add_executable(test_delegation delegation.cpp)
 target_sources(test_delegation PRIVATE ${PROJECT_SOURCE_DIR}/foobar.h)
