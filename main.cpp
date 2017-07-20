@@ -19,8 +19,53 @@ private:
     T data;
 };
 
+/*
+class JSONValue : public using_<JSONValue, double>,
+                  public using_<JSONValue, std::string>,
+                  public using_<JSONValue, std::vector<JSONValue>>,
+                  public using_<JSONValue, std::map<JSONValue, JSONValue>>
+{
+public:
+    operator double &()
+    {
+        return get<double>(data);
+    }
+
+    operator double &()
+    {
+        return get<std::string>(data);
+    }
+
+    operator double &()
+    {
+        return get<std::vector<JSONValue>>(data);
+    }
+
+    operator double &()
+    {
+        return get<std::map<JSONValue, JSONValue>>(data);
+    }
+
+private:
+    std::variant<
+        double,
+        std::string,
+        std::vector<JSONValue>,
+        std::map<JSONValue, JSONValue>
+    > data;
+};
+*/
+
 int main()
 {
+/*
+    JSONValue json = {};
+
+    json["asdf"] = 1.0;
+    json[123456] = nullptr;
+    json.DOT(qwerty) = "the other (third) operator dot proposal";
+*/
+
     std::cout << "Hello, Wandbox!" << std::endl;
 
     Property<std::vector<int>> v;
