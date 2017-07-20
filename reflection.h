@@ -120,7 +120,7 @@ decltype(auto) delayed(Arg &&arg)
         template<typename... Args>                                                                      \
         decltype(auto) indirect(Args &&... args)                                                        \
         {                                                                                               \
-            return F{}(*this, &Class::name, std::forward<Args>(args)...);                               \
+            return F{}(*this, &Class::__reflect_impl_##name, std::forward<Args>(args)...);              \
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
