@@ -120,12 +120,12 @@ decltype(auto) delayed(Arg &&arg)
         template<typename... Args>                                                                      \
         decltype(auto) indirect(Args &&... args)                                                        \
         {                                                                                               \
-            return F{}(*this, &Class::member, std::forward<Args>(args)...);                             \
+            return F{}(*this, &Class::name, std::forward<Args>(args)...);                               \
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
         template<typename... Args>                                                                      \
-        auto member(Args &&... args) -> decltype(indirect(std::forward<Args>(args)...))                 \
+        auto name(Args &&... args) -> decltype(indirect(std::forward<Args>(args)...))                   \
         {                                                                                               \
             return indirect(std::forward<Args>(args)...);                                               \
         }                                                                                               \
