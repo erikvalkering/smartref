@@ -62,11 +62,11 @@ struct Forwarder
     }
 };
 
-template<class Derived, typename Delegate, size_t index>
-using using_member_t = typename reflection::reflected_member_t<Delegate, index>::template reflect<Forwarder<Derived, Delegate>>;
-
 template<class Derived, typename Delegate>
 struct MemberFunctions {};
+
+template<class Derived, typename Delegate, size_t index>
+using using_member_t = typename reflection::reflected_member_t<Delegate, index>::template reflect<Forwarder<Derived, Delegate>>;
 
 template<class Derived, typename Delegate, typename index_pack>
 struct ReflectedMemberFunctionsImpl;
@@ -83,6 +83,24 @@ using ReflectedMemberFunctions = ReflectedMemberFunctionsImpl<
     Delegate,
     std::make_index_sequence<reflection::reflected_member_count_v<Delegate>>>;
 
+template<class Derived, typename Delegate, size_t index>
+using using_class_member_t = typename reflection::reflected_class_member_t<Delegate, index>::template reflect<Forwarder<Derived, Delegate>>;
+
+template<class Derived, typename Delegate, typename index_pack>
+struct ReflectedClassMemberFunctionsImpl;
+
+template<class Derived, typename Delegate, size_t... indices>
+struct ReflectedClassMemberFunctionsImpl<Derived, Delegate, std::index_sequence<indices...>>
+    : using_class_member_t<Derived, Delegate, indices>...
+{
+};
+
+template<class Derived, typename Delegate>
+using ReflectedClassMemberFunctions = ReflectedClassMemberFunctionsImpl<
+    Derived,
+    Delegate,
+    std::make_index_sequence<reflection::reflected_class_member_count_v<Delegate>>>;
+
 template<class Derived, typename Delegate>
 struct STL
 {
@@ -98,7 +116,8 @@ struct STL
 template<class Derived, typename Delegate>
 class using_ : public MemberFunctions<Derived, Delegate>,
                public STL<Derived, Delegate>,
-               public ReflectedMemberFunctions<Derived, Delegate>
+               public ReflectedMemberFunctions<Derived, Delegate>,
+               public ReflectedClassMemberFunctions<Derived, Delegate>
 {
 };
 
