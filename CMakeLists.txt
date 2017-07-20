@@ -9,6 +9,7 @@ enable_testing()
 ################################################################################
 add_library(libcounter INTERFACE)
 target_sources(libcounter INTERFACE ${PROJECT_SOURCE_DIR}/counter.h)
+target_compile_features(libcounter INTERFACE cxx_constexpr)
 
 add_executable(test_counter counter.cpp)
 target_link_libraries(test_counter PRIVATE libcounter)
