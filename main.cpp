@@ -103,4 +103,19 @@ int main()
     Property<foobar::Bat> bat;
     bat.bat();
     bat.bat2();
+
+    {
+        foobar::Bar bar;
+        bar.bar();
+        bar.bar2();
+        bar.bar3();
+
+        foobar::Baz baz;
+        baz.baz();
+        baz.baz2();
+
+        foobar::Bat bat;
+        bat.bat();
+        bat.bat2();
+    }
 }
