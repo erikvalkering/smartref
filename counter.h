@@ -4,6 +4,8 @@
 
 namespace counter {
 
+// TODO: multiple inheritance to detect size
+
 template<size_t count, typename T = void>
 struct Counter : Counter<count - 1, T>
 {
