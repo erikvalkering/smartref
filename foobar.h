@@ -37,6 +37,24 @@ struct Baz
     {
         std::cout << "Baz::baz" << std::endl;
     }
+
+    void REFLECT(baz2)()
+    {
+        std::cout << "Baz::baz2" << std::endl;
+    }
+};
+
+struct Bat
+{
+    void REFLECT(bat)()
+    {
+        std::cout << "Bat::bat" << std::endl;
+    }
+
+    void REFLECT(bat2)()
+    {
+        std::cout << "Bat::bat2" << std::endl;
+    }
 };
 
 } // namespace foobar

@@ -53,4 +53,9 @@ int main()
 
     Property<foobar::Baz> baz;
     baz.baz();
+    baz.baz2();
+
+    Property<foobar::Bat> bat;
+    bat.bat();
+    bat.bat2();
 }
