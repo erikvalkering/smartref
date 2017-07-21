@@ -1,5 +1,7 @@
 #include "reflection.h"
 
+#include <type_traits>
+
 struct Foo {};
 static_assert(std::is_same_v<void, reflection::reflected_member_t<Foo, 0>>);
 static_assert(reflection::reflected_member_count_v<Foo> == 0);

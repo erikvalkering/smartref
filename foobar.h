@@ -3,6 +3,8 @@
 #include "using.h"
 #include "reflection.h"
 
+#include <iostream>
+
 namespace foobar {
 
 struct Foo

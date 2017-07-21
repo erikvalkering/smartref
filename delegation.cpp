@@ -1,8 +1,9 @@
-#include <iostream>
-#include <vector>
-
 #include "using.h"
 #include "foobar.h"
+
+#include <iostream>
+#include <vector>
+#include <typeinfo>
 
 using using_delegate::using_;
 

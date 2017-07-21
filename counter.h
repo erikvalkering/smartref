@@ -2,6 +2,9 @@
 
 //! Compile-time counter. Credits go to the folks at CopperSpice (see CppCon2015 talk).
 
+#include <cstddef>
+#include <utility>
+
 namespace counter {
 
 // TODO: multiple inheritance to detect size
