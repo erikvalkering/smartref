@@ -85,9 +85,10 @@ constexpr auto current_class_counter(F f)
             return __class_counter(counter);                    \
         })                                                      \
 
-#define INC_CLASS_COUNTER()                                                                 \
-    static constexpr auto __class_counter(counter::Counter<CURRENT_CLASS_COUNTER() + 1>)    \
-        -> counter::Counter<CURRENT_CLASS_COUNTER() + 1>                                    \
-    {                                                                                       \
-        return {};                                                                          \
-    }                                                                                       \
+#define INC_CLASS_COUNTER()                                                                     \
+    static constexpr auto TOKENPASTE(value_, __LINE__) = CURRENT_CLASS_COUNTER();               \
+    static constexpr auto __class_counter(counter::Counter<TOKENPASTE(value_, __LINE__) + 1>)   \
+        -> counter::Counter<TOKENPASTE(value_, __LINE__) + 1>                                   \
+    {                                                                                           \
+        return {};                                                                              \
+    }                                                                                           \
