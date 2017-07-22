@@ -62,7 +62,7 @@ struct Bat
 } // namespace foobar
 
 template<typename Derived>
-struct using_delegate::MemberFunctions<Derived, foobar::Foo>
+struct using_delegate::MemberFunctions<foobar::Foo, Derived>
 {
     USING_MEMBER(foo)
 };

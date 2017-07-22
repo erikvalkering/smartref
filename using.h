@@ -6,14 +6,14 @@
 
 namespace using_delegate {
 
-template<class Derived, typename Delegate>
+template<typename Delegate, class Derived>
 class using_;
 
-template<template<typename, typename> class Class, class Derived, typename Delegate>
-auto DerivedType(Class<Derived, Delegate> &) -> Derived;
+template<template<typename, typename> class Class, typename Delegate, class Derived>
+auto DerivedType(Class<Delegate, Derived> &) -> Derived;
 
-template<template<typename, typename> class Class, class Derived, typename Delegate>
-auto DelegateType(Class<Derived, Delegate> &) -> Delegate;
+template<template<typename, typename> class Class, typename Delegate, class Derived>
+auto DelegateType(Class<Delegate, Derived> &) -> Delegate;
 
 template<class Base>
 auto &delegate(Base &base)
@@ -46,7 +46,7 @@ using Delayed = typename DelayedImpl<Class, T...>::type;
         return delegate(*this).member(std::forward<T>(args)...);                                                                            \
     }                                                                                                                                       \
 
-template<class Derived, typename Delegate>
+template<typename Delegate, class Derived>
 struct Forwarder
 {
     template<typename Self, typename MemberPointer, typename... Args>
@@ -64,46 +64,46 @@ struct Forwarder
     }
 };
 
-template<class Derived, typename Delegate>
+template<typename Delegate, class Derived>
 struct MemberFunctions {};
 
-template<class Derived, typename Delegate, size_t index>
-using using_member_t = typename reflection::reflected_member_t<Delegate, index>::template reflect<Forwarder<Derived, Delegate>>;
+template<typename Delegate, class Derived, size_t index>
+using using_member_t = typename reflection::reflected_member_t<Delegate, index>::template reflect<Forwarder<Delegate, Derived>>;
 
-template<class Derived, typename Delegate, typename index_pack>
+template<typename Delegate, class Derived, typename index_pack>
 struct ReflectedMemberFunctionsImpl;
 
-template<class Derived, typename Delegate, size_t... indices>
-struct ReflectedMemberFunctionsImpl<Derived, Delegate, std::index_sequence<indices...>>
-    : using_member_t<Derived, Delegate, indices>...
+template<typename Delegate, class Derived, size_t... indices>
+struct ReflectedMemberFunctionsImpl<Delegate, Derived, std::index_sequence<indices...>>
+    : using_member_t<Delegate, Derived, indices>...
 {
 };
 
-template<class Derived, typename Delegate>
+template<typename Delegate, class Derived>
 using ReflectedMemberFunctions = ReflectedMemberFunctionsImpl<
-    Derived,
     Delegate,
+    Derived,
     std::make_index_sequence<reflection::reflected_member_count_v<Delegate>>>;
 
-template<class Derived, typename Delegate, size_t index>
-using using_class_member_t = typename reflection::reflected_class_member_t<Delegate, index>::template reflect<Forwarder<Derived, Delegate>>;
+template<typename Delegate, class Derived, size_t index>
+using using_class_member_t = typename reflection::reflected_class_member_t<Delegate, index>::template reflect<Forwarder<Delegate, Derived>>;
 
-template<class Derived, typename Delegate, typename index_pack>
+template<typename Delegate, class Derived, typename index_pack>
 struct ReflectedClassMemberFunctionsImpl;
 
-template<class Derived, typename Delegate, size_t... indices>
-struct ReflectedClassMemberFunctionsImpl<Derived, Delegate, std::index_sequence<indices...>>
-    : using_class_member_t<Derived, Delegate, indices>...
+template<typename Delegate, class Derived, size_t... indices>
+struct ReflectedClassMemberFunctionsImpl<Delegate, Derived, std::index_sequence<indices...>>
+    : using_class_member_t<Delegate, Derived, indices>...
 {
 };
 
-template<class Derived, typename Delegate>
+template<typename Delegate, class Derived>
 using ReflectedClassMemberFunctions = ReflectedClassMemberFunctionsImpl<
-    Derived,
     Delegate,
+    Derived,
     std::make_index_sequence<reflection::reflected_class_member_count_v<Delegate>>>;
 
-template<class Derived, typename Delegate>
+template<typename Delegate, class Derived>
 struct STL
 {
     USING_MEMBER(push_back)
@@ -115,11 +115,11 @@ struct STL
 //       can it be implemented such that this doesn't add a runtime penalty?
 //       what about not using a virtual function, and somehow detect at compile time
 //       the derived class.
-template<class Derived, typename Delegate>
-class using_ : public MemberFunctions<Derived, Delegate>,
-               public STL<Derived, Delegate>,
-               public ReflectedMemberFunctions<Derived, Delegate>,
-               public ReflectedClassMemberFunctions<Derived, Delegate>
+template<typename Delegate, class Derived>
+class using_ : public MemberFunctions<Delegate, Derived>,
+               public STL<Delegate, Derived>,
+               public ReflectedMemberFunctions<Delegate, Derived>,
+               public ReflectedClassMemberFunctions<Delegate, Derived>
 {
 };
 

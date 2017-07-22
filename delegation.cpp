@@ -8,7 +8,7 @@
 using using_delegate::using_;
 
 template<typename T>
-class Property : public using_<Property<T>, T>
+class Property : public using_<T, Property<T>>
 {
 public:
     operator T &()
