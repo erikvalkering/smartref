@@ -2,6 +2,8 @@
 
 #include "reflection.h"
 
+#include <type_traits>
+
 namespace using_delegate {
 
 template<class Derived, typename Delegate>
@@ -17,7 +19,7 @@ template<class Base>
 auto &delegate(Base &base)
 {
     using Derived = decltype(DerivedType(base));
-    static_assert(std::is_base_of_v<Base, Derived>);
+    static_assert(std::is_base_of<Base, Derived>::value);
 
     //! Downcast to the derived class
     auto &derived = static_cast<Derived &>(base);
@@ -50,7 +52,7 @@ struct Forwarder
     template<typename Self, typename MemberPointer, typename... Args>
     auto operator()(Self &self, MemberPointer member_pointer, Args &&... args)
     {
-        static_assert(std::is_base_of_v<Self, Derived>);
+        static_assert(std::is_base_of<Self, Derived>::value);
 
         //! Downcast to the derived class
         auto &derived = static_cast<Derived &>(self);
