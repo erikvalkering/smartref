@@ -1,5 +1,6 @@
 #include "reflection.h"
 
+#include <iostream>
 #include <type_traits>
 
 struct Foo {};
