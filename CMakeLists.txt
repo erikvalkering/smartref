@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(delegation LANGUAGES CXX)
+project(smartref LANGUAGES CXX)
 
 enable_testing()
 
@@ -35,16 +35,16 @@ add_test(reflection test_reflection)
 
 
 ################################################################################
-# Delegation library                                                           #
+# Smartref library                                                           #
 ################################################################################
-add_library(libdelegation INTERFACE)
-target_sources(libdelegation INTERFACE ${PROJECT_SOURCE_DIR}/src/using.h)
-target_include_directories(libdelegation INTERFACE ${PROJECT_SOURCE_DIR}/src)
-target_compile_features(libdelegation INTERFACE cxx_std_17)
-target_link_libraries(libdelegation INTERFACE libreflection)
+add_library(libsmartref INTERFACE)
+target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/using.h)
+target_include_directories(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src)
+target_compile_features(libsmartref INTERFACE cxx_std_17)
+target_link_libraries(libsmartref INTERFACE libreflection)
 
-add_executable(test_delegation examples/delegation.cpp)
-target_sources(test_delegation PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
-target_link_libraries(test_delegation PRIVATE libdelegation)
-add_test(delegation test_delegation)
+add_executable(test_smartref examples/smartref.cpp)
+target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
+target_link_libraries(test_smartref PRIVATE libsmartref)
+add_test(smartref test_smartref)
 ################################################################################
