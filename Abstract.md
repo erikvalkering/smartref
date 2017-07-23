@@ -40,7 +40,7 @@ private:                                        private:
 
 # Completion Status
 
-A proof-of-concept has been developed, demonstrating the feasibility of the approach of creating a very natural syntax. Currently, this implementation supports the following:
+A proof-of-concept has been developed, demonstrating the feasibility of the approach. STL types are supported out of the box, whereas user-defined types require a minimal amount of annotating using the REFLECT macro using  with a very minimal creating a syntax similar to [p0352r1](https://wg21.link/p0352r1), . Currently, this implementation supports the following:
 - Delegation of member-functions
 - Predefined STL member-functions: `begin()`, `end()`, `push_back()`
 - Explicit definition of member-functions for user-defined types
@@ -49,18 +49,24 @@ A proof-of-concept has been developed, demonstrating the feasibility of the appr
 
 The implementation has been tested using the following compilers:
 - Clang 4.0.1
-- 
+
 What is not yet supported, but is expected to be completed before the poster presentation at CppCon, is:
 - Delegation of member-types
 - Delegation of member-fields
-- Full support for the STL
+- Out-of-the-box support for the full STL
+- Out-of-the-box support for fundamental types (e.g. size_t, bool, double).
+- More test coverage
+- More examples
+- Compiler support: GCC and MSVC
 
 # Supporting Material
 
-> If applicable, results and references to work, for example, GitHub.
+A working implementation of the prototype can be found at my github account: <http://github.com/erikvalkering/smartref>
 
 # Contact information
 
+Name: Erik Valkering
+email: <eejv@plaxis.com>
+
 # Biography
 
-> brief biography.
