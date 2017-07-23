@@ -17,7 +17,7 @@ Having come up with this design, I came to the conclusion that in fact I'd disco
 ```c++
 // using_ library                               // p0352r1
 template<typename T>                            template<typename T>
-class proxy : public using_<proxy<T>, T>        class proxy : public using T
+class proxy : public using_<T, proxy<T>>        class proxy : public using T
 {                                               {
 public:                                         public:
     operator T &()                                  operator T &()
@@ -56,4 +56,15 @@ An initial (naive) attempt I tried, was to specialize the using_ class for every
 - As a side effect, I had to implement a little reflection library, which turned out useful on its own, for example to generate serialization code, automatic scripting interface, Delphi/C++ communication.
 - 
 Conclusion:
-- We heavily need compiler support for overloading operator-dot, in whatever form in will arrive (p0416r1/p0252r2, )
+- We heavily need compiler support for overloading operator-dot, in whatever form in will arrive ([p0352r1](http://wg21.link/p0352r1), [p0416r1](http://wg21.link/p0416r1)/[p0252r2](http://wg21.link/p0252r2), or the even more ambitious )
+
+References
+----------
+- 2017-02-21 - [p0700r0 - Alternatives to operator dot](http://wg21.link/p0700r0)
+- 2017-02-06 - [p0352r1 - Smart References through Delegation (2nd revision)](http://wg21.link/p0352r1)
+- 2016-10-16 - [p0416r1 - Operator Dot (R3)](http://wg21.link/p0416r1)
+- 2016-10-16 - [p0252r2 - Operator Dot Wording](http://wg21.link/p0252r2)
+- 2015-09-18 - [p0060r0 - Function Object-Based Overloading of Operator Dot](http://wg21.link/p0060r0)
+
+- Long discussion about p0700: https://groups.google.com/a/isocpp.org/forum/#!topic/std-proposals/ykmS3pPu91Y
+- A bit of background for the operator dot proposal—Bjarne Stroustrup: https://isocpp.org/blog/2016/02/a-bit-of-background-for-the-operator-dot-proposal-bjarne-stroustrup
