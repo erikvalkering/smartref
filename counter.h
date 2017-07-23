@@ -92,3 +92,5 @@ constexpr auto current_class_counter(F f)
     {                                                                                           \
         return {};                                                                              \
     }                                                                                           \
+
+// EXTRA NEWLINE FOR GCC WHICH HAS PROBLEMS WITH MULTILINE MACROS
