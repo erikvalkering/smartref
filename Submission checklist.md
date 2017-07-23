@@ -52,7 +52,7 @@ private:                                        private:
 
 So the actual difference is **only 12 characters**:
 ```c++
-class proxy : public using_<proxy<T>, T>
+class proxy : public using_<T, proxy<T>>
 class proxy : public using T
 ```
 
@@ -84,5 +84,6 @@ References
 - 2016-10-16 - [p0252r2 - Operator Dot Wording](http://wg21.link/p0252r2)
 - 2015-09-18 - [p0060r0 - Function Object-Based Overloading of Operator Dot](http://wg21.link/p0060r0)
 
+## Others:
 - Long discussion about p0700: https://groups.google.com/a/isocpp.org/forum/#!topic/std-proposals/ykmS3pPu91Y
 - A bit of background for the operator dot proposal—Bjarne Stroustrup: https://isocpp.org/blog/2016/02/a-bit-of-background-for-the-operator-dot-proposal-bjarne-stroustrup
