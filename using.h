@@ -111,22 +111,27 @@ struct STL
     USING_MEMBER(end)
 };
 
-// TODO: using a virtual conversion operation it would be possible to not require CRTP.
-//       can it be implemented such that this doesn't add a runtime penalty?
-//       what about not using a virtual function, and somehow detect at compile time
-//       the derived class.
 template<typename Delegate, class Derived>
-class using_ : public MemberFunctions<Delegate, using_<Delegate, Derived>>,
-               public STL<Delegate, using_<Delegate, Derived>>,
-               public ReflectedMemberFunctions<Delegate, using_<Delegate, Derived>>,
-               public ReflectedClassMemberFunctions<Delegate, using_<Delegate, Derived>>
+struct using_base
 {
-public:
     operator Delegate &()
     {
         auto &derived = static_cast<Derived &>(*this);
         return static_cast<Delegate &>(derived);
     }
+};
+
+// TODO: using a virtual conversion operation it would be possible to not require CRTP.
+//       can it be implemented such that this doesn't add a runtime penalty?
+//       what about not using a virtual function, and somehow detect at compile time
+//       the derived class.
+template<typename Delegate, class Derived>
+class using_ : public using_base<Delegate, Derived>,
+               public MemberFunctions<Delegate, using_<Delegate, Derived>>,
+               public STL<Delegate, using_<Delegate, Derived>>,
+               public ReflectedMemberFunctions<Delegate, using_<Delegate, Derived>>,
+               public ReflectedClassMemberFunctions<Delegate, using_<Delegate, Derived>>
+{
 };
 
 } // namespace using_delegate
