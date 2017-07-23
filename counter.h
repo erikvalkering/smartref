@@ -57,15 +57,6 @@ constexpr auto current_class_counter(F f)
 #define TOKENPASTE2(x, y) x ## y
 #define TOKENPASTE(x, y) TOKENPASTE2(x, y)
 
-#define CURRENT_COUNTER_IMPL2(T, FUNCTION)  \
-    decltype(                               \
-        counter::current_counter_helper<T>( \
-            [](auto counter)                \
-            {                               \
-                return FUNCTION(counter);   \
-            })                              \
-        )::value                            \
-
 #define CURRENT_COUNTER_IMPL(T, FUNCTION)                   \
     decltype(FUNCTION(counter::Counter<255, T>{}))::value   \
 
