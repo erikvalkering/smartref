@@ -1,5 +1,37 @@
 Submission checklist
 ====================
+- We invite poster submissions that report on measurable work (e.g. implementation, benchmarking, technical analysis, etc.)
+- The work must have a strong C++ focus
+- Examples:
+    + Report/demo of a C++ library written by the presenters, and the problems it addresses
+    + A comparative survey on C++ tools (e.g. profilers/testing tools).
+    + A new approach or design pattern to known use cases.
+- Ideas for topics:
+- C++11/14/17
+    + C++ libraries and frameworks of general interest
+    + ISO standardization proposals
+    + Parallelism/multi-processing
+    + Concepts and generic programming
+    + Functional programming
+    + High performance computing
+    + Software development tools, techniques, and processes for C++
+    + Practical experiences using C++ in real-world applications
+    + Industry-specific perspectives: mobile and embedded systems, game development, high performance trading, scientific - programming, robotics, etc.
+- We are happy to accept high quality work in progress and late-breaking work
+- Submission Process
+    + Submissions should consist of an abstract no longer than three pages
+    + Containing the following sections:
+        * Introduction (required): Title and brief overview of what the poster reports on.
+        * Relevance (required): Why the work is interesting, and what problems it addresses.
+        * Discussion (required): Technical description of the presented topic.
+        * Completion Status (required): Work that has been completed, and work that is expected to be completed before the poster presentation at CppCon.
+        * Supporting Material: If applicable, results and references to work, for example, GitHub.
+    + Poster presenters must also include full contact information and a brief biography.
+    + Poster submissions must be made by e-mailing your abstract and contact information to the Poster Chair, Bob Steagall, at posters@cppcon.org with the subject “Poster: [submitter(s) last name(s)]”. The following formats will be accepted:
+        * as text in the body of the email
+        * as a single PDF attachment
+        * as a single MS Word .doc/.docx attachment.
+
 
 -----------------
 While working on an experimental property library (TODO: check what Herb Sutter has to say about the usefulness of properties), I was thinking about how the property-access should be designed.
