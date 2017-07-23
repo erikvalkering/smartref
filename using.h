@@ -6,7 +6,7 @@
 
 namespace using_delegate {
 
-template<typename Delegate, class Derived>
+template<typename Delegate, class Derived = void>
 class using_;
 
 template<template<typename, typename> class Class, typename Delegate, class Derived>
@@ -121,10 +121,14 @@ struct using_base
     }
 };
 
-// TODO: using a virtual conversion operation it would be possible to not require CRTP.
-//       can it be implemented such that this doesn't add a runtime penalty?
-//       what about not using a virtual function, and somehow detect at compile time
-//       the derived class.
+template<typename Delegate>
+struct using_base<Delegate, void>
+{
+    // TODO: Add some checks to see whether this doesn't add too much overhead
+    //       for this specific Delegate type.
+    virtual operator Delegate &() = 0;
+};
+
 template<typename Delegate, class Derived>
 class using_ : public using_base<Delegate, Derived>,
                public MemberFunctions<Delegate, using_<Delegate, Derived>>,
