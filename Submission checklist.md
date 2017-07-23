@@ -1,19 +1,17 @@
 Submission checklist
 ====================
-
-
 - [x] Measurable work (implementation)
 - [x] The work must have a strong C++ focus
 - [x] Report/demo of a C++ library written by the presenters, and the problems it addresses
-- [ ] Submission Process
-    + [ ] Abstract <= 3 pages
-    + [ ] Sections:
-        * [ ] Introduction (required): Title and brief overview of what the poster reports on.
-        * [ ] Relevance (required): Why the work is interesting, and what problems it addresses.
-        * [ ] Discussion (required): Technical description of the presented topic.
-        * [ ] Completion Status (required): Work that has been completed, and work that is expected to be completed before the poster presentation at CppCon.
-        * [ ] Supporting Material: If applicable, results and references to work, for example, GitHub.
-    + [ ] Poster presenters must also include full contact information and a brief biography.
+- [x] Submission Process
+    + [x] Abstract <= 3 pages
+    + [x] Sections:
+        * [x] Introduction (required): Title and brief overview of what the poster reports on.
+        * [x] Relevance (required): Why the work is interesting, and what problems it addresses.
+        * [X] Discussion (required): Technical description of the presented topic.
+        * [X] Completion Status (required): Work that has been completed, and work that is expected to be completed before the poster presentation at CppCon.
+        * [X] Supporting Material: If applicable, results and references to work, for example, GitHub.
+    + [x] Poster presenters must also include full contact information and a brief biography.
 
 Notes
 -----
