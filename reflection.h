@@ -79,7 +79,7 @@ decltype(auto) delayed(Arg &&arg)
 
 } // namespace reflection
 
-#define REFLECT_MEMBER(Class, member)                                                           \
+#define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                                          \
     template<>                                                                                  \
     struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>                          \
     {                                                                                           \
@@ -107,10 +107,10 @@ decltype(auto) delayed(Arg &&arg)
                                                                                                 \
     INC_COUNTER(Class)                                                                          \
 
-// TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECT_MEMBER
-// TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECT_MEMBER
-// TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECT_MEMBER
-#define REFLECT(name)                                                                                   \
+// TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECTION_REFLECT_INTRUSIVE
+// TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_INTRUSIVE
+// TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_INTRUSIVE
+#define REFLECTION_REFLECT_INTRUSIVE(name)                                                              \
     __reflect_tag_##name() {}                                                                           \
                                                                                                         \
     template<typename F, class Class>                                                                   \
@@ -165,3 +165,20 @@ decltype(auto) delayed(Arg &&arg)
     /* Here, we define a member-function that will contain the implementation                       */  \
     /* of the reflected member-function.                                                            */  \
     auto __reflect_impl_##name                                                                          \
+
+//! Define a set of overloads such that we can use REFLECT both inside a class,
+//! as well as outside, by dispatching on the number of arguments.
+//!
+//! REFLECTION_REFLECT(bar) -> REFLECTION_REFLECT_INTRUSIVE(bar)
+//! REFLECTION_REFLECT(Foo, bar) -> REFLECTION_REFLECT_NONINTRUSIVE(Foo, bar)
+#define REFLECTION_MAKE_OVERLOAD(_1, _2, NAME, ...) NAME
+#define REFLECTION_REFLECT(...)             \
+    REFLECTION_MAKE_OVERLOAD(               \
+        __VA_ARGS__,                        \
+        REFLECTION_REFLECT_NONINTRUSIVE,    \
+        REFLECTION_REFLECT_INTRUSIVE        \
+    )(__VA_ARGS__)                          \
+
+#ifndef REFLECTION_USE_PREFIX
+#define REFLECT(...) REFLECTION_REFLECT(__VA_ARGS__)
+#endif

@@ -67,6 +67,6 @@ struct using_delegate::MemberFunctions<foobar::Foo, Derived>
     USING_MEMBER(foo)
 };
 
-REFLECT_MEMBER(foobar::Bar, bar);
-REFLECT_MEMBER(foobar::Bar, bar2);
-REFLECT_MEMBER(foobar::Bar, bar3);
+REFLECT(foobar::Bar, bar);
+REFLECT(foobar::Bar, bar2);
+REFLECT(foobar::Bar, bar3);

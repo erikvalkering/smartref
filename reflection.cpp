@@ -11,7 +11,7 @@ struct Bar
 {
     void bar();
 };
-REFLECT_MEMBER(Bar, bar);
+REFLECT(Bar, bar);
 static_assert(!std::is_same<void, reflection::reflected_member_t<Bar, 0>>::value);
 static_assert( std::is_same<void, reflection::reflected_member_t<Bar, 1>>::value);
 static_assert(reflection::reflected_member_count_v<Bar> == 1);
@@ -21,8 +21,8 @@ struct Baz
     void baz();
     void baz2();
 };
-REFLECT_MEMBER(Baz, baz);
-REFLECT_MEMBER(Baz, baz2);
+REFLECT(Baz, baz);
+REFLECT(Baz, baz2);
 static_assert(!std::is_same<void, reflection::reflected_member_t<Baz, 0>>::value);
 static_assert(!std::is_same<void, reflection::reflected_member_t<Baz, 1>>::value);
 static_assert( std::is_same<void, reflection::reflected_member_t<Baz, 2>>::value);
