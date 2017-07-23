@@ -116,11 +116,17 @@ struct STL
 //       what about not using a virtual function, and somehow detect at compile time
 //       the derived class.
 template<typename Delegate, class Derived>
-class using_ : public MemberFunctions<Delegate, Derived>,
-               public STL<Delegate, Derived>,
-               public ReflectedMemberFunctions<Delegate, Derived>,
-               public ReflectedClassMemberFunctions<Delegate, Derived>
+class using_ : public MemberFunctions<Delegate, using_<Delegate, Derived>>,
+               public STL<Delegate, using_<Delegate, Derived>>,
+               public ReflectedMemberFunctions<Delegate, using_<Delegate, Derived>>,
+               public ReflectedClassMemberFunctions<Delegate, using_<Delegate, Derived>>
 {
+public:
+    operator Delegate &()
+    {
+        auto &derived = static_cast<Derived &>(*this);
+        return static_cast<Delegate &>(derived);
+    }
 };
 
 } // namespace using_delegate
