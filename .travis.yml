@@ -4,9 +4,9 @@ compiler:
 addons:
   apt:
     sources:
+      - kalakris-cmake
       - llvm-toolchain-trusty
       - ubuntu-toolchain-r-test
-      - george-edison55-trusty-backports
     packages:
       - cmake-3.5
       # - clang-4.0
