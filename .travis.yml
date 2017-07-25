@@ -7,7 +7,7 @@ addons:
       - llvm-toolchain-trusty
       - ubuntu-toolchain-r-test
     packages:
-      - cmake
+      - cmake-3.5
       # - clang-4.0
 script:
   - mkdir build
