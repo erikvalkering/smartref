@@ -1,5 +1,7 @@
 # smartref
 Emulating Smart References in C++11/14/17
+
+# Build status
 [![Build Status](https://travis-ci.org/erikvalkering/smartref.svg?branch=master)](https://travis-ci.org/erikvalkering/smartref)
 
 ## Build instructions
