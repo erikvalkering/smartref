@@ -4,8 +4,12 @@ compiler:
 addons:
   apt:
     sources:
-      - llvm-toolchain-trusty-4.0
-      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty
     packages:
       - cmake
-      - clang-4.0
+      # - clang-4.0
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - cmake --build .
