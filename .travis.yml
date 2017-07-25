@@ -5,6 +5,7 @@ addons:
   apt:
     sources:
       - llvm-toolchain-trusty
+      - ubuntu-toolchain-r-test
     packages:
       - cmake
       # - clang-4.0
