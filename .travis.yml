@@ -4,7 +4,7 @@ compiler:
 addons:
   apt:
     sources:
-      - sourceline: 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main'
+      - sourceline: 'ppa:george-edison55/cmake-3.x'
       #- llvm-toolchain-trusty
       #- ubuntu-toolchain-r-test
     packages:
