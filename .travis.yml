@@ -1,16 +1,40 @@
 language: cpp
+
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/deps/cmake
+
 compiler:
   - clang
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:george-edison55/cmake-3.x'
-      #- llvm-toolchain-trusty
-      #- ubuntu-toolchain-r-test
-    packages:
-      - cmake-3.5
-      # - clang-4.0
+
+#addons:
+#  apt:
+#    sources:
+#      - sourceline: 'ppa:george-edison55/cmake-3.x'
+#      #- llvm-toolchain-trusty
+#      #- ubuntu-toolchain-r-test
+#    packages:
+#      - cmake-3.5
+#      # - clang-4.0
+
+install:
+#  - if [[ -n "$CLANG_VERSION" ]]; then export CXX=clang++-$CLANG_VERSION CC=clang-$CLANG_VERSION; fi
+#  - if [[ -n "$GCC_VERSION" ]]; then export CXX=g++-$GCC_VERSION CC=gcc-$GCC_VERSION; fi
+  - JOBS=2
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir -p "${DEPS_DIR}" && cd "${DEPS_DIR}"
+
+  ############################################################################
+  # Install a recent CMake (unless already installed on OS X)
+  ############################################################################
+  - if [[ -z "$(ls -A ${DEPS_DIR}/cmake/bin)" ]]; then
+      CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz"
+      mkdir -p cmake && travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C cmake
+    fi
+    export PATH="${DEPS_DIR}/cmake/bin:${PATH}"
+
 script:
+  - cd "${TRAVIS_BUILD_DIR}"
   - mkdir build
   - cd build
   - cmake ..
