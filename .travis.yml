@@ -22,7 +22,7 @@ addons:
       - clang-4.0
     sources: &sources
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-4.0
+      - llvm-toolchain-trusty-4.0
 
 install:
   - export CXX=clang++-4.0 CC=clang-4.0
