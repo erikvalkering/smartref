@@ -16,6 +16,13 @@ compiler:
 #    packages:
 #      - cmake-3.5
 #      # - clang-4.0
+addons:
+  apt:
+    packages:
+      - clang-3.9
+    sources: &sources
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.9
 
 install:
 #  - if [[ -n "$CLANG_VERSION" ]]; then export CXX=clang++-$CLANG_VERSION CC=clang-$CLANG_VERSION; fi
