@@ -25,7 +25,7 @@ addons:
       - llvm-toolchain-precise-3.9
 
 install:
-#  - if [[ -n "$CLANG_VERSION" ]]; then export CXX=clang++-$CLANG_VERSION CC=clang-$CLANG_VERSION; fi
+  - export CXX=clang++-3.9 CC=clang-3.9; fi
 #  - if [[ -n "$GCC_VERSION" ]]; then export CXX=g++-$GCC_VERSION CC=gcc-$GCC_VERSION; fi
   - JOBS=2
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
@@ -36,7 +36,7 @@ install:
   ############################################################################
   - |
     if [[ -z "$(ls -A ${DEPS_DIR}/cmake/bin)" ]]; then
-      CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz"
+      CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.0-Linux-x86_64.tar.gz"
       mkdir -p cmake && travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C cmake
     fi
     export PATH="${DEPS_DIR}/cmake/bin:${PATH}"
