@@ -7,7 +7,7 @@ addons:
   apt:
     packages:
       - clang-4.0
-      - gcc-6.0
+      - gcc-6-base
     sources:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-4.0
