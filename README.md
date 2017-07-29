@@ -110,7 +110,17 @@ The following features are planned to be implemented:
 - [x] Non-intrusive discovery of member-functions using the REFLECT macro
 - [x] Intrusive discovery of member-functions using the REFLECT macro
 - [ ] More test coverage
+  - [ ] Implicit conversions while passing to function
+  - [ ] Performance tests
+    - [ ] Compile-time overhead
+    - [ ] Runtime overhead
+    - [ ] Memory overhead
 - [ ] More examples
-- [ ] Compiler support: GCC and MSVC
-
-
+- [ ] Documentation
+    - [ ] User
+    - [ ] Source code
+- [ ] Compiler support
+    - [x] Clang (4.0.1)
+    - [ ] GCC
+    - [ ] MSVC
+    - [ ] Intel
