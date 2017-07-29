@@ -46,8 +46,15 @@ target_include_directories(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src)
 target_compile_features(libsmartref INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(libsmartref INTERFACE libreflection)
 
+# Unit tests
+add_executable(test_member_types tests/smartref/member_types.cpp)
+target_sources(test_member_types PRIVATE ${PROJECT_SOURCE_DIR}/tests/main.cpp)
+target_link_libraries(test_member_types PRIVATE libsmartref)
+add_test(smartref test_member_types)
+
+# Examples
 add_executable(sandbox examples/sandbox.cpp)
 target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
 target_link_libraries(sandbox PRIVATE libsmartref)
-add_test(smartref sandbox) // TODO: Temporary, moving testing out of sandbox
+add_test(examples sandbox)
 ################################################################################
