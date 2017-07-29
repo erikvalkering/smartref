@@ -3,6 +3,7 @@
 #include "reflection.h"
 
 #include <type_traits>
+#include <vector> // TODO: TEMPORARY!!!
 
 namespace smartref {
 
@@ -109,6 +110,8 @@ struct STL
     USING_MEMBER(push_back)
     USING_MEMBER(begin)
     USING_MEMBER(end)
+
+    using value_type = std::vector<int>::value_type;
 };
 
 template<typename Delegate, class Derived>
