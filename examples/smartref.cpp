@@ -81,9 +81,11 @@ int main()
         std::cout << x << std::endl;
     }
 
-    static_assert(std::is_same_t<
-        Property<std::vector<int>>::value_type,
-                 std::vector<int> ::value_type);
+    static_assert(
+        std::is_same<
+            Property<std::vector<int>>::value_type,
+                     std::vector<int> ::value_type
+        >::value);
 
     Property<int> x{};
     Property<int> y{};
