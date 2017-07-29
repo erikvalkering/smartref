@@ -19,3 +19,10 @@ static_assert(
         using_<std::list<int>>::value_type,
                std::list<int> ::value_type
     >::value);
+
+//! Check whether we are not hard-coding support for std::vector<int>
+static_assert(
+    std::is_same<
+        using_<std::list<float>>::value_type,
+               std::list<float> ::value_type
+    >::value);
