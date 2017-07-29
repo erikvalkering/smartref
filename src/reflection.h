@@ -61,7 +61,7 @@ struct reflected_class_member_count<T, count, void>
 template<typename T>
 constexpr auto reflected_class_member_count_v = reflected_class_member_count<T>::value;
 
-// TODO: Copy-pasted from using.h --> factor out
+// TODO: Copy-pasted from smartref.h --> factor out
 template<class Class, typename... T>
 struct DelayedImpl
 {

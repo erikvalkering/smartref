@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-namespace using_delegate {
+namespace smartref {
 
 template<typename Delegate, class Derived = void>
 class using_;
@@ -138,4 +138,4 @@ class using_ : public using_base<Delegate, Derived>,
 {
 };
 
-} // namespace using_delegate
+} // namespace smartref

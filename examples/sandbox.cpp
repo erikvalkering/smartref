@@ -1,11 +1,11 @@
-#include "using.h"
+#include <smartref.h>
 #include "foobar.h"
 
 #include <iostream>
 #include <vector>
 #include <typeinfo>
 
-using using_delegate::using_;
+using smartref::using_;
 
 template<typename T>
 class Property : public using_<T>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "using.h"
-#include "reflection.h"
+#include <smartref.h>
+#include <reflection.h>
 
 #include <iostream>
 
@@ -62,7 +62,7 @@ struct Bat
 } // namespace foobar
 
 template<typename Derived>
-struct using_delegate::MemberFunctions<foobar::Foo, Derived>
+struct smartref::MemberFunctions<foobar::Foo, Derived>
 {
     USING_MEMBER(foo)
 };
