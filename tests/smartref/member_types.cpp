@@ -4,6 +4,9 @@
 #include <vector>
 #include <list>
 
+
+namespace tests {
+
 using smartref::using_;
 
 //! A basic check to test support for std::vector<int>::value_type
@@ -26,3 +29,5 @@ static_assert(
         using_<std::list<float>>::value_type,
                std::list<float> ::value_type
     >::value);
+
+} // namespace tests
