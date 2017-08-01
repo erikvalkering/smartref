@@ -103,12 +103,22 @@ The following features are planned to be implemented:
 - [x] Delegation to member-functions (non-const)
 - [ ] Delegation to const member-functions
 - [ ] Member-types
-- [x] Predefined STL member-functions: `begin()`, `end()`, `push_back()`
-- [ ] Support for the all STL types
+    - [ ] STL
+        - [ ] Proof-of-concept types `value_type`, `difference_type`, `iterator`
+        - [ ] Full support of STL
+    - [ ] User-defined types
+        - [ ] Explicit definition of member-types
+        - [ ] Non-intrusive discovery of member-types using the REFLECT macro
+        - [ ] Intrusive discovery of member-types using the REFLECT macro
+- [ ] Member-functions
+    - [ ] STL
+        - [x] Proof-of-concept member-functions: `begin()`, `end()`, `push_back()`
+        - [ ] Full support of STL
+    - [ ] User-defined types
+        - [x] Explicit definition of member-functions
+        - [x] Non-intrusive discovery of member-functions using the REFLECT macro
+        - [x] Intrusive discovery of member-functions using the REFLECT macro
 - [ ] Support for fundamental types (e.g. size_t, bool, double).
-- [x] Explicit definition of member-functions for user-defined types
-- [x] Non-intrusive discovery of member-functions using the REFLECT macro
-- [x] Intrusive discovery of member-functions using the REFLECT macro
 - [ ] More test coverage
   - [ ] Implicit conversions while passing to function
   - [ ] Performance tests
