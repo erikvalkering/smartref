@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 project(smartref LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 enable_testing()
 
 ################################################################################
@@ -10,7 +13,7 @@ enable_testing()
 add_library(libcounter INTERFACE)
 target_sources(libcounter INTERFACE ${PROJECT_SOURCE_DIR}/src/counter.h)
 target_include_directories(libcounter INTERFACE ${PROJECT_SOURCE_DIR}/src)
-target_compile_features(libcounter INTERFACE cxx_std_17)
+target_compile_features(libcounter INTERFACE cxx_constexpr cxx_decltype_auto)
 
 add_executable(test_counter tests/counter.cpp)
 target_link_libraries(test_counter PRIVATE libcounter)
@@ -24,11 +27,11 @@ add_test(counter test_counter)
 add_library(libreflection INTERFACE)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection.h)
 target_include_directories(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src)
-target_compile_features(libreflection INTERFACE cxx_std_17)
+target_compile_features(libreflection INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(libreflection INTERFACE libcounter)
 
 add_executable(test_reflection tests/reflection.cpp)
-target_compile_features(test_reflection INTERFACE cxx_std_17)
+target_compile_features(test_reflection INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(test_reflection PRIVATE libcounter)
 add_test(reflection test_reflection)
 ################################################################################
@@ -40,7 +43,7 @@ add_test(reflection test_reflection)
 add_library(libsmartref INTERFACE)
 target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/using.h)
 target_include_directories(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src)
-target_compile_features(libsmartref INTERFACE cxx_std_17)
+target_compile_features(libsmartref INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(libsmartref INTERFACE libreflection)
 
 add_executable(test_smartref examples/smartref.cpp)

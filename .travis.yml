@@ -1,11 +1,32 @@
 language: cpp
+
 compiler:
   - clang
+
 addons:
   apt:
-    sources:
-      - llvm-toolchain-trusty-4.0
-      - ubuntu-toolchain-r-test
     packages:
-      - cmake
       - clang-4.0
+      - g++-6
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-4.0
+
+install:
+  - export CXX=clang++-4.0
+  - JOBS=2
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir -p "${DEPS_DIR}" && cd "${DEPS_DIR}"
+
+  ############################################################################
+  # Install a recent CMake (unless already installed on OS X)
+  ############################################################################
+  - CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.0-Linux-x86_64.tar.gz"
+  - mkdir -p cmake && travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C cmake
+  - export PATH="${DEPS_DIR}/cmake/bin:${PATH}"
+
+script:
+  - cd "${TRAVIS_BUILD_DIR}"
+  - mkdir build
+  - cd build
+  - cmake .. && cmake --build . && ctest
