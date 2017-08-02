@@ -103,14 +103,34 @@ using ReflectedClassMemberFunctions = ReflectedClassMemberFunctionsImpl<
     Derived,
     std::make_index_sequence<reflection::reflected_class_member_count_v<Delegate>>>;
 
+template<typename Delegate, typename = void>
+struct member_type_introducer
+{
+    template<typename T>
+    struct type
+    {
+    };
+};
+
+template<typename...>
+using void_t = void;
+
+template<typename Delegate>
+struct member_type_introducer<Delegate, void_t<typename Delegate::value_type>>
+{
+    template<typename T>
+    struct type
+    {
+        using value_type = typename T::value_type;
+    };
+};
+
 template<typename Delegate, class Derived>
-struct STL
+struct STL : member_type_introducer<Delegate>::template type<Delegate>
 {
     USING_MEMBER(push_back)
     USING_MEMBER(begin)
     USING_MEMBER(end)
-
-    using value_type = typename Delegate::value_type;
 };
 
 template<typename Delegate, class Derived>
