@@ -104,7 +104,7 @@ The following features are planned to be implemented:
 - [ ] Delegation to const member-functions
 - [ ] Member-types
     - [ ] STL
-        - [ ] Proof-of-concept member-types `value_type`, `difference_type`, `iterator`
+        - [x] Proof-of-concept member-types `value_type`, `difference_type`, `iterator`
         - [ ] Full support of STL
     - [ ] User-defined types
         - [ ] Explicit definition of member-types

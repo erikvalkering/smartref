@@ -132,9 +132,13 @@ using void_t = void;
     member_type_introducer<tag_##name, Delegate>::template type<Delegate>   \
 
 DECLARE_USING_MEMBER_TYPE(value_type);
+DECLARE_USING_MEMBER_TYPE(difference_type);
+DECLARE_USING_MEMBER_TYPE(iterator);
 
 template<typename Delegate, class Derived>
 struct STL : USING_MEMBER_TYPE(value_type)
+           , USING_MEMBER_TYPE(difference_type)
+           , USING_MEMBER_TYPE(iterator)
 {
     USING_MEMBER(push_back)
     USING_MEMBER(begin)

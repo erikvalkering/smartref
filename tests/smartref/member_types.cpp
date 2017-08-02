@@ -52,4 +52,29 @@ static_assert(
 
 } // namespace test_basics
 
+namespace test_proof_of_concept {
+
+//! Test support for value_type
+static_assert(
+    std::is_same<
+        using_<std::vector<int>>::value_type,
+               std::vector<int> ::value_type
+    >::value);
+
+//! Test support for difference_type
+static_assert(
+    std::is_same<
+        using_<std::vector<int>>::difference_type,
+               std::vector<int> ::difference_type
+    >::value);
+
+//! Test support for iterator
+static_assert(
+    std::is_same<
+        using_<std::vector<int>>::iterator,
+               std::vector<int> ::iterator
+    >::value);
+
+} // namespace test_proof_of_concept
+
 } // namespace tests
