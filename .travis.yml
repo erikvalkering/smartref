@@ -1,0 +1,11 @@
+language: cpp
+compiler:
+  - clang
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-trusty-4.0
+      - ubuntu-toolchain-r-test
+    packages:
+      - cmake
+      - clang-4.0
