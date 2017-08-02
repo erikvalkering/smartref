@@ -27,6 +27,8 @@ static_assert(!has_value_type<using_<int>>(0),
 
 } // namespace test_absence
 
+namespace test_basics {
+
 //! A basic check to test support for std::vector<int>::value_type
 static_assert(
     std::is_same<
@@ -47,5 +49,7 @@ static_assert(
         using_<std::list<float>>::value_type,
                std::list<float> ::value_type
     >::value);
+
+} // namespace test_basics
 
 } // namespace tests
