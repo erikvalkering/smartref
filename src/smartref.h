@@ -103,7 +103,7 @@ using ReflectedClassMemberFunctions = ReflectedClassMemberFunctionsImpl<
     Derived,
     std::make_index_sequence<reflection::reflected_class_member_count_v<Delegate>>>;
 
-template<typename Delegate, typename = void>
+template<typename MemberTypeTag, typename Delegate, typename = void>
 struct member_type_introducer
 {
     template<typename T>
@@ -115,18 +115,26 @@ struct member_type_introducer
 template<typename...>
 using void_t = void;
 
-template<typename Delegate>
-struct member_type_introducer<Delegate, void_t<typename Delegate::value_type>>
-{
-    template<typename T>
-    struct type
-    {
-        using value_type = typename T::value_type;
-    };
-};
+#define DECLARE_USING_MEMBER_TYPE(name)                                                     \
+    struct tag_##name;                                                                      \
+                                                                                            \
+    template<typename Delegate>                                                             \
+    struct member_type_introducer<tag_##name, Delegate, void_t<typename Delegate::name>>    \
+    {                                                                                       \
+        template<typename T>                                                                \
+        struct type                                                                         \
+        {                                                                                   \
+            using name = typename T::name;                                                  \
+        };                                                                                  \
+    }                                                                                       \
+
+#define USING_MEMBER_TYPE(name)                                             \
+    member_type_introducer<tag_##name, Delegate>::template type<Delegate>   \
+
+DECLARE_USING_MEMBER_TYPE(value_type);
 
 template<typename Delegate, class Derived>
-struct STL : member_type_introducer<Delegate>::template type<Delegate>
+struct STL : USING_MEMBER_TYPE(value_type)
 {
     USING_MEMBER(push_back)
     USING_MEMBER(begin)
