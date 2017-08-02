@@ -107,14 +107,14 @@ The following features are planned to be implemented:
         - [x] Proof-of-concept member-types `value_type`, `difference_type`, `iterator`
         - [ ] Full support of STL
     - [ ] User-defined types
-        - [ ] Explicit definition of member-types
+        - [x] Explicit definition of member-types
         - [ ] Non-intrusive discovery of member-types using the REFLECT macro
         - [ ] Intrusive discovery of member-types using the REFLECT macro
 - [ ] Member-functions
     - [ ] STL
         - [x] Proof-of-concept member-functions: `begin()`, `end()`, `push_back()`
         - [ ] Full support of STL
-    - [ ] User-defined types
+    - [x] User-defined types
         - [x] Explicit definition of member-functions
         - [x] Non-intrusive discovery of member-functions using the REFLECT macro
         - [x] Intrusive discovery of member-functions using the REFLECT macro

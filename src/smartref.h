@@ -107,7 +107,7 @@ template<typename MemberTypeTag, typename Delegate, typename = void>
 struct member_type_introducer
 {
     template<typename T>
-    struct type
+    struct Forwarder
     {
     };
 };
@@ -122,23 +122,24 @@ using void_t = void;
     struct member_type_introducer<tag_##name, Delegate, void_t<typename Delegate::name>>    \
     {                                                                                       \
         template<typename T>                                                                \
-        struct type                                                                         \
+        struct Forwarder                                                                    \
         {                                                                                   \
             using name = typename T::name;                                                  \
         };                                                                                  \
     }                                                                                       \
 
-#define USING_MEMBER_TYPE(name)                                             \
-    member_type_introducer<tag_##name, Delegate>::template type<Delegate>   \
+// TODO: We should be able to deduce the Delegate type
+#define USING_MEMBER_TYPE(Delegate, name)                                                   \
+    smartref::member_type_introducer<tag_##name, Delegate>::template Forwarder<Delegate>    \
 
 DECLARE_USING_MEMBER_TYPE(value_type);
 DECLARE_USING_MEMBER_TYPE(difference_type);
 DECLARE_USING_MEMBER_TYPE(iterator);
 
 template<typename Delegate, class Derived>
-struct STL : USING_MEMBER_TYPE(value_type)
-           , USING_MEMBER_TYPE(difference_type)
-           , USING_MEMBER_TYPE(iterator)
+struct STL : USING_MEMBER_TYPE(Delegate, value_type)
+           , USING_MEMBER_TYPE(Delegate, difference_type)
+           , USING_MEMBER_TYPE(Delegate, iterator)
 {
     USING_MEMBER(push_back)
     USING_MEMBER(begin)
