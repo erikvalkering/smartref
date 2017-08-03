@@ -1,8 +1,5 @@
 #include "reflection.h"
 
-#include <iostream>
-#include <type_traits>
-
 struct Foo {};
 static_assert(std::is_same<void, reflection::reflected_member_t<Foo, 0>>::value);
 static_assert(reflection::reflected_member_count_v<Foo> == 0);
@@ -38,22 +35,3 @@ static_assert(!std::is_same<void, reflection::reflected_class_member_t<Bat, 0>>:
 static_assert(!std::is_same<void, reflection::reflected_class_member_t<Bat, 1>>::value);
 static_assert( std::is_same<void, reflection::reflected_class_member_t<Bat, 2>>::value);
 static_assert(reflection::reflected_class_member_count_v<Bat> == 2);
-
-auto _ = []{
-    using namespace reflection;
-
-    std::cout << "Foo" << std::endl;
-    std::cout << reflected_member_count_v<Foo> << std::endl;
-
-    std::cout << "Bar" << std::endl;
-    std::cout << reflected_member_count_v<Bar> << std::endl;
-
-    std::cout << "Baz" << std::endl;
-    std::cout << reflected_member_count_v<Baz> << std::endl;
-
-    return 0;
-}();
-
-int main()
-{
-}
