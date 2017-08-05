@@ -92,7 +92,7 @@ if (bar.baz(foo)) ...
 ```
 
 > ##### Limitations
-> - Member-variables are currently not supported. At the moment, I don't know of a way to add support for them without breaking the zero-overhead principle. Nevertheless, this might be some future research topic.
+> - Member-variables are currently not supported. ~At the moment, I don't know of a way to add support for them without breaking the zero-overhead principle.~ Nevertheless, this might be some future research topic.
 
 # Completion Status
 
