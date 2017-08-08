@@ -114,4 +114,21 @@ static_assert(
 
 } // namespace test_user_defined_types
 
+namespace test_nonintrusive_reflect {
+
+struct UserDefined
+{
+  using type = int;
+};
+
+REFLECT(UserDefined, type);
+
+static_assert(
+    std::is_same<
+        using_<UserDefined>::type,
+               UserDefined ::type
+    >::value);
+
+} // namespace test_nonintrusive_reflect
+
 } // namespace tests
