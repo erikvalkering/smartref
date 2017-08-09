@@ -30,6 +30,14 @@ struct reflected_member_count<T, count, void>
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 
+enum class reflected_kind
+{
+    member_function
+};
+
+template<typename T>
+constexpr auto reflected_kind_v = reflected_kind::member_function;
+
 template<typename T, size_t counter, typename = void>
 struct reflected_class_member
 {
