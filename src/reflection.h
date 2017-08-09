@@ -35,8 +35,15 @@ enum class reflected_kind
     member_function
 };
 
+struct access
+{
+    template<typename T>
+    constexpr static auto reflected_kind_v =
+        T::template reflect<void>::reflected_kind;
+};
+
 template<typename T>
-constexpr auto reflected_kind_v = reflected_kind::member_function;
+constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 template<typename T, size_t counter, typename = void>
 struct reflected_class_member
@@ -97,10 +104,14 @@ decltype(auto) delayed(Arg &&arg)
             class reflect                                                                       \
             {                                                                                   \
             private:                                                                            \
+                friend class reflection::access;                                                \
+                constexpr static auto reflected_kind =                                          \
+                    reflection::reflected_kind::member_function;                                \
+                                                                                                \
                 template<typename... Args>                                                      \
                 decltype(auto) indirect(Args &&... args)                                        \
                 {                                                                               \
-                    return F{}(*this, &Delayed<Class, F>::member, std::forward<Args>(args)...);             \
+                    return F{}(*this, &Delayed<Class, F>::member, std::forward<Args>(args)...); \
                 }                                                                               \
                                                                                                 \
             public:                                                                             \
