@@ -119,6 +119,7 @@ using void_t = void;
             class reflect<F, void_t<decltype(&Delayed<Class, F>::member)>>                      \
                 : public reflect_base<reflected_kind::member_function>                          \
             {                                                                                   \
+            private:                                                                            \
                 template<typename... Args>                                                      \
                 decltype(auto) indirect(Args &&... args)                                        \
                 {                                                                               \
