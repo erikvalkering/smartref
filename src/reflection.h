@@ -43,6 +43,14 @@ struct access
         T::template reflect<void>::reflected_kind;
 };
 
+template<auto reflected_kind_>
+class reflect_base
+{
+private:
+    friend class reflection::access;
+    constexpr static auto reflected_kind = reflected_kind_;
+};
+
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
@@ -105,22 +113,12 @@ using void_t = void;
         using type = struct                                                                     \
         {                                                                                       \
             template<typename F, typename = void>                                               \
-            class reflect                                                                       \
-            {                                                                                   \
-            private:                                                                            \
-                friend class reflection::access;                                                \
-                constexpr static auto reflected_kind =                                          \
-                    reflection::reflected_kind::unknown;                                        \
-            };                                                                                  \
+            class reflect : public reflect_base<reflected_kind::unknown> {};                    \
                                                                                                 \
             template<typename F>                                                                \
             class reflect<F, void_t<decltype(&Delayed<Class, F>::member)>>                      \
+                : public reflect_base<reflected_kind::member_function>                          \
             {                                                                                   \
-            private:                                                                            \
-                friend class reflection::access;                                                \
-                constexpr static auto reflected_kind =                                          \
-                    reflection::reflected_kind::member_function;                                \
-                                                                                                \
                 template<typename... Args>                                                      \
                 decltype(auto) indirect(Args &&... args)                                        \
                 {                                                                               \
