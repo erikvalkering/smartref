@@ -32,7 +32,8 @@ constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 
 enum class reflected_kind
 {
-    member_function
+    unknown,
+    member_function,
 };
 
 struct access
@@ -92,6 +93,9 @@ decltype(auto) delayed(Arg &&arg)
     return std::forward<Arg>(arg);
 }
 
+template<typename...>
+using void_t = void;
+
 } // namespace reflection
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                                          \
@@ -100,8 +104,17 @@ decltype(auto) delayed(Arg &&arg)
     {                                                                                           \
         using type = struct                                                                     \
         {                                                                                       \
-            template<typename F>                                                                \
+            template<typename F, typename = void>                                               \
             class reflect                                                                       \
+            {                                                                                   \
+            private:                                                                            \
+                friend class reflection::access;                                                \
+                constexpr static auto reflected_kind =                                          \
+                    reflection::reflected_kind::unknown;                                        \
+            };                                                                                  \
+                                                                                                \
+            template<typename F>                                                                \
+            class reflect<F, void_t<decltype(&Delayed<Class, F>::member)>>                      \
             {                                                                                   \
             private:                                                                            \
                 friend class reflection::access;                                                \
