@@ -47,6 +47,7 @@ struct Foo
 } // namespace member_types
 
 REFLECT(member_types::Foo, member_function);
+REFLECT(member_types::Foo, member_type);
 
 static_assert(reflection::reflected_kind_v<
                   reflection::reflected_member_t<member_types::Foo, 0>
