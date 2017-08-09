@@ -35,3 +35,19 @@ static_assert(!std::is_same<void, reflection::reflected_class_member_t<Bat, 0>>:
 static_assert(!std::is_same<void, reflection::reflected_class_member_t<Bat, 1>>::value);
 static_assert( std::is_same<void, reflection::reflected_class_member_t<Bat, 2>>::value);
 static_assert(reflection::reflected_class_member_count_v<Bat> == 2);
+
+namespace member_types {
+
+struct Foo
+{
+    void member_function() {}
+    using member_type = void;
+};
+
+} // namespace member_types
+
+REFLECT(member_types::Foo, member_function);
+
+static_assert(reflection::reflected_kind_v<
+                  reflection::reflected_member_t<member_types::Foo, 0>
+              > == reflection::reflected_kind::member_function);
