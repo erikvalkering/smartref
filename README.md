@@ -118,7 +118,18 @@ The following features are planned to be implemented:
         - [x] Explicit definition of member-functions
         - [x] Non-intrusive discovery of member-functions using the REFLECT macro
         - [x] Intrusive discovery of member-functions using the REFLECT macro
+- [ ] Member-fields
+    - [ ] STL
+        - [ ] Proof-of-concept member-functions: `first`, `second`
+        - [ ] Full support of STL
+    - [ ] User-defined types
+        - [ ] Explicit definition of member-fields
+        - [ ] Non-intrusive discovery of member-fields using the REFLECT macro
+        - [ ] Intrusive discovery of member-fields using the REFLECT macro
+    - [ ] Opt-in zero-overhead declaration
 - [ ] Support for fundamental types (e.g. size_t, bool, double).
+- [ ] Concept-based reflection
+- [ ] Conflict-resolution
 - [ ] More test coverage
   - [ ] Implicit conversions while passing to function
   - [ ] Performance tests
