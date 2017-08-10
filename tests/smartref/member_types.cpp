@@ -125,7 +125,7 @@ struct UserDefined
 
 } // namespace tests
 
-REFLECT(UserDefined, type);
+REFLECT(tests::test_nonintrusive_reflect::UserDefined, type);
 
 namespace tests {
 
