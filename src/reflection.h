@@ -154,9 +154,9 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
                                                                                                 \
     INC_COUNTER(Class)                                                                          \
 
-// TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECTION_REFLECT_INTRUSIVE
-// TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_INTRUSIVE
-// TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_INTRUSIVE
+// TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
+// TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
+// TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 #define REFLECTION_REFLECT_INTRUSIVE(name)                                                              \
     __reflect_tag_##name() {}                                                                           \
                                                                                                         \
