@@ -1,6 +1,7 @@
 #pragma once
 
 #include "counter.h"
+#include "utils.h"
 
 namespace reflection {
 
@@ -105,6 +106,18 @@ template<typename...>
 using void_t = void;
 
 } // namespace reflection
+
+template<typename F>
+constexpr auto is_valid(F f)
+{
+    auto is_valid_impl = [](auto x) -> decltype(f(x), std::true_type{}) {return {};};
+
+    auto fallback = [](...) -> std::false_type {return {};};
+
+    auto combined = make_combiner(is_valid_impl, fallback);
+
+    return combined(0);
+}
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                                          \
     template<>                                                                                  \
