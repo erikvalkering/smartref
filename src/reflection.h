@@ -114,7 +114,7 @@ constexpr auto is_valid(F f)
 
     auto fallback = [](...) -> std::false_type {return {};};
 
-    auto combined = make_combiner(is_valid_impl, fallback);
+    auto combined = utils::make_combiner(is_valid_impl, fallback);
 
     return combined(0);
 }
