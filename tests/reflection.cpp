@@ -46,10 +46,6 @@ struct Foo
 
 } // namespace member_types
 
-//! Check whether we can detect whether the reflected kind can be determined during compile-time, without breaking the compilation.
-static_assert(!is_valid([](auto delayed) -> typename reflection::Delayed<member_types::Foo, decltype(delayed)>::member_function {return {};}));
-static_assert( is_valid([](auto delayed) -> typename reflection::Delayed<member_types::Foo, decltype(delayed)>::member_type     {return {};}));
-
 REFLECT(member_types::Foo, member_function);
 REFLECT(member_types::Foo, member_type);
 

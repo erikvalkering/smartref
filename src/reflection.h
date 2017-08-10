@@ -108,18 +108,6 @@ using void_t = void;
 
 } // namespace reflection
 
-template<typename F>
-constexpr auto is_valid(F f)
-{
-    auto is_valid_impl = [](auto x) -> decltype(f(x), std::true_type{}) {return {};};
-
-    auto fallback = [](...) -> std::false_type {return {};};
-
-    auto combined = utils::make_combiner(is_valid_impl, fallback);
-
-    return combined(0);
-}
-
 // A helper type trait to be used in an std::enable_if.
 // The template parameter is an expression that is supposed to be
 // a valid typename (e.g. 'int' or 'typename vector<int>::value_type'.
