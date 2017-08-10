@@ -59,6 +59,22 @@ struct Bat
     }
 };
 
+struct Bla
+{
+    void foo()
+    {
+        std::cout << "Bla::foo" << std::endl;
+    }
+
+    void REFLECT(bar)()
+    {
+        std::cout << "Bla::bar" << std::endl;
+    }
+
+    using baz = int;
+    using bla = Bla;
+};
+
 } // namespace foobar
 
 template<typename Derived>
@@ -67,6 +83,23 @@ struct smartref::MemberFunctions<foobar::Foo, Derived>
     USING_MEMBER(foo)
 };
 
+namespace smartref {
+
+// TODO: This currently needs to be declared in the smartref namespace.
+//       Figure out a way that it can be declared within an arbitrary namespace.
+DECLARE_USING_MEMBER_TYPE(baz);
+
+template<typename Derived>
+struct ::smartref::MemberFunctions<foobar::Bla, Derived>
+  : USING_MEMBER_TYPE(foobar::Bla, baz)
+{
+};
+
+} // namespace smartref
+
 REFLECT(foobar::Bar, bar);
 REFLECT(foobar::Bar, bar2);
 REFLECT(foobar::Bar, bar3);
+
+REFLECT(foobar::Bla, foo); // Member-function
+REFLECT(foobar::Bla, bla); // Member-type
