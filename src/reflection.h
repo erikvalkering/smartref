@@ -145,7 +145,8 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
             };                                                                                  \
                                                                                                 \
             template<typename F>                                                                \
-            class reflect<F, std::enable_if_t<is_typename_v<typename Delayed<Class, F>::member>>>  \
+            class reflect<F, std::enable_if_t<is_typename_v<                                    \
+                                                          typename Delayed<Class, F>::member>>> \
                 : public reflect_base<reflected_kind::member_type>                              \
             {                                                                                   \
             public:                                                                             \
