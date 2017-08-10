@@ -106,8 +106,6 @@ decltype(auto) delayed(Arg &&arg)
 template<typename...>
 using void_t = void;
 
-} // namespace reflection
-
 // A helper type trait to be used in an std::enable_if.
 // The template parameter is an expression that is supposed to be
 // a valid typename (e.g. 'int' or 'typename vector<int>::value_type'.
@@ -115,6 +113,8 @@ using void_t = void;
 // the candidate template.
 template<typename T>
 constexpr auto is_typename_v = std::is_same<T, T>::value;
+
+} // namespace reflection
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                                          \
     template<>                                                                                  \
