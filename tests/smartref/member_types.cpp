@@ -121,7 +121,15 @@ struct UserDefined
   using type = int;
 };
 
+} // namespace test_nonintrusive_reflect
+
+} // namespace tests
+
 REFLECT(UserDefined, type);
+
+namespace tests {
+
+namespace test_nonintrusive_reflect {
 
 static_assert(
     std::is_same<
