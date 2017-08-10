@@ -55,4 +55,4 @@ static_assert(reflection::reflected_kind_v<
 
 static_assert(reflection::reflected_kind_v<
                   reflection::reflected_member_t<member_types::Foo, 1>
-              > != reflection::reflected_kind::member_function);
+              > == reflection::reflected_kind::member_type);
