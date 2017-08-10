@@ -30,7 +30,9 @@ target_include_directories(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src)
 target_compile_features(libreflection INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(libreflection INTERFACE libcounter)
 
-add_executable(test_reflection tests/reflection.cpp)
+# Unit tests
+add_executable(test_reflection ${PROJECT_SOURCE_DIR}/tests/reflection.cpp)
+target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/main.cpp)
 target_compile_features(test_reflection INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(test_reflection PRIVATE libcounter)
 add_test(reflection test_reflection)

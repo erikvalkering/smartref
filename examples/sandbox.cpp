@@ -119,4 +119,15 @@ int main()
         bat.bat();
         bat.bat2();
     }
+
+    {
+        Property<foobar::Bla> bla;
+        bla.foo();
+        bla.bar();
+        auto x = decltype(bla)::baz{1234};
+        std::cout << typeid(x).name() << " " << x << std::endl;
+        auto y = decltype(bla)::bla{};
+        y.foo();
+        y.bar();
+    }
 }

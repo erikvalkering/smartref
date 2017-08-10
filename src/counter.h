@@ -2,6 +2,8 @@
 
 //! Compile-time counter. Credits go to the folks at CopperSpice (see CppCon2015 talk).
 
+#include "utils.h"
+
 #include <cstddef>
 #include <utility>
 
@@ -24,21 +26,6 @@ struct Counter<0, T>
 template<typename T>
 Counter<0, T> __counter(Counter<0, T>);
 
-template<typename L1, typename L2>
-struct Combiner : L1, L2
-{
-    constexpr Combiner(L1 l1, L2 l2) : L1(std::move(l1)), L2(std::move(l2)) {}
-
-    using L1::operator();
-    using L2::operator();
-};
-
-template<typename L1, typename L2>
-constexpr auto make_combiner(L1 &&l1, L2 &&l2)
-{
-    return Combiner<std::decay_t<L1>, std::decay_t<L2>>{std::forward<L1>(l1), std::forward<L2>(l2)};
-}
-
 template<typename F>
 constexpr auto current_class_counter(F f)
 {
@@ -47,7 +34,7 @@ constexpr auto current_class_counter(F f)
         return counter;
     };
 
-    auto combined = make_combiner(f, fallback);
+    auto combined = utils::make_combiner(f, fallback);
 
     return decltype(combined(counter::Counter<255>{}))::value;
 }

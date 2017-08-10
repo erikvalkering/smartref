@@ -1,6 +1,7 @@
 #pragma once
 
 #include "counter.h"
+#include "utils.h"
 
 namespace reflection {
 
@@ -29,6 +30,31 @@ struct reflected_member_count<T, count, void>
 
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
+
+enum class reflected_kind
+{
+    unknown,
+    member_function,
+    member_type,
+};
+
+struct access
+{
+    template<typename T>
+    constexpr static auto reflected_kind_v =
+        T::template reflect<void>::reflected_kind;
+};
+
+template<auto reflected_kind_>
+class reflect_base
+{
+private:
+    friend class reflection::access;
+    constexpr static auto reflected_kind = reflected_kind_;
+};
+
+template<typename T>
+constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 template<typename T, size_t counter, typename = void>
 struct reflected_class_member
@@ -77,6 +103,14 @@ decltype(auto) delayed(Arg &&arg)
     return std::forward<Arg>(arg);
 }
 
+// A helper type trait to be used in an std::enable_if.
+// The template parameter is an expression that is supposed to be
+// a valid typename (e.g. 'int' or 'typename vector<int>::value_type'.
+// If it is not a valid expression, SFINAE should kick in, and reject
+// the candidate template.
+template<typename T>
+constexpr auto is_typename_v = std::is_same<T, T>::value;
+
 } // namespace reflection
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                                          \
@@ -85,14 +119,18 @@ decltype(auto) delayed(Arg &&arg)
     {                                                                                           \
         using type = struct                                                                     \
         {                                                                                       \
+            template<typename F, typename = void>                                               \
+            class reflect : public reflect_base<reflected_kind::unknown> {};                    \
+                                                                                                \
             template<typename F>                                                                \
-            class reflect                                                                       \
+            class reflect<F, utils::void_t<decltype(&Delayed<Class, F>::member)>>               \
+                : public reflect_base<reflected_kind::member_function>                          \
             {                                                                                   \
             private:                                                                            \
                 template<typename... Args>                                                      \
                 decltype(auto) indirect(Args &&... args)                                        \
                 {                                                                               \
-                    return F{}(*this, &Class::member, std::forward<Args>(args)...);             \
+                    return F{}(*this, &Delayed<Class, F>::member, std::forward<Args>(args)...); \
                 }                                                                               \
                                                                                                 \
             public:                                                                             \
@@ -101,6 +139,15 @@ decltype(auto) delayed(Arg &&arg)
                 {                                                                               \
                     return indirect(std::forward<Args>(args)...);                               \
                 }                                                                               \
+            };                                                                                  \
+                                                                                                \
+            template<typename F>                                                                \
+            class reflect<F, std::enable_if_t<is_typename_v<                                    \
+                                                          typename Delayed<Class, F>::member>>> \
+                : public reflect_base<reflected_kind::member_type>                              \
+            {                                                                                   \
+            public:                                                                             \
+                using member = typename Delayed<Class, F>::member;                              \
             };                                                                                  \
         };                                                                                      \
     };                                                                                          \

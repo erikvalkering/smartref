@@ -1,8 +1,5 @@
 #include "reflection.h"
 
-#include <iostream>
-#include <type_traits>
-
 struct Foo {};
 static_assert(std::is_same<void, reflection::reflected_member_t<Foo, 0>>::value);
 static_assert(reflection::reflected_member_count_v<Foo> == 0);
@@ -39,21 +36,23 @@ static_assert(!std::is_same<void, reflection::reflected_class_member_t<Bat, 1>>:
 static_assert( std::is_same<void, reflection::reflected_class_member_t<Bat, 2>>::value);
 static_assert(reflection::reflected_class_member_count_v<Bat> == 2);
 
-auto _ = []{
-    using namespace reflection;
+namespace member_types {
 
-    std::cout << "Foo" << std::endl;
-    std::cout << reflected_member_count_v<Foo> << std::endl;
-
-    std::cout << "Bar" << std::endl;
-    std::cout << reflected_member_count_v<Bar> << std::endl;
-
-    std::cout << "Baz" << std::endl;
-    std::cout << reflected_member_count_v<Baz> << std::endl;
-
-    return 0;
-}();
-
-int main()
+struct Foo
 {
-}
+    void member_function() {}
+    using member_type = void;
+};
+
+} // namespace member_types
+
+REFLECT(member_types::Foo, member_function);
+REFLECT(member_types::Foo, member_type);
+
+static_assert(reflection::reflected_kind_v<
+                  reflection::reflected_member_t<member_types::Foo, 0>
+              > == reflection::reflected_kind::member_function);
+
+static_assert(reflection::reflected_kind_v<
+                  reflection::reflected_member_t<member_types::Foo, 1>
+              > == reflection::reflected_kind::member_type);
