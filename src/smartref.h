@@ -1,6 +1,7 @@
 #pragma once
 
 #include "reflection.h"
+#include "utils.h"
 
 #include <type_traits>
 
@@ -112,14 +113,12 @@ struct member_type_introducer
     };
 };
 
-template<typename...>
-using void_t = void;
-
 #define DECLARE_USING_MEMBER_TYPE(name)                                                     \
     struct tag_##name;                                                                      \
                                                                                             \
     template<typename Delegate>                                                             \
-    struct member_type_introducer<tag_##name, Delegate, void_t<typename Delegate::name>>    \
+    struct member_type_introducer<tag_##name, Delegate,                                     \
+                                  utils::void_t<typename Delegate::name>>                   \
     {                                                                                       \
         template<typename T>                                                                \
         struct Forwarder                                                                    \

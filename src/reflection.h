@@ -103,9 +103,6 @@ decltype(auto) delayed(Arg &&arg)
     return std::forward<Arg>(arg);
 }
 
-template<typename...>
-using void_t = void;
-
 // A helper type trait to be used in an std::enable_if.
 // The template parameter is an expression that is supposed to be
 // a valid typename (e.g. 'int' or 'typename vector<int>::value_type'.
@@ -126,7 +123,7 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
             class reflect : public reflect_base<reflected_kind::unknown> {};                    \
                                                                                                 \
             template<typename F>                                                                \
-            class reflect<F, void_t<decltype(&Delayed<Class, F>::member)>>                      \
+            class reflect<F, utils::void_t<decltype(&Delayed<Class, F>::member)>>               \
                 : public reflect_base<reflected_kind::member_function>                          \
             {                                                                                   \
             private:                                                                            \
