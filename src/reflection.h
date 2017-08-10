@@ -35,6 +35,7 @@ enum class reflected_kind
 {
     unknown,
     member_function,
+    member_type,
 };
 
 struct access
@@ -119,6 +120,14 @@ constexpr auto is_valid(F f)
     return combined(0);
 }
 
+// A helper type trait to be used in an std::enable_if.
+// The template parameter is an expression that is supposed to be
+// a valid typename (e.g. 'int' or 'typename vector<int>::value_type'.
+// If it is not a valid expression, SFINAE should kick in, and reject
+// the candidate template.
+template<typename T>
+constexpr auto is_typename_v = std::is_same<T, T>::value;
+
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                                          \
     template<>                                                                                  \
     struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>                          \
@@ -145,6 +154,14 @@ constexpr auto is_valid(F f)
                 {                                                                               \
                     return indirect(std::forward<Args>(args)...);                               \
                 }                                                                               \
+            };                                                                                  \
+                                                                                                \
+            template<typename F>                                                                \
+            class reflect<F, std::enable_if_t<is_typename_v<typename Delayed<Class, F>::member>>>  \
+                : public reflect_base<reflected_kind::member_type>                              \
+            {                                                                                   \
+            public:                                                                             \
+                using member = typename Delayed<Class, F>::member;                              \
             };                                                                                  \
         };                                                                                      \
     };                                                                                          \
