@@ -108,7 +108,7 @@ The following features are planned to be implemented:
         - [ ] Full support of STL
     - [ ] User-defined types
         - [x] Explicit definition of member-types
-        - [ ] Non-intrusive discovery of member-types using the REFLECT macro
+        - [x] Non-intrusive discovery of member-types using the REFLECT macro
         - [ ] Intrusive discovery of member-types using the REFLECT macro
 - [ ] Member-functions
     - [ ] STL
