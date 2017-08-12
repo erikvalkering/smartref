@@ -119,9 +119,6 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
     {                                                                                           \
         using type = struct                                                                     \
         {                                                                                       \
-            template<typename F, typename = void>                                               \
-            class reflect : public reflect_base<reflected_kind::unknown> {};                    \
-                                                                                                \
             template<typename F>                                                                \
             class reflect_member_function                                                       \
                 : public reflect_base<reflected_kind::member_function>                          \
@@ -148,6 +145,9 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
             public:                                                                             \
                 using member = typename Delayed<Class, F>::member;                              \
             };                                                                                  \
+                                                                                                \
+            template<typename F, typename = void>                                               \
+            class reflect : public reflect_base<reflected_kind::unknown> {};                    \
                                                                                                 \
             template<typename F>                                                                \
             class reflect<F, utils::void_t<reflect_member_function<F>>>                         \
