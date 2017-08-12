@@ -123,7 +123,7 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
             class reflect : public reflect_base<reflected_kind::unknown> {};                    \
                                                                                                 \
             template<typename F>                                                                \
-            class reflect<F, utils::void_t<decltype(&Delayed<Class, F>::member)>>               \
+            class reflect_member_function                                                       \
                 : public reflect_base<reflected_kind::member_function>                          \
             {                                                                                   \
             private:                                                                            \
@@ -142,13 +142,20 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
             };                                                                                  \
                                                                                                 \
             template<typename F>                                                                \
-            class reflect<F, std::enable_if_t<is_typename_v<                                    \
-                                                          typename Delayed<Class, F>::member>>> \
+            class reflect_member_type                                                           \
                 : public reflect_base<reflected_kind::member_type>                              \
             {                                                                                   \
             public:                                                                             \
                 using member = typename Delayed<Class, F>::member;                              \
             };                                                                                  \
+                                                                                                \
+            template<typename F>                                                                \
+            class reflect<F, utils::void_t<reflect_member_function<F>>>                         \
+                : public reflect_member_function<F> {};                                         \
+                                                                                                \
+            template<typename F>                                                                \
+            class reflect<F, utils::void_t<reflect_member_type<F>>>                             \
+                : public reflect_member_type<F> {};                                             \
         };                                                                                      \
     };                                                                                          \
                                                                                                 \
