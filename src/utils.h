@@ -13,6 +13,7 @@ struct Combiner : L1, L2
     using L2::operator();
 };
 
+// TODO: Replace with C++17 class template deduction
 template<typename L1, typename L2>
 constexpr auto make_combiner(L1 &&l1, L2 &&l2)
 {
