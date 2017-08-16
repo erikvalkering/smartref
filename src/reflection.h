@@ -118,6 +118,9 @@ decltype(auto) delayed(Arg &&arg)
 template<typename T>
 constexpr auto is_typename_v = std::is_same<T, T>::value;
 
+template<typename... Ts>
+constexpr auto always_true = true;
+
 } // namespace reflection
 
 // TODO: See if we can rewrite this macro using C++17 if constexpr
@@ -138,23 +141,27 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
                 : public reflect_base<reflected_kind::member_function>                          \
             {                                                                                   \
             private:                                                                            \
-                template<typename... Args>                                                      \
-                decltype(auto) indirect(Args &&... args)                                        \
+                template<typename... ExplicitArgs, typename... Args>                                                      \
+                decltype(auto) indirect(Args &&... args)                                \
                 {                                                                               \
                     auto f = [](auto &obj, auto &&... args)                                     \
                     {                                                                           \
                         /* TODO: What if *this was an rvalue, then it should be auto &&obj */   \
-                        return obj.member(std::forward<Args>(args)...);                         \
+                        if constexpr (sizeof...(ExplicitArgs) == 0) \
+                            return obj.member(std::forward<Args>(args)...);                         \
+                        else if constexpr (always_true<Args...>) \
+                            return [&](auto &obj){return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);}(obj);                         \
                     };                                                                          \
                                                                                                 \
                     return F{}(*this, f, std::forward<Args>(args)...);                          \
                 }                                                                               \
-                                                                                                \
+                                                                                                \                                                                                                \
             public:                                                                             \
-                template<typename... Args>                                                      \
-                auto member(Args &&... args) -> decltype(indirect(std::forward<Args>(args)...)) \
+                template<typename... ExplicitArgs, typename... Args>                            \
+                auto member(Args &&... args)                                                    \
+                    -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...)) \
                 {                                                                               \
-                    return indirect(std::forward<Args>(args)...);                               \
+                    return indirect<ExplicitArgs...>(std::forward<Args>(args)...);      \
                 }                                                                               \
             };                                                                                  \
                                                                                                 \

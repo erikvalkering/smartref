@@ -135,7 +135,6 @@ int main()
         Property<foobar::Overloads> o;
         o.foo();
         o.foo(0);
-        // TODO: Fix calling templates where the template parameters are not deducible.
-        // o.bar<int>();
+        o.bar<int>();
     }
 }

@@ -114,7 +114,7 @@ The following features are planned to be implemented:
         - [ ] const member-functions
         - [x] Overloads
         - [x] Templates (deducible)
-        - [ ] Templates (non-deducible)
+        - [x] Templates (non-deducible)
     - [ ] STL
         - [x] Proof-of-concept member-functions: `begin()`, `end()`, `push_back()`
         - [ ] Full support of STL
