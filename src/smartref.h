@@ -65,11 +65,30 @@ struct Forwarder
     }
 };
 
+// TODO: Temporary, needs to be merged with Forwarder
+template<typename Delegate, class Derived>
+struct Forwarder2
+{
+    template<typename Self, typename F, typename... Args>
+    auto operator()(Self &self, F f, Args &&... args)
+    {
+        static_assert(std::is_base_of<Self, Derived>::value);
+
+        //! Downcast to the derived class
+        auto &derived = static_cast<Derived &>(self);
+
+        //! Now invoke the conversion operator
+        auto &delegate = static_cast<Delegate &>(derived);
+
+        return f(delegate, std::forward<decltype(args)>(args)...);
+    }
+};
+
 template<typename Delegate, class Derived>
 struct MemberFunctions {};
 
 template<typename Delegate, class Derived, size_t index>
-using using_member_t = typename reflection::reflected_member_t<Delegate, index>::template reflect<Forwarder<Delegate, Derived>>;
+using using_member_t = typename reflection::reflected_member_t<Delegate, index>::template reflect<Forwarder2<Delegate, Derived>>;
 
 template<typename Delegate, class Derived, typename index_pack>
 struct ReflectedMemberFunctionsImpl;
@@ -80,12 +99,14 @@ struct ReflectedMemberFunctionsImpl<Delegate, Derived, std::index_sequence<indic
 {
 };
 
+// TODO: Rename this to emphasize it's not only about member-functions, but also member-types (as well as member-fields, once implemented)
 template<typename Delegate, class Derived>
 using ReflectedMemberFunctions = ReflectedMemberFunctionsImpl<
     Delegate,
     Derived,
     std::make_index_sequence<reflection::reflected_member_count_v<Delegate>>>;
 
+// TODO: Unify these two type-functions
 template<typename Delegate, class Derived, size_t index>
 using using_class_member_t = typename reflection::reflected_class_member_t<Delegate, index>::template reflect<Forwarder<Delegate, Derived>>;
 

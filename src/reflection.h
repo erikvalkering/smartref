@@ -43,6 +43,11 @@ struct access
     template<typename T>
     constexpr static auto reflected_kind_v =
         T::template reflect<void>::reflected_kind;
+
+    // TODO: This name is temporary; find a better solution
+    template<typename T>
+    constexpr static auto reflected_kind2_v =
+        T::reflected_kind;
 };
 
 template<auto reflected_kind_>
@@ -55,6 +60,8 @@ private:
 
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
+template<typename T>
+constexpr auto reflected_kind2_v = access::reflected_kind2_v<T>;
 
 template<typename T, size_t counter, typename = void>
 struct reflected_class_member
@@ -119,15 +126,27 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
     {                                                                                           \
         using type = struct                                                                     \
         {                                                                                       \
-            template<typename F>                                                                \
+            template<typename F, reflected_kind kind>                                           \
             class reflect_member_function                                                       \
+                : public reflect_base<kind>                                                     \
+            {                                                                                   \
+            };                                                                                  \
+                                                                                                \
+            template<typename F>                                                                \
+            class reflect_member_function<F, reflected_kind::unknown>                           \
                 : public reflect_base<reflected_kind::member_function>                          \
             {                                                                                   \
             private:                                                                            \
                 template<typename... Args>                                                      \
                 decltype(auto) indirect(Args &&... args)                                        \
                 {                                                                               \
-                    return F{}(*this, &Delayed<Class, F>::member, std::forward<Args>(args)...); \
+                    auto f = [](auto &obj, auto &&... args)                                     \
+                    {                                                                           \
+                        /* TODO: What if *this was an rvalue, then it should be auto &&obj */   \
+                        return obj.member(std::forward<Args>(args)...);                         \
+                    };                                                                          \
+                                                                                                \
+                    return F{}(*this, f, std::forward<Args>(args)...);                          \
                 }                                                                               \
                                                                                                 \
             public:                                                                             \
@@ -138,24 +157,25 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
                 }                                                                               \
             };                                                                                  \
                                                                                                 \
+            template<typename F, typename = void>                                               \
+            class reflect_conditional                                                           \
+                : public reflect_base<reflected_kind::unknown> {};                              \
+                                                                                                \
             template<typename F>                                                                \
-            class reflect_member_type                                                           \
+            class reflect_conditional<F, std::enable_if_t<is_typename_v<                        \
+                                                          typename Delayed<Class, F>::member>>> \
                 : public reflect_base<reflected_kind::member_type>                              \
             {                                                                                   \
             public:                                                                             \
                 using member = typename Delayed<Class, F>::member;                              \
             };                                                                                  \
                                                                                                 \
-            template<typename F, typename = void>                                               \
-            class reflect : public reflect_base<reflected_kind::unknown> {};                    \
-                                                                                                \
             template<typename F>                                                                \
-            class reflect<F, utils::void_t<reflect_member_function<F>>>                         \
-                : public reflect_member_function<F> {};                                         \
-                                                                                                \
-            template<typename F>                                                                \
-            class reflect<F, utils::void_t<reflect_member_type<F>>>                             \
-                : public reflect_member_type<F> {};                                             \
+            struct reflect                                                                      \
+                : public reflect_conditional<F>                                                 \
+                , public reflect_member_function<F, reflected_kind2_v<reflect_conditional<F>>>  \
+            {                                                                                   \
+            };                                                                                  \
         };                                                                                      \
     };                                                                                          \
                                                                                                 \
