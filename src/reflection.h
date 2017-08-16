@@ -150,7 +150,7 @@ constexpr auto always_true = true;
                         if constexpr (sizeof...(ExplicitArgs) == 0) \
                             return obj.member(std::forward<Args>(args)...);                         \
                         else if constexpr (always_true<Args...>) \
-                            return [&](auto &obj){return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);}(obj);                         \
+                            return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...); \
                     };                                                                          \
                                                                                                 \
                     return F{}(*this, f, std::forward<Args>(args)...);                          \
