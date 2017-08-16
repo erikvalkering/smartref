@@ -100,8 +100,6 @@ The implementation has been tested using the following compilers:
 - Clang 4.0.1
 
 The following features are planned to be implemented:
-- [x] Delegation to member-functions (non-const)
-- [ ] Delegation to const member-functions
 - [ ] Member-types
     - [ ] STL
         - [x] Proof-of-concept member-types `value_type`, `difference_type`, `iterator`
@@ -111,6 +109,12 @@ The following features are planned to be implemented:
         - [x] Non-intrusive discovery of member-types using the REFLECT macro
         - [ ] Intrusive discovery of member-types using the REFLECT macro
 - [ ] Member-functions
+    - [ ] Core
+        - [x] Non-const member-functions
+        - [ ] const member-functions
+        - [x] Overloads
+        - [x] Templates (deducible)
+        - [ ] Templates (non-deducible)
     - [ ] STL
         - [x] Proof-of-concept member-functions: `begin()`, `end()`, `push_back()`
         - [ ] Full support of STL
@@ -120,7 +124,7 @@ The following features are planned to be implemented:
         - [x] Intrusive discovery of member-functions using the REFLECT macro
 - [ ] Member-fields
     - [ ] STL
-        - [ ] Proof-of-concept member-functions: `first`, `second`
+        - [ ] Proof-of-concept member-fields: `first`, `second`
         - [ ] Full support of STL
     - [ ] User-defined types
         - [ ] Explicit definition of member-fields
