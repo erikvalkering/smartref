@@ -120,6 +120,7 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
 
 } // namespace reflection
 
+// TODO: See if we can rewrite this macro using C++17 if constexpr
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                                          \
     template<>                                                                                  \
     struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>                          \
