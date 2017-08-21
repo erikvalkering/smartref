@@ -49,10 +49,8 @@ struct Foo
 REFLECT(member_types::Foo, member_function);
 REFLECT(member_types::Foo, member_type);
 
-static_assert(reflection::reflected_kind_v<
-                  reflection::reflected_member_t<member_types::Foo, 0>
-              > == reflection::reflected_kind::member_function);
+using reflected_member_function = reflection::reflected_member_t<member_types::Foo, 0>;
+using reflected_member_type = reflection::reflected_member_t<member_types::Foo, 1>;
 
-static_assert(reflection::reflected_kind_v<
-                  reflection::reflected_member_t<member_types::Foo, 1>
-              > == reflection::reflected_kind::member_type);
+static_assert(reflection::reflected_kind_v<reflected_member_function> == reflection::reflected_kind::member_function);
+static_assert(reflection::reflected_kind_v<reflected_member_type> == reflection::reflected_kind::member_type);
