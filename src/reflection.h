@@ -34,8 +34,8 @@ constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 enum class reflected_kind
 {
     unknown,
-    member_function,
     member_type,
+    member_function,
 };
 
 struct access
