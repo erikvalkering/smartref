@@ -156,7 +156,7 @@ constexpr auto always_true = true;
                                                                                                 \
                     return F{}(*this, f, std::forward<Args>(args)...);                          \
                 }                                                                               \
-                                                                                                \                                                                                                \
+                                                                                                \
             public:                                                                             \
                 template<typename... ExplicitArgs, typename... Args>                            \
                 auto member(Args &&... args)                                                    \
