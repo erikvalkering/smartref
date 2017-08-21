@@ -49,11 +49,10 @@ struct Foo
 REFLECT(member_types::Foo, member_function);
 REFLECT(member_types::Foo, member_type);
 
-// TODO: Re-enable
-// static_assert(reflection::reflected_kind_v<
-//                   reflection::reflected_member_t<member_types::Foo, 0>
-//               > == reflection::reflected_kind::member_function);
+static_assert(reflection::reflected_kind_v<
+                  reflection::reflected_member_t<member_types::Foo, 0>
+              > == reflection::reflected_kind::member_function);
 
-// static_assert(reflection::reflected_kind_v<
-//                   reflection::reflected_member_t<member_types::Foo, 1>
-//               > == reflection::reflected_kind::member_type);
+static_assert(reflection::reflected_kind_v<
+                  reflection::reflected_member_t<member_types::Foo, 1>
+              > == reflection::reflected_kind::member_type);

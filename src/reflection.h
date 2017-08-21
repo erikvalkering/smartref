@@ -45,9 +45,17 @@ struct access
         T::template reflect<void>::reflected_kind;
 
     // TODO: This name is temporary; find a better solution
+    template<typename T, typename = void>
+    struct reflected_kind2
+    {
+        constexpr static auto value = reflected_kind::unknown;
+    };
+
     template<typename T>
-    constexpr static auto reflected_kind2_v =
-        T::reflected_kind;
+    struct reflected_kind2<T, utils::void_t<decltype(T::reflected_kind)>>
+    {
+        constexpr static auto value = T::reflected_kind;
+    };
 };
 
 template<auto reflected_kind_>
@@ -61,7 +69,7 @@ private:
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 template<typename T>
-constexpr auto reflected_kind2_v = access::reflected_kind2_v<T>;
+constexpr auto reflected_kind2_v = access::reflected_kind2<T>::value;
 
 template<typename T, size_t counter, typename = void>
 struct reflected_class_member
@@ -131,10 +139,7 @@ constexpr auto always_true = true;
         using type = struct                                                                     \
         {                                                                                       \
             template<typename F, reflected_kind kind>                                           \
-            class reflect_member_function                                                       \
-                : public reflect_base<kind>                                                     \
-            {                                                                                   \
-            };                                                                                  \
+            class reflect_member_function {};                                                   \
                                                                                                 \
             template<typename F>                                                                \
             class reflect_member_function<F, reflected_kind::unknown>                           \
@@ -167,8 +172,7 @@ constexpr auto always_true = true;
             };                                                                                  \
                                                                                                 \
             template<typename F, typename = void>                                               \
-            class reflect_member_type                                                           \
-                : public reflect_base<reflected_kind::unknown> {};                              \
+            class reflect_member_type {};                                                       \
                                                                                                 \
             template<typename F>                                                                \
             class reflect_member_type<F, std::enable_if_t<is_typename_v<                        \
