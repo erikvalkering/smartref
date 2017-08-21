@@ -167,11 +167,11 @@ constexpr auto always_true = true;
             };                                                                                  \
                                                                                                 \
             template<typename F, typename = void>                                               \
-            class reflect_conditional                                                           \
+            class reflect_member_type                                                           \
                 : public reflect_base<reflected_kind::unknown> {};                              \
                                                                                                 \
             template<typename F>                                                                \
-            class reflect_conditional<F, std::enable_if_t<is_typename_v<                        \
+            class reflect_member_type<F, std::enable_if_t<is_typename_v<                        \
                                                           typename Delayed<Class, F>::member>>> \
                 : public reflect_base<reflected_kind::member_type>                              \
             {                                                                                   \
@@ -181,8 +181,8 @@ constexpr auto always_true = true;
                                                                                                 \
             template<typename F>                                                                \
             struct reflect                                                                      \
-                : public reflect_conditional<F>                                                 \
-                , public reflect_member_function<F, reflected_kind2_v<reflect_conditional<F>>>  \
+                : public reflect_member_type<F>                                                 \
+                , public reflect_member_function<F, reflected_kind2_v<reflect_member_type<F>>>  \
             {                                                                                   \
             };                                                                                  \
         };                                                                                      \
