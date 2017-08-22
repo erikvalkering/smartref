@@ -138,6 +138,18 @@ constexpr auto always_true = true;
     {                                                                                           \
         using type = struct                                                                     \
         {                                                                                       \
+            template<typename F, typename = void>                                               \
+            class reflect_member_type {};                                                       \
+                                                                                                \
+            template<typename F>                                                                \
+            class reflect_member_type<F, std::enable_if_t<is_typename_v<                        \
+                                                          typename Delayed<Class, F>::member>>> \
+                : public reflect_base<reflected_kind::member_type>                              \
+            {                                                                                   \
+            public:                                                                             \
+                using member = typename Delayed<Class, F>::member;                              \
+            };                                                                                  \
+                                                                                                \
             template<typename F, reflected_kind kind>                                           \
             class reflect_member_function {};                                                   \
                                                                                                 \
@@ -169,18 +181,6 @@ constexpr auto always_true = true;
                 {                                                                               \
                     return indirect<ExplicitArgs...>(std::forward<Args>(args)...);              \
                 }                                                                               \
-            };                                                                                  \
-                                                                                                \
-            template<typename F, typename = void>                                               \
-            class reflect_member_type {};                                                       \
-                                                                                                \
-            template<typename F>                                                                \
-            class reflect_member_type<F, std::enable_if_t<is_typename_v<                        \
-                                                          typename Delayed<Class, F>::member>>> \
-                : public reflect_base<reflected_kind::member_type>                              \
-            {                                                                                   \
-            public:                                                                             \
-                using member = typename Delayed<Class, F>::member;                              \
             };                                                                                  \
                                                                                                 \
             template<typename F>                                                                \
