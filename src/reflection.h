@@ -157,6 +157,37 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 } // namespace reflection
 
+#define REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(member, F, ReflectorClassName)              \
+    template<typename F>                                                                                \
+    class ReflectorClassName                                                                            \
+        : public reflect_base<reflected_kind::member_function>                                          \
+    {                                                                                                   \
+    private:                                                                                            \
+        template<typename... ExplicitArgs, typename... Args>                                            \
+        decltype(auto) indirect(Args &&... args)                                                        \
+        {                                                                                               \
+            auto f = [](auto &obj, auto &&... args)                                                     \
+            {                                                                                           \
+                /* TODO: What if *this was an rvalue, then it should be auto &&obj */                   \
+                if constexpr (sizeof...(ExplicitArgs) == 0)                                             \
+                    return obj.member(std::forward<Args>(args)...);                                     \
+                else if constexpr (always_true<Args...>)                                                \
+                    return obj.template member<ExplicitArgs...>(                                        \
+                        std::forward<Args>(args)...);                                                   \
+            };                                                                                          \
+                                                                                                        \
+            return F{}(*this, f, std::forward<Args>(args)...);                                          \
+        }                                                                                               \
+                                                                                                        \
+    public:                                                                                             \
+        template<typename... ExplicitArgs, typename... Args>                                            \
+        auto member(Args &&... args)                                                                    \
+            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))                         \
+        {                                                                                               \
+            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);                              \
+        }                                                                                               \
+    }                                                                                                   \
+
 // TODO: See if we can rewrite this macro using C++17 if constexpr
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                                          \
     template<>                                                                                  \
@@ -176,35 +207,10 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
             using detect_is_member_type = decltype(                                             \
                 std::declval<typename Delayed<Class, T>::member>());                            \
                                                                                                 \
-            template<typename F>                                                                \
-            class reflect_member_function                                                       \
-                : public reflect_base<reflected_kind::member_function>                          \
-            {                                                                                   \
-            private:                                                                            \
-                template<typename... ExplicitArgs, typename... Args>                            \
-                decltype(auto) indirect(Args &&... args)                                        \
-                {                                                                               \
-                    auto f = [](auto &obj, auto &&... args)                                     \
-                    {                                                                           \
-                        /* TODO: What if *this was an rvalue, then it should be auto &&obj */   \
-                        if constexpr (sizeof...(ExplicitArgs) == 0)                             \
-                            return obj.member(std::forward<Args>(args)...);                     \
-                        else if constexpr (always_true<Args...>)                                \
-                            return obj.template member<ExplicitArgs...>(                        \
-                                std::forward<Args>(args)...);                                   \
-                    };                                                                          \
-                                                                                                \
-                    return F{}(*this, f, std::forward<Args>(args)...);                          \
-                }                                                                               \
-                                                                                                \
-            public:                                                                             \
-                template<typename... ExplicitArgs, typename... Args>                            \
-                auto member(Args &&... args)                                                    \
-                    -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))         \
-                {                                                                               \
-                    return indirect<ExplicitArgs...>(std::forward<Args>(args)...);              \
-                }                                                                               \
-            };                                                                                  \
+            REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(                                \
+                member,                                                                         \
+                F,                                                                              \
+                reflect_member_function);                                                       \
         };                                                                                      \
     };                                                                                          \
                                                                                                 \
