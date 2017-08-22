@@ -3,9 +3,9 @@
 #include "counter.h"
 #include "utils.h"
 
-namespace reflection {
+#include <tuple>
 
-// TODO: Create a constexpr_vector abstraction
+namespace reflection {
 
 template<typename T, size_t counter>
 struct reflected_member
@@ -88,6 +88,32 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
 
 template<typename... Ts>
 constexpr auto always_true = true;
+
+namespace detail {
+
+template<typename Class, typename index_pack>
+struct Reflection;
+
+template<typename Class, size_t... indices>
+struct Reflection<Class, std::index_sequence<indices...>>
+{
+    auto members() const
+    {
+        return std::tuple<reflected_member_t<Class, indices>...>{};
+    }
+};
+
+} // namespace detail
+
+template<typename Class>
+using Reflection = detail::Reflection<
+    Class,
+    std::make_index_sequence<reflected_member_count_v<Class>>
+>;
+
+// TODO: Enable after removing the other reflect tool
+//template<typename Class>
+//constexpr auto reflect = Reflection<Class>{};
 
 template<class Reflection, typename F>
 constexpr static auto reflect_()
