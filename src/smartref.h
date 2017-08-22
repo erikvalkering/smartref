@@ -50,25 +50,6 @@ using Delayed = typename DelayedImpl<Class, T...>::type;
 template<typename Delegate, class Derived>
 struct Forwarder
 {
-    template<typename Self, typename MemberPointer, typename... Args>
-    auto operator()(Self &self, MemberPointer member_pointer, Args &&... args)
-    {
-        static_assert(std::is_base_of<Self, Derived>::value);
-
-        //! Downcast to the derived class
-        auto &derived = static_cast<Derived &>(self);
-
-        //! Now invoke the conversion operator
-        auto &delegate = static_cast<Delegate &>(derived);
-
-        return (delegate.*member_pointer)(std::forward<decltype(args)>(args)...);
-    }
-};
-
-// TODO: Temporary, needs to be merged with Forwarder
-template<typename Delegate, class Derived>
-struct Forwarder2
-{
     template<typename Self, typename F, typename... Args>
     auto operator()(Self &self, F f, Args &&... args)
     {
@@ -91,7 +72,7 @@ template<typename Delegate, class Derived, size_t index>
 using using_member_t = decltype(
     reflection::reify(
         std::get<index>(reflection::reflect<Delegate>.members()),
-        Forwarder2<Delegate, Derived>{}
+        Forwarder<Delegate, Derived>{}
     )
 );
 
