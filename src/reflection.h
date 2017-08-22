@@ -43,19 +43,6 @@ struct access
     template<typename T>
     constexpr static auto reflected_kind_v =
         T::template reflect<void>::reflected_kind;
-
-    // TODO: This name is temporary; find a better solution
-    template<typename T, typename = void>
-    struct reflected_kind2
-    {
-        constexpr static auto value = reflected_kind::unknown;
-    };
-
-    template<typename T>
-    struct reflected_kind2<T, utils::void_t<decltype(T::reflected_kind)>>
-    {
-        constexpr static auto value = T::reflected_kind;
-    };
 };
 
 template<auto reflected_kind_>
@@ -68,8 +55,6 @@ private:
 
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
-template<typename T>
-constexpr auto reflected_kind2_v = access::reflected_kind2<T>::value;
 
 template<typename T, size_t counter, typename = void>
 struct reflected_class_member
