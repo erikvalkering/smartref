@@ -49,8 +49,8 @@ struct Foo
 REFLECT(member_types::Foo, bar);
 REFLECT(member_types::Foo, baz);
 
-using reflected_member_function = reflection::reflected_member_t<member_types::Foo, 0>;
-using reflected_member_type = reflection::reflected_member_t<member_types::Foo, 1>;
+using reflected_bar = reflection::reflected_member_t<member_types::Foo, 0>;
+using reflected_baz = reflection::reflected_member_t<member_types::Foo, 1>;
 
-static_assert(reflection::reflected_kind_v<reflected_member_function> == reflection::reflected_kind::bar);
-static_assert(reflection::reflected_kind_v<reflected_member_type> == reflection::reflected_kind::baz);
+static_assert(reflection::reflected_kind_v<reflected_bar> == reflection::reflected_kind::member_function);
+static_assert(reflection::reflected_kind_v<reflected_baz> == reflection::reflected_kind::member_type);
