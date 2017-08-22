@@ -88,10 +88,12 @@ template<typename Delegate, class Derived>
 struct MemberFunctions {};
 
 template<typename Delegate, class Derived, size_t index>
-using using_member_t = reflection::reflect<
-    reflection::reflected_member_t<Delegate, index>,
-    Forwarder2<Delegate, Derived>
->;
+using using_member_t = decltype(
+    reflection::reify(
+        std::get<index>(reflection::reflect<Delegate>.members()),
+        Forwarder2<Delegate, Derived>{}
+    )
+);
 
 template<typename Delegate, class Derived, typename index_pack>
 struct ReflectedMemberFunctionsImpl;

@@ -111,12 +111,11 @@ using Reflection = detail::Reflection<
     std::make_index_sequence<reflected_member_count_v<Class>>
 >;
 
-// TODO: Enable after removing the other reflect tool
-//template<typename Class>
-//constexpr auto reflect = Reflection<Class>{};
+template<typename Class>
+constexpr auto reflect = Reflection<Class>{};
 
 template<class Reflection, typename F>
-constexpr static auto reflect_()
+constexpr static auto reify(Reflection, F)
 {
     if constexpr (utils::is_detected_v<Reflection::template detect_is_member_type, F>)
     {
@@ -131,9 +130,6 @@ constexpr static auto reflect_()
     }
 }
 
-template<typename Reflection, typename F>
-using reflect = decltype(reflect_<Reflection, F>());
-
 enum class reflected_kind
 {
     unknown,
@@ -145,7 +141,7 @@ struct access
 {
     template<typename T>
     constexpr static auto reflected_kind_v =
-        reflect<T, void>::reflected_kind;
+        decltype(reify(T{}, nullptr))::reflected_kind;
 };
 
 template<auto reflected_kind_>
