@@ -40,17 +40,17 @@ namespace member_types {
 
 struct Foo
 {
-    void member_function() {}
-    using member_type = void;
+    void bar() {}
+    using baz = void;
 };
 
 } // namespace member_types
 
-REFLECT(member_types::Foo, member_function);
-REFLECT(member_types::Foo, member_type);
+REFLECT(member_types::Foo, bar);
+REFLECT(member_types::Foo, baz);
 
 using reflected_member_function = reflection::reflected_member_t<member_types::Foo, 0>;
 using reflected_member_type = reflection::reflected_member_t<member_types::Foo, 1>;
 
-static_assert(reflection::reflected_kind_v<reflected_member_function> == reflection::reflected_kind::member_function);
-static_assert(reflection::reflected_kind_v<reflected_member_type> == reflection::reflected_kind::member_type);
+static_assert(reflection::reflected_kind_v<reflected_member_function> == reflection::reflected_kind::bar);
+static_assert(reflection::reflected_kind_v<reflected_member_type> == reflection::reflected_kind::baz);
