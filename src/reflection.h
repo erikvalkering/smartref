@@ -31,31 +31,6 @@ struct reflected_member_count<T, count, void>
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
 
-enum class reflected_kind
-{
-    unknown,
-    member_type,
-    member_function,
-};
-
-struct access
-{
-    template<typename T>
-    constexpr static auto reflected_kind_v =
-        T::template reflect<void>::reflected_kind;
-};
-
-template<auto reflected_kind_>
-class reflect_base
-{
-private:
-    friend class reflection::access;
-    constexpr static auto reflected_kind = reflected_kind_;
-};
-
-template<typename T>
-constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
-
 template<typename T, size_t counter, typename = void>
 struct reflected_class_member
 {
@@ -114,6 +89,50 @@ constexpr auto is_typename_v = std::is_same<T, T>::value;
 template<typename... Ts>
 constexpr auto always_true = true;
 
+template<class Reflection, typename F>
+constexpr static auto reflect_()
+{
+    if constexpr (utils::is_detected_v<Reflection::template detect_is_member_type, F>)
+    {
+        return typename Reflection::template reflect_member_type<F>{};
+    }
+    else if constexpr (always_true<F>)
+    {
+        //! Member-functions currently cannot be detected (yet).
+        //! However, that is not a problem, because they will be SFINAE'ed away,
+        //! in case the reflected entity wasn't a member-function.
+        return typename Reflection::template reflect_member_function<F>{};
+    }
+}
+
+template<typename Reflection, typename F>
+using reflect = decltype(reflect_<Reflection, F>());
+
+enum class reflected_kind
+{
+    unknown,
+    member_type,
+    member_function,
+};
+
+struct access
+{
+    template<typename T>
+    constexpr static auto reflected_kind_v =
+        reflect<T, void>::reflected_kind;
+};
+
+template<auto reflected_kind_>
+class reflect_base
+{
+private:
+    friend class reflection::access;
+    constexpr static auto reflected_kind = reflected_kind_;
+};
+
+template<typename T>
+constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
+
 } // namespace reflection
 
 // TODO: See if we can rewrite this macro using C++17 if constexpr
@@ -164,26 +183,6 @@ constexpr auto always_true = true;
                     return indirect<ExplicitArgs...>(std::forward<Args>(args)...);              \
                 }                                                                               \
             };                                                                                  \
-                                                                                                \
-            template<typename F>                                                                \
-            constexpr static auto reflect_()                                                    \
-            {                                                                                   \
-                if constexpr (utils::is_detected_v<detect_is_member_type, F>)                   \
-                {                                                                               \
-                    return reflect_member_type<F>{};                                            \
-                }                                                                               \
-                else if constexpr (always_true<F>)                                              \
-                {                                                                               \
-                    /* TODO: Doxygen comment */                                                 \
-                    /* Member-functions currently cannot be detected (yet).                 */  \
-                    /* However, that is not a problem, because they will be SFINAE'ed away, */  \
-                    /* in case the reflected entity wasn't a member-function.               */  \
-                    return reflect_member_function<F>{};                                        \
-                }                                                                               \
-            }                                                                                   \
-                                                                                                \
-            template<typename F>                                                                \
-            using reflect = decltype(reflect_<F>());                                            \
         };                                                                                      \
     };                                                                                          \
                                                                                                 \
