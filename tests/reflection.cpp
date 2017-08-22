@@ -1,5 +1,7 @@
 #include "reflection.h"
 
+#include "utils.h"
+
 struct Foo {};
 static_assert(std::is_same<void, reflection::reflected_member_t<Foo, 0>>::value);
 static_assert(reflection::reflected_member_count_v<Foo> == 0);
@@ -40,19 +42,21 @@ namespace member_types {
 
 struct Foo
 {
-    void member_function() {}
-    using member_type = void;
+    void bar() {}
+    using baz = void;
 };
 
 } // namespace member_types
 
-REFLECT(member_types::Foo, member_function);
-REFLECT(member_types::Foo, member_type);
+REFLECT(member_types::Foo, bar);
+REFLECT(member_types::Foo, baz);
 
-static_assert(reflection::reflected_kind_v<
-                  reflection::reflected_member_t<member_types::Foo, 0>
-              > == reflection::reflected_kind::member_function);
+using reflected_bar = reflection::reflected_member_t<member_types::Foo, 0>;
+using reflected_baz = reflection::reflected_member_t<member_types::Foo, 1>;
 
-static_assert(reflection::reflected_kind_v<
-                  reflection::reflected_member_t<member_types::Foo, 1>
-              > == reflection::reflected_kind::member_type);
+// TODO: Implementation detail. See if we can move this out of the macro
+// static_assert(!utils::is_detected_v<reflected_bar::template detect_is_member_type, void>);
+// static_assert( utils::is_detected_v<reflected_baz::template detect_is_member_type, void>);
+
+static_assert(reflection::reflected_kind_v<reflected_bar> == reflection::reflected_kind::member_function);
+static_assert(reflection::reflected_kind_v<reflected_baz> == reflection::reflected_kind::member_type);

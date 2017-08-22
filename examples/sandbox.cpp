@@ -130,4 +130,11 @@ int main()
         y.foo();
         y.bar();
     }
+
+    {
+        Property<foobar::Overloads> o;
+        o.foo();
+        o.foo(0);
+        o.bar<int>();
+    }
 }

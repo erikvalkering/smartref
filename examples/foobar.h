@@ -4,6 +4,7 @@
 #include <reflection.h>
 
 #include <iostream>
+#include <typeinfo>
 
 namespace foobar {
 
@@ -75,6 +76,25 @@ struct Bla
     using bla = Bla;
 };
 
+struct Overloads
+{
+    void foo()
+    {
+        std::cout << "Overloads::foo()" << std::endl;
+    }
+
+    void foo(int)
+    {
+        std::cout << "Overloads::foo(int)" << std::endl;
+    }
+
+    template<typename T>
+    void bar()
+    {
+        std::cout << "Overloads::bar<" << typeid(T).name() << ">()" << std::endl;
+    }
+};
+
 } // namespace foobar
 
 template<typename Derived>
@@ -103,3 +123,6 @@ REFLECT(foobar::Bar, bar3);
 
 REFLECT(foobar::Bla, foo); // Member-function
 REFLECT(foobar::Bla, bla); // Member-type
+
+REFLECT(foobar::Overloads, foo);
+REFLECT(foobar::Overloads, bar);
