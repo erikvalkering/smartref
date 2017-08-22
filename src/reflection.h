@@ -138,23 +138,20 @@ constexpr auto always_true = true;
     {                                                                                           \
         using type = struct                                                                     \
         {                                                                                       \
-            template<typename F, typename = void>                                               \
-            class reflect_member_type {};                                                       \
-                                                                                                \
             template<typename F>                                                                \
-            class reflect_member_type<F, std::enable_if_t<is_typename_v<                        \
-                                                          typename Delayed<Class, F>::member>>> \
+            class reflect_member_type                                                           \
                 : public reflect_base<reflected_kind::member_type>                              \
             {                                                                                   \
             public:                                                                             \
                 using member = typename Delayed<Class, F>::member;                              \
             };                                                                                  \
                                                                                                 \
-            template<typename F, reflected_kind kind>                                           \
-            class reflect_member_function {};                                                   \
+            template<typename T>                                                                \
+            using detect_is_member_type = decltype(                                             \
+                std::declval<typename Delayed<Class, T>::member>());                            \
                                                                                                 \
             template<typename F>                                                                \
-            class reflect_member_function<F, reflected_kind::unknown>                           \
+            class reflect_member_function                                                       \
                 : public reflect_base<reflected_kind::member_function>                          \
             {                                                                                   \
             private:                                                                            \
@@ -184,11 +181,24 @@ constexpr auto always_true = true;
             };                                                                                  \
                                                                                                 \
             template<typename F>                                                                \
-            struct reflect                                                                      \
-                : public reflect_member_type<F>                                                 \
-                , public reflect_member_function<F, reflected_kind2_v<reflect_member_type<F>>>  \
+            constexpr static auto reflect_()                                                    \
             {                                                                                   \
-            };                                                                                  \
+                if constexpr (utils::is_detected_v<detect_is_member_type, F>)                   \
+                {                                                                               \
+                    return reflect_member_type<F>{};                                            \
+                }                                                                               \
+                else if constexpr (always_true<F>)                                              \
+                {                                                                               \
+                    /* TODO: Doxygen comment */                                                 \
+                    /* Member-functions currently cannot be detected (yet).                 */  \
+                    /* However, that is not a problem, because they will be SFINAE'ed away, */  \
+                    /* in case the reflected entity wasn't a member-function.               */  \
+                    return reflect_member_function<F>{};                                        \
+                }                                                                               \
+            }                                                                                   \
+                                                                                                \
+            template<typename F>                                                                \
+            using reflect = decltype(reflect_<F>());                                            \
         };                                                                                      \
     };                                                                                          \
                                                                                                 \
