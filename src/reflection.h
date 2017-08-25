@@ -234,9 +234,9 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
                                                                                                         \
     injection_function(name);                                                                           \
                                                                                                         \
-    /* Here, we basically replace the reflected member-function,                                    */  \
+    /* Here, we basically replace the original member-function,                                     */  \
     /* by defining a new member-function template with the same name,                               */  \
-    /* which simply forwards to the implementation of the reflect member-function.                  */  \
+    /* which simply forwards to the implementation of the original member-function.                 */  \
     template<typename... Args>                                                                          \
     auto name(Args &&... args) -> decltype(__reflect_tag_##name(std::forward<Args>(args)...))           \
     {                                                                                                   \
@@ -248,10 +248,10 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     }                                                                                                   \
                                                                                                         \
     /* Here, we define a member-function that will contain the implementation                       */  \
-    /* of the reflected member-function.                                                            */  \
-    auto __reflect_impl_##name                                                                          \
+    /* of the original member-function.                                                             */  \
+    auto __reflect_impl_##name                                                                        \
 
-#define REFLECTION_REFLECT_INTRUSIVE(name)                                  \
+#define REFLECTION_REFLECT_INTRUSIVE(name)                      \
     INJECT_CODE_MEMBER_FUNCTION(name, REFLECTION_REFLECT_INTRUSIVE_IMPL)    \
 
 //! Define a set of overloads such that we can use REFLECT both inside a class,
