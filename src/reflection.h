@@ -225,7 +225,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         return type{};                                                  \
     }                                                                   \
                                                                         \
-    INC_CLASS_COUNTER();                                                \
+    INC_CLASS_COUNTER()                                                 \
 
 #define INJECT_CODE_MEMBER_FUNCTION(member, injection_function)                                         \
     __injection_tag_##member() {}                                                                       \
