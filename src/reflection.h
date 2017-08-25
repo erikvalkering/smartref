@@ -203,9 +203,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 // TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 // TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 // TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
-#define REFLECTION_REFLECT_INTRUSIVE(name)                                                              \
-    __reflect_tag_##name() {}                                                                           \
-                                                                                                        \
+#define REFLECTION_REFLECT_INTRUSIVE_IMPL(name)                                                         \
     template<typename F>                                                                                \
     REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(                                                \
         __reflect__##name,                                                                              \
@@ -230,6 +228,11 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     }                                                                                                   \
                                                                                                         \
     INC_CLASS_COUNTER();                                                                                \
+
+#define INJECT_CODE_MEMBER_FUNCTION(name, injection_function)                                           \
+    __reflect_tag_##name() {}                                                                           \
+                                                                                                        \
+    injection_function(name);                                                                           \
                                                                                                         \
     /* Here, we basically replace the reflected member-function,                                    */  \
     /* by defining a new member-function template with the same name,                               */  \
@@ -241,12 +244,15 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         /* after this member function, it is not available at this point.                           */  \
         /* By making the evaluation of '*this' dependent on the template arguments,                 */  \
         /* we can work around this (this is exactly what 'delayed()' does).                         */  \
-        return utils::delayed<Args...>(*this).__reflect_impl_##name(std::forward<Args>(args)...);  \
+        return utils::delayed<Args...>(*this).__reflect_impl_##name(std::forward<Args>(args)...);       \
     }                                                                                                   \
                                                                                                         \
     /* Here, we define a member-function that will contain the implementation                       */  \
     /* of the reflected member-function.                                                            */  \
     auto __reflect_impl_##name                                                                          \
+
+#define REFLECTION_REFLECT_INTRUSIVE(name)                                  \
+    INJECT_CODE_MEMBER_FUNCTION(name, REFLECTION_REFLECT_INTRUSIVE_IMPL)    \
 
 //! Define a set of overloads such that we can use REFLECT both inside a class,
 //! as well as outside, by dispatching on the number of arguments.
