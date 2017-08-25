@@ -228,7 +228,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     INC_CLASS_COUNTER()                                                 \
 
 #define INJECT_CODE_MEMBER_FUNCTION(member, injection_function)                                         \
-    __injection_tag_##member() {}                                                                       \
+    __injection_return_type_##member() {}                                                               \
                                                                                                         \
     injection_function(member);                                                                         \
                                                                                                         \
@@ -236,7 +236,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     /* by defining a new member-function template with the same name,                               */  \
     /* which simply forwards to the implementation of the original member-function.                 */  \
     template<typename... Args>                                                                          \
-    auto member(Args &&... args) -> decltype(__injection_tag_##member())                                \
+    auto member(Args &&... args) -> decltype(__injection_return_type_##member())                        \
     {                                                                                                   \
         /* Because the function containing the implementation is defined                            */  \
         /* after this member function, it is not available at this point.                           */  \
