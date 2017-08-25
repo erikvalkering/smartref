@@ -236,7 +236,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     /* by defining a new member-function template with the same name,                               */  \
     /* which simply forwards to the implementation of the original member-function.                 */  \
     template<typename... Args>                                                                          \
-    auto member(Args &&... args) -> decltype(__injection_tag_##member(std::forward<Args>(args)...))     \
+    auto member(Args &&... args) -> decltype(__injection_tag_##member())                                \
     {                                                                                                   \
         /* Because the function containing the implementation is defined                            */  \
         /* after this member function, it is not available at this point.                           */  \
