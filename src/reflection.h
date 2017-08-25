@@ -236,18 +236,18 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     /* by defining a new member-function template with the same name,                               */  \
     /* which simply forwards to the implementation of the original member-function.                 */  \
     template<typename... Args>                                                                          \
-    auto member(Args &&... args) -> decltype(__reflect_tag_##member(std::forward<Args>(args)...))     \
+    auto member(Args &&... args) -> decltype(__injection_tag_##member(std::forward<Args>(args)...))     \
     {                                                                                                   \
         /* Because the function containing the implementation is defined                            */  \
         /* after this member function, it is not available at this point.                           */  \
         /* By making the evaluation of '*this' dependent on the template arguments,                 */  \
         /* we can work around this (this is exactly what 'delayed()' does).                         */  \
-        return utils::delayed<Args...>(*this).__reflect_impl_##member(std::forward<Args>(args)...);   \
+        return utils::delayed<Args...>(*this).__injection_impl_##member(std::forward<Args>(args)...);   \
     }                                                                                                   \
                                                                                                         \
     /* Here, we define a member-function that will contain the implementation                       */  \
     /* of the original member-function.                                                             */  \
-    auto __reflect_impl_##member                                                                      \
+    auto __injection_impl_##member                                                                      \
 
 #define REFLECTION_REFLECT_INTRUSIVE(member)                                \
     INJECT_CODE_MEMBER_FUNCTION(member, REFLECTION_REFLECT_INTRUSIVE_IMPL)  \
