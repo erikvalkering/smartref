@@ -202,55 +202,55 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 // TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 // TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 // TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
-#define REFLECTION_REFLECT_INTRUSIVE_IMPL(name)                                                         \
+#define REFLECTION_REFLECT_INTRUSIVE_IMPL(member)                       \
     template<typename F>                                                \
     REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(                \
-        __reflect__##name,                                                                              \
-        name,                                                                                           \
+        __reflect__##member,                                            \
+        member,                                                         \
         F);                                                             \
                                                                         \
     template<typename Counter, class Class>                             \
-    struct __type##name : Counter                                                                       \
+    struct __type##member : Counter                                     \
     {                                                                   \
         template<typename F>                                            \
-        using reflect = __reflect__##name<F>;                                                           \
+        using reflect = __reflect__##member<F>;                         \
     };                                                                  \
                                                                         \
     auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)   \
     {                                                                   \
         using Class = std::decay_t<decltype(*this)>;                    \
                                                                         \
-        using type = __type##name<decltype(counter), Class>;                                            \
+        using type = __type##member<decltype(counter), Class>;          \
                                                                         \
         return type{};                                                  \
     }                                                                   \
                                                                         \
     INC_CLASS_COUNTER();                                                \
 
-#define INJECT_CODE_MEMBER_FUNCTION(name, injection_function)                                           \
-    __reflect_tag_##name() {}                                                                           \
+#define INJECT_CODE_MEMBER_FUNCTION(member, injection_function)                                         \
+    __injection_tag_##member() {}                                                                       \
                                                                                                         \
-    injection_function(name);                                                                           \
+    injection_function(member);                                                                         \
                                                                                                         \
     /* Here, we basically replace the original member-function,                                     */  \
     /* by defining a new member-function template with the same name,                               */  \
     /* which simply forwards to the implementation of the original member-function.                 */  \
     template<typename... Args>                                                                          \
-    auto name(Args &&... args) -> decltype(__reflect_tag_##name(std::forward<Args>(args)...))           \
+    auto member(Args &&... args) -> decltype(__reflect_tag_##member(std::forward<Args>(args)...))     \
     {                                                                                                   \
         /* Because the function containing the implementation is defined                            */  \
         /* after this member function, it is not available at this point.                           */  \
         /* By making the evaluation of '*this' dependent on the template arguments,                 */  \
         /* we can work around this (this is exactly what 'delayed()' does).                         */  \
-        return utils::delayed<Args...>(*this).__reflect_impl_##name(std::forward<Args>(args)...);       \
+        return utils::delayed<Args...>(*this).__reflect_impl_##member(std::forward<Args>(args)...);   \
     }                                                                                                   \
                                                                                                         \
     /* Here, we define a member-function that will contain the implementation                       */  \
     /* of the original member-function.                                                             */  \
-    auto __reflect_impl_##name                                                                        \
+    auto __reflect_impl_##member                                                                      \
 
-#define REFLECTION_REFLECT_INTRUSIVE(name)                      \
-    INJECT_CODE_MEMBER_FUNCTION(name, REFLECTION_REFLECT_INTRUSIVE_IMPL)    \
+#define REFLECTION_REFLECT_INTRUSIVE(member)                                \
+    INJECT_CODE_MEMBER_FUNCTION(member, REFLECTION_REFLECT_INTRUSIVE_IMPL)  \
 
 //! Define a set of overloads such that we can use REFLECT both inside a class,
 //! as well as outside, by dispatching on the number of arguments.
