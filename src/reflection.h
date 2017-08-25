@@ -141,35 +141,35 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 } // namespace reflection
 
-#define REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member, call_member, F)     \
-    class ReflectorClassName                                                                                \
-        : public reflection::reflect_base<reflection::reflected_kind::member_function>                      \
-    {                                                                                                       \
-    private:                                                                                                \
-        template<typename... ExplicitArgs, typename... Args>                                                \
-        decltype(auto) indirect(Args &&... args)                                                            \
-        {                                                                                                   \
-            auto f = [](auto &obj, auto &&... args)                                                         \
-            {                                                                                               \
-                /* TODO: What if *this was an rvalue, then it should be auto &&obj */                       \
-                if constexpr (sizeof...(ExplicitArgs) == 0)                                                 \
-                    return obj.call_member(std::forward<Args>(args)...);                                    \
-                else if constexpr (reflection::always_true<Args...>)                                        \
-                    return obj.template call_member<ExplicitArgs...>(                                       \
-                        std::forward<Args>(args)...);                                                       \
-            };                                                                                              \
-                                                                                                            \
-            return F{}(*this, f, std::forward<Args>(args)...);                                              \
-        }                                                                                                   \
-                                                                                                            \
-    public:                                                                                                 \
-        template<typename... ExplicitArgs, typename... Args>                                                \
-        auto member(Args &&... args)                                                                        \
-            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))                             \
-        {                                                                                                   \
-            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);                                  \
-        }                                                                                                   \
-    }                                                                                                       \
+#define REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member, F)  \
+    class ReflectorClassName                                                                \
+        : public reflection::reflect_base<reflection::reflected_kind::member_function>      \
+    {                                                                                       \
+    private:                                                                                \
+        template<typename... ExplicitArgs, typename... Args>                                \
+        decltype(auto) indirect(Args &&... args)                                            \
+        {                                                                                   \
+            auto f = [](auto &obj, auto &&... args)                                         \
+            {                                                                               \
+                /* TODO: What if *this was an rvalue, then it should be auto &&obj */       \
+                if constexpr (sizeof...(ExplicitArgs) == 0)                                 \
+                    return obj.member(std::forward<Args>(args)...);                         \
+                else if constexpr (reflection::always_true<Args...>)                        \
+                    return obj.template member<ExplicitArgs...>(                            \
+                        std::forward<Args>(args)...);                                       \
+            };                                                                              \
+                                                                                            \
+            return F{}(*this, f, std::forward<Args>(args)...);                              \
+        }                                                                                   \
+                                                                                            \
+    public:                                                                                 \
+        template<typename... ExplicitArgs, typename... Args>                                \
+        auto member(Args &&... args)                                                        \
+            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))             \
+        {                                                                                   \
+            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);                  \
+        }                                                                                   \
+    }                                                                                       \
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                      \
     template<>                                                              \
@@ -193,7 +193,6 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
             REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(            \
                 reflect_member_function,                                    \
                 member,                                                     \
-                member,                                                     \
                 F);                                                         \
         };                                                                  \
     };                                                                      \
@@ -204,30 +203,29 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 // TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 // TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 #define REFLECTION_REFLECT_INTRUSIVE_IMPL(name)                                                         \
-    template<typename F>                                                                                \
-    REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(                                                \
+    template<typename F>                                                \
+    REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(                \
         __reflect__##name,                                                                              \
         name,                                                                                           \
-        __reflect_impl_##name,                                                                          \
-        F);                                                                                             \
-                                                                                                        \
-    template<typename Counter, class Class>                                                             \
+        F);                                                             \
+                                                                        \
+    template<typename Counter, class Class>                             \
     struct __type##name : Counter                                                                       \
-    {                                                                                                   \
-        template<typename F>                                                                            \
+    {                                                                   \
+        template<typename F>                                            \
         using reflect = __reflect__##name<F>;                                                           \
-    };                                                                                                  \
-                                                                                                        \
-    auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)                                   \
-    {                                                                                                   \
-        using Class = std::decay_t<decltype(*this)>;                                                    \
-                                                                                                        \
+    };                                                                  \
+                                                                        \
+    auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)   \
+    {                                                                   \
+        using Class = std::decay_t<decltype(*this)>;                    \
+                                                                        \
         using type = __type##name<decltype(counter), Class>;                                            \
-                                                                                                        \
-        return type{};                                                                                  \
-    }                                                                                                   \
-                                                                                                        \
-    INC_CLASS_COUNTER();                                                                                \
+                                                                        \
+        return type{};                                                  \
+    }                                                                   \
+                                                                        \
+    INC_CLASS_COUNTER();                                                \
 
 #define INJECT_CODE_MEMBER_FUNCTION(name, injection_function)                                           \
     __reflect_tag_##name() {}                                                                           \
