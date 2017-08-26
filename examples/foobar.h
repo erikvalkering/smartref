@@ -95,6 +95,37 @@ struct Overloads
     }
 };
 
+struct GenericClassA
+{
+    void foobar()
+    {
+        std::cout << "GenericClassA::foobar()" << std::endl;
+    }
+
+    template<typename T>
+    void foobar(T x)
+    {
+        std::cout << "GenericClassA::foobar(" << typeid(x).name() << ")" << std::endl;
+    }
+
+    using some_type = int;
+};
+
+struct GenericClassB
+{
+    void foobar()
+    {
+        std::cout << "GenericClassB::foobar()" << std::endl;
+    }
+
+    void foobar(int x)
+    {
+        std::cout << "GenericClassB::foobar(int)" << std::endl;
+    }
+
+    using some_type = float;
+};
+
 } // namespace foobar
 
 template<typename Derived>
@@ -126,3 +157,6 @@ REFLECT(foobar::Bla, bla); // Member-type
 
 REFLECT(foobar::Overloads, foo);
 REFLECT(foobar::Overloads, bar);
+
+REFLECT(auto, foobar);
+REFLECT(auto, some_type);

@@ -137,4 +137,17 @@ int main()
         o.foo(0);
         o.bar<int>();
     }
+
+    {
+        Property<foobar::GenericClassA> a;
+        a.foobar();
+        a.foobar(1);
+        a.foobar(1.0);
+        static_assert(std::is_same<decltype(a)::some_type, GenericClassA::some_type>::value);
+
+        Property<foobar::GenericClassB> b;
+        b.foobar();
+        b.foobar(1);
+        static_assert(std::is_same<decltype(b)::some_type, GenericClassB::some_type>::value);
+    }
 }
