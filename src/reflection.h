@@ -141,7 +141,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 } // namespace reflection
 
-#define REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member) \
+#define REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
     template<typename F>                                                                \
     class ReflectorClassName                                                            \
         : public reflection::reflect_base<reflection::reflected_kind::member_function>  \
@@ -190,7 +190,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
             using detect_is_member_type = decltype(                         \
                 std::declval<typename utils::Delayed<Class, T>::member>()); \
                                                                             \
-            REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(            \
+            REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(               \
                 reflect_member_function,                                    \
                 member);                                                    \
         };                                                                  \
@@ -202,7 +202,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 // TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 // TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 #define REFLECTION_REFLECT_INTRUSIVE_IMPL(member)                       \
-    REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(                \
+    REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(                   \
         __reflect__##member,                                            \
         member);                                                        \
                                                                         \
