@@ -62,22 +62,6 @@ struct reflected_class_member_count<T, count, void>
 template<typename T>
 constexpr auto reflected_class_member_count_v = reflected_class_member_count<T>::value;
 
-// TODO: Copy-pasted from smartref.h --> factor out
-template<class Class, typename... T>
-struct DelayedImpl
-{
-    using type = Class;
-};
-
-template<class Class, typename... T>
-using Delayed = typename DelayedImpl<Class, T...>::type;
-
-template<typename... T, typename Arg>
-decltype(auto) delayed(Arg &&arg)
-{
-    return std::forward<Arg>(arg);
-}
-
 // A helper type trait to be used in an std::enable_if.
 // The template parameter is an expression that is supposed to be
 // a valid typename (e.g. 'int' or 'typename vector<int>::value_type'.
@@ -157,112 +141,113 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 } // namespace reflection
 
-#define REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member, call_member, F)     \
-    class ReflectorClassName                                                                                \
-        : public reflection::reflect_base<reflection::reflected_kind::member_function>                      \
-    {                                                                                                       \
-    private:                                                                                                \
-        template<typename... ExplicitArgs, typename... Args>                                                \
-        decltype(auto) indirect(Args &&... args)                                                            \
-        {                                                                                                   \
-            auto f = [](auto &obj, auto &&... args)                                                         \
-            {                                                                                               \
-                /* TODO: What if *this was an rvalue, then it should be auto &&obj */                       \
-                if constexpr (sizeof...(ExplicitArgs) == 0)                                                 \
-                    return obj.call_member(std::forward<Args>(args)...);                                    \
-                else if constexpr (reflection::always_true<Args...>)                                        \
-                    return obj.template call_member<ExplicitArgs...>(                                       \
-                        std::forward<Args>(args)...);                                                       \
-            };                                                                                              \
-                                                                                                            \
-            return F{}(*this, f, std::forward<Args>(args)...);                                              \
-        }                                                                                                   \
-                                                                                                            \
-    public:                                                                                                 \
-        template<typename... ExplicitArgs, typename... Args>                                                \
-        auto member(Args &&... args)                                                                        \
-            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))                             \
-        {                                                                                                   \
-            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);                                  \
-        }                                                                                                   \
-    }                                                                                                       \
+#define REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member) \
+    template<typename F>                                                                \
+    class ReflectorClassName                                                            \
+        : public reflection::reflect_base<reflection::reflected_kind::member_function>  \
+    {                                                                                   \
+    private:                                                                            \
+        template<typename... ExplicitArgs, typename... Args>                            \
+        decltype(auto) indirect(Args &&... args)                                        \
+        {                                                                               \
+            auto f = [](auto &obj, auto &&... args)                                     \
+            {                                                                           \
+                /* TODO: What if *this was an rvalue, then it should be auto &&obj */   \
+                if constexpr (sizeof...(ExplicitArgs) == 0)                             \
+                    return obj.member(std::forward<Args>(args)...);                     \
+                else if constexpr (reflection::always_true<Args...>)                    \
+                    return obj.template member<ExplicitArgs...>(                        \
+                        std::forward<Args>(args)...);                                   \
+            };                                                                          \
+                                                                                        \
+            return F{}(*this, f, std::forward<Args>(args)...);                          \
+        }                                                                               \
+                                                                                        \
+    public:                                                                             \
+        template<typename... ExplicitArgs, typename... Args>                            \
+        auto member(Args &&... args)                                                    \
+            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))         \
+        {                                                                               \
+            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);              \
+        }                                                                               \
+    }                                                                                   \
 
-#define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                  \
-    template<>                                                          \
-    struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>  \
-    {                                                                   \
-        using type = struct                                             \
-        {                                                               \
-            template<typename F>                                        \
-            class reflect_member_type                                   \
-                : public reflect_base<reflected_kind::member_type>      \
-            {                                                           \
-            public:                                                     \
-                using member = typename Delayed<Class, F>::member;      \
-            };                                                          \
-                                                                        \
-            template<typename T>                                        \
-            using detect_is_member_type = decltype(                     \
-                std::declval<typename Delayed<Class, T>::member>());    \
-                                                                        \
-            template<typename F>                                        \
-            REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(        \
-                reflect_member_function,                                \
-                member,                                                 \
-                member,                                                 \
-                F);                                                     \
-        };                                                              \
-    };                                                                  \
-                                                                        \
-    INC_COUNTER(Class)                                                  \
+#define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                      \
+    template<>                                                              \
+    struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>      \
+    {                                                                       \
+        using type = struct                                                 \
+        {                                                                   \
+            template<typename F>                                            \
+            class reflect_member_type                                       \
+                : public reflect_base<reflected_kind::member_type>          \
+            {                                                               \
+            public:                                                         \
+                using member = typename utils::Delayed<Class, F>::member;   \
+            };                                                              \
+                                                                            \
+            template<typename T>                                            \
+            using detect_is_member_type = decltype(                         \
+                std::declval<typename utils::Delayed<Class, T>::member>()); \
+                                                                            \
+            REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(            \
+                reflect_member_function,                                    \
+                member);                                                    \
+        };                                                                  \
+    };                                                                      \
+                                                                            \
+    INC_COUNTER(Class)                                                      \
 
 // TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 // TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
 // TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
-#define REFLECTION_REFLECT_INTRUSIVE(name)                                                              \
-    __reflect_tag_##name() {}                                                                           \
+#define REFLECTION_REFLECT_INTRUSIVE_IMPL(member)                       \
+    REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(                \
+        __reflect__##member,                                            \
+        member);                                                        \
+                                                                        \
+    template<typename Counter, class Class>                             \
+    struct __type##member : Counter                                     \
+    {                                                                   \
+        template<typename F>                                            \
+        using reflect = __reflect__##member<F>;                         \
+    };                                                                  \
+                                                                        \
+    auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)   \
+    {                                                                   \
+        using Class = std::decay_t<decltype(*this)>;                    \
+                                                                        \
+        using type = __type##member<decltype(counter), Class>;          \
+                                                                        \
+        return type{};                                                  \
+    }                                                                   \
+                                                                        \
+    INC_CLASS_COUNTER()                                                 \
+
+#define INJECT_CODE_MEMBER_FUNCTION(member, injection_function)                                         \
+    __injection_return_type_##member() {}                                                               \
                                                                                                         \
-    template<typename F>                                                                                \
-    REFLECTION_REFLECT_COMMON_MEMBER_FUNCTION_REFLECTOR(                                                \
-        __reflect__##name,                                                                              \
-        name,                                                                                           \
-        __reflect_impl_##name,                                                                          \
-        F);                                                                                             \
+    injection_function(member);                                                                         \
                                                                                                         \
-    template<typename Counter, class Class>                                                             \
-    struct __type##name : Counter                                                                       \
-    {                                                                                                   \
-        template<typename F>                                                                            \
-        using reflect = __reflect__##name<F>;                                                           \
-    };                                                                                                  \
-                                                                                                        \
-    auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)                                   \
-    {                                                                                                   \
-        using Class = std::decay_t<decltype(*this)>;                                                    \
-                                                                                                        \
-        using type = __type##name<decltype(counter), Class>;                                            \
-                                                                                                        \
-        return type{};                                                                                  \
-    }                                                                                                   \
-                                                                                                        \
-    INC_CLASS_COUNTER();                                                                                \
-                                                                                                        \
-    /* Here, we basically replace the reflected member-function,                                    */  \
+    /* Here, we basically replace the original member-function,                                     */  \
     /* by defining a new member-function template with the same name,                               */  \
-    /* which simply forwards to the implementation of the reflect member-function.                  */  \
+    /* which simply forwards to the implementation of the original member-function.                 */  \
     template<typename... Args>                                                                          \
-    auto name(Args &&... args) -> decltype(__reflect_tag_##name(std::forward<Args>(args)...))           \
+    auto member(Args &&... args) -> decltype(__injection_return_type_##member())                        \
     {                                                                                                   \
         /* Because the function containing the implementation is defined                            */  \
         /* after this member function, it is not available at this point.                           */  \
         /* By making the evaluation of '*this' dependent on the template arguments,                 */  \
         /* we can work around this (this is exactly what 'delayed()' does).                         */  \
-        return reflection::delayed<Args...>(*this).__reflect_impl_##name(std::forward<Args>(args)...);  \
+        return utils::delayed<Args...>(*this).__injection_impl_##member(std::forward<Args>(args)...);   \
     }                                                                                                   \
                                                                                                         \
     /* Here, we define a member-function that will contain the implementation                       */  \
-    /* of the reflected member-function.                                                            */  \
-    auto __reflect_impl_##name                                                                          \
+    /* of the original member-function.                                                             */  \
+    auto __injection_impl_##member                                                                      \
+
+#define REFLECTION_REFLECT_INTRUSIVE(member)                                \
+    INJECT_CODE_MEMBER_FUNCTION(member, REFLECTION_REFLECT_INTRUSIVE_IMPL)  \
 
 //! Define a set of overloads such that we can use REFLECT both inside a class,
 //! as well as outside, by dispatching on the number of arguments.
