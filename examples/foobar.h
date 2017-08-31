@@ -126,6 +126,17 @@ struct GenericClassB
     using some_type = float;
 };
 
+template<typename T>
+struct ClassTemplate
+{
+    void foobarbaz()
+    {
+        std::cout << "ClassTemplate<" << typeid(T).name() << ">::foobarbaz()" << std::endl;
+    }
+
+    using some_foo_type = double;
+};
+
 } // namespace foobar
 
 template<typename Derived>
@@ -160,3 +171,5 @@ REFLECT(foobar::Overloads, bar);
 
 REFLECT(auto, foobar);
 REFLECT(auto, some_type);
+REFLECT(auto, foobarbaz);
+REFLECT(auto, some_foo_type);
