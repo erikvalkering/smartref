@@ -81,7 +81,8 @@ template<typename Delegate, class Derived>
 using ReflectedMemberFunctions = ReflectedMemberFunctionsImpl<
     Delegate,
     Derived,
-    std::make_index_sequence<reflection::reflected_member_count_v<Delegate>>>;
+    std::make_index_sequence<std::tuple_size<decltype(reflection::reflect<Delegate>.members())>::value>
+>;
 
 // TODO: Unify these two type-functions
 template<typename Delegate, class Derived, size_t index>
