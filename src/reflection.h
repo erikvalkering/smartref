@@ -98,18 +98,32 @@ using Reflection = detail::Reflection<
 template<typename Class>
 constexpr auto reflect = Reflection<Class>{};
 
-template<class Reflection, typename F>
-constexpr static auto reify(Reflection, F)
+template<class Reflection>
+constexpr static auto is_member_type(Reflection)
 {
-    if constexpr (utils::is_detected_v<Reflection::template detect_is_member_type, F>)
+    return utils::is_detected_v<Reflection::template detect_is_member_type, void>;
+}
+
+template<class Reflection>
+constexpr static auto is_member_function(Reflection)
+{
+    //! Member-functions currently cannot be detected (yet).
+    //! However, that is not a problem, because they will be SFINAE'ed away,
+    //! in case the reflected entity wasn't a member-function.
+    // TODO: It might still be an annoyance for IDEs, though, where it could show
+    //       the candidate member-functions, even though none exists.
+    return always_true<Reflection>;
+}
+
+template<class Reflection, typename F>
+constexpr static auto reify(Reflection refl, F)
+{
+    if constexpr (is_member_type(refl))
     {
         return typename Reflection::template reflect_member_type<F>{};
     }
-    else if constexpr (always_true<F>)
+    else if constexpr (is_member_function(refl))
     {
-        //! Member-functions currently cannot be detected (yet).
-        //! However, that is not a problem, because they will be SFINAE'ed away,
-        //! in case the reflected entity wasn't a member-function.
         return typename Reflection::template reflect_member_function<F>{};
     }
 }
