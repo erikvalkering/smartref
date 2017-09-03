@@ -84,25 +84,6 @@ using ReflectedMemberFunctions = ReflectedMemberFunctionsImpl<
     std::make_index_sequence<std::tuple_size<decltype(reflection::reflect<Delegate>.members())>::value>
 >;
 
-// TODO: Unify these two type-functions
-template<typename Delegate, class Derived, size_t index>
-using using_class_member_t = typename reflection::reflected_class_member_t<Delegate, index>::template reflect<Forwarder<Delegate, Derived>>;
-
-template<typename Delegate, class Derived, typename index_pack>
-struct ReflectedClassMemberFunctionsImpl;
-
-template<typename Delegate, class Derived, size_t... indices>
-struct ReflectedClassMemberFunctionsImpl<Delegate, Derived, std::index_sequence<indices...>>
-    : using_class_member_t<Delegate, Derived, indices>...
-{
-};
-
-template<typename Delegate, class Derived>
-using ReflectedClassMemberFunctions = ReflectedClassMemberFunctionsImpl<
-    Delegate,
-    Derived,
-    std::make_index_sequence<reflection::reflected_class_member_count_v<Delegate>>>;
-
 template<typename MemberTypeTag, typename Delegate, typename = void>
 struct member_type_introducer
 {
@@ -166,8 +147,7 @@ template<typename Delegate, class Derived>
 class using_ : public using_base<Delegate, Derived>,
                public MemberFunctions<Delegate, using_<Delegate, Derived>>,
                public STL<Delegate, using_<Delegate, Derived>>,
-               public ReflectedMemberFunctions<Delegate, using_<Delegate, Derived>>,
-               public ReflectedClassMemberFunctions<Delegate, using_<Delegate, Derived>>
+               public ReflectedMemberFunctions<Delegate, using_<Delegate, Derived>>
 {
 };
 

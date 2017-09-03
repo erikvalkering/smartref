@@ -75,15 +75,18 @@ constexpr auto always_true = true;
 
 namespace detail {
 
-template<typename Class, typename index_pack>
+template<typename Class, typename index_pack_intrusive, typename index_pack_non_intrusive>
 struct Reflection;
 
-template<typename Class, size_t... indices>
-struct Reflection<Class, std::index_sequence<indices...>>
+template<typename Class, size_t... indices_intrusive, size_t... indices_non_intrusive>
+struct Reflection<Class, std::index_sequence<indices_intrusive...>, std::index_sequence<indices_non_intrusive...>>
 {
     auto members() const
     {
-        return std::tuple<reflected_member_t<Class, indices>...>{};
+        return std::tuple<
+            reflected_class_member_t<Class, indices_intrusive>...,
+            reflected_member_t<Class, indices_non_intrusive>...
+        >{};
     }
 };
 
@@ -92,6 +95,7 @@ struct Reflection<Class, std::index_sequence<indices...>>
 template<typename Class>
 using Reflection = detail::Reflection<
     Class,
+    std::make_index_sequence<reflected_class_member_count_v<Class>>,
     std::make_index_sequence<reflected_member_count_v<Class>>
 >;
 
@@ -233,7 +237,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     struct __type##member : Counter                                     \
     {                                                                   \
         template<typename F>                                            \
-        using reflect = __reflect__##member<F>;                         \
+        using reflect_member_function = __reflect__##member<F>;         \
     };                                                                  \
                                                                         \
     auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)   \
