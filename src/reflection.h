@@ -98,10 +98,13 @@ using Reflection = detail::Reflection<
 template<typename Class>
 constexpr auto reflect = Reflection<Class>{};
 
+template<typename Reflection>
+using detect_is_member_type = typename Reflection::template detect_is_member_type<void>;
+
 template<class Reflection>
 constexpr static auto is_member_type(Reflection)
 {
-    return utils::is_detected_v<Reflection::template detect_is_member_type, void>;
+    return utils::is_detected_v<detect_is_member_type, Reflection>;
 }
 
 template<class Reflection>
