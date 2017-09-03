@@ -141,6 +141,19 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 } // namespace reflection
 
+#define REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, Class, member) \
+    template<typename F>                                                                \
+    class reflect_member_type                                                           \
+        : public reflection::reflect_base<reflection::reflected_kind::member_type>      \
+    {                                                                                   \
+    public:                                                                             \
+        using member = typename utils::Delayed<Class, F>::member;                       \
+    };                                                                                  \
+                                                                                        \
+    template<typename T>                                                                \
+    using detect_is_member_type = decltype(                                             \
+        std::declval<typename utils::Delayed<Class, T>::member>())                      \
+
 #define REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
     template<typename F>                                                                \
     class ReflectorClassName                                                            \
@@ -178,17 +191,10 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     {                                                                       \
         using type = struct                                                 \
         {                                                                   \
-            template<typename F>                                            \
-            class reflect_member_type                                       \
-                : public reflect_base<reflected_kind::member_type>          \
-            {                                                               \
-            public:                                                         \
-                using member = typename utils::Delayed<Class, F>::member;   \
-            };                                                              \
-                                                                            \
-            template<typename T>                                            \
-            using detect_is_member_type = decltype(                         \
-                std::declval<typename utils::Delayed<Class, T>::member>()); \
+            REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(                   \
+                reflect_member_type,                                        \
+                Class,                                                      \
+                member);                                                    \
                                                                             \
             REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(               \
                 reflect_member_function,                                    \
