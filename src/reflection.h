@@ -7,6 +7,9 @@
 
 namespace reflection {
 
+// TODO: Move all the low-level stuff in a details namespace
+// TODO: Split into three headers: common, intrusive, non-intrusive
+// TODO: Rename to intrusive and non-intrusive
 template<typename T, size_t counter>
 struct reflected_member
 {
@@ -46,6 +49,7 @@ struct reflected_class_member
     using type = void;
 };
 
+// TODO: unify non-intrusive to use same mechanism
 template<typename T, size_t counter>
 struct reflected_class_member<T, counter, std::enable_if_t<decltype(std::declval<T>().__reflect(counter::Counter<counter>{}))::value == counter>>
 {
