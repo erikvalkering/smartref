@@ -44,13 +44,13 @@ template<typename Reflection>
 using detect_is_member_type = typename Reflection::template detect_is_member_type<void>;
 
 template<class Reflection>
-constexpr static auto is_member_type(Reflection)
+constexpr static auto is_member_type()
 {
     return utils::is_detected_v<detect_is_member_type, Reflection>;
 }
 
 template<class Reflection>
-constexpr static auto is_member_function(Reflection)
+constexpr static auto is_member_function()
 {
     //! Member-functions currently cannot be detected (yet).
     //! However, that is not a problem, because they will be SFINAE'ed away,
@@ -63,11 +63,11 @@ constexpr static auto is_member_function(Reflection)
 template<class Reflection, typename F>
 constexpr static auto reify(Reflection refl, F)
 {
-    if constexpr (is_member_type(refl))
+    if constexpr (is_member_type<Reflection>())
     {
         return typename Reflection::template reflect_member_type<F>{};
     }
-    else if constexpr (is_member_function(refl))
+    else if constexpr (is_member_function<Reflection>())
     {
         return typename Reflection::template reflect_member_function<F>{};
     }
