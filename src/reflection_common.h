@@ -2,6 +2,8 @@
 
 #include "utils.h"
 
+#include <cstddef>
+
 namespace reflection {
 
 // TODO: Move all the low-level stuff in a details namespace
