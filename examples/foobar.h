@@ -167,7 +167,7 @@ REFLECT(foobar::Bla, bla); // Member-type
 REFLECT(foobar::Overloads, foo);
 REFLECT(foobar::Overloads, bar);
 
-REFLECT(auto, foobar);
-REFLECT(auto, some_type);
-REFLECT(auto, foobarbaz);
-REFLECT(auto, some_foo_type);
+// REFLECT(auto, foobar);
+// REFLECT(auto, some_type);
+// REFLECT(auto, foobarbaz);
+// REFLECT(auto, some_foo_type);
