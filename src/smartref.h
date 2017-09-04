@@ -57,7 +57,7 @@ struct Forwarder
 };
 
 template<typename Delegate, class Derived>
-struct MemberFunctions {};
+struct Members {};
 
 template<typename Delegate, class Derived, size_t index>
 using using_member_t = decltype(
@@ -68,17 +68,16 @@ using using_member_t = decltype(
 );
 
 template<typename Delegate, class Derived, typename index_pack>
-struct ReflectedMemberFunctionsImpl;
+struct ReflectedMembersImpl;
 
 template<typename Delegate, class Derived, size_t... indices>
-struct ReflectedMemberFunctionsImpl<Delegate, Derived, std::index_sequence<indices...>>
+struct ReflectedMembersImpl<Delegate, Derived, std::index_sequence<indices...>>
     : using_member_t<Delegate, Derived, indices>...
 {
 };
 
-// TODO: Rename this to emphasize it's not only about member-functions, but also member-types (as well as member-fields, once implemented)
 template<typename Delegate, class Derived>
-using ReflectedMemberFunctions = ReflectedMemberFunctionsImpl<
+using ReflectedMembers = ReflectedMembersImpl<
     Delegate,
     Derived,
     std::make_index_sequence<std::tuple_size<decltype(reflection::reflect<Delegate>.members())>::value>
@@ -145,9 +144,9 @@ struct using_base<Delegate, void>
 
 template<typename Delegate, class Derived>
 class using_ : public using_base<Delegate, Derived>,
-               public MemberFunctions<Delegate, using_<Delegate, Derived>>,
+               public Members<Delegate, using_<Delegate, Derived>>,
                public STL<Delegate, using_<Delegate, Derived>>,
-               public ReflectedMemberFunctions<Delegate, using_<Delegate, Derived>>
+               public ReflectedMembers<Delegate, using_<Delegate, Derived>>
 {
 };
 

@@ -140,7 +140,7 @@ struct ClassTemplate
 } // namespace foobar
 
 template<typename Derived>
-struct smartref::MemberFunctions<foobar::Foo, Derived>
+struct smartref::Members<foobar::Foo, Derived>
 {
     USING_MEMBER(foo)
 };
@@ -152,7 +152,7 @@ namespace smartref {
 DECLARE_USING_MEMBER_TYPE(baz);
 
 template<typename Derived>
-struct ::smartref::MemberFunctions<foobar::Bla, Derived>
+struct ::smartref::Members<foobar::Bla, Derived>
   : USING_MEMBER_TYPE(foobar::Bla, baz)
 {
 };
