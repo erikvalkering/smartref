@@ -58,14 +58,6 @@ using reflected_class_member_t = typename reflected_class_member<T, counter>::ty
 template<typename T>
 constexpr auto reflected_class_member_count_v = reflected_member_count<reflected_class_member_t, T>::value;
 
-// A helper type trait to be used in an std::enable_if.
-// The template parameter is an expression that is supposed to be
-// a valid typename (e.g. 'int' or 'typename vector<int>::value_type'.
-// If it is not a valid expression, SFINAE should kick in, and reject
-// the candidate template.
-template<typename T>
-constexpr auto is_typename_v = std::is_same<T, T>::value;
-
 template<typename... Ts>
 constexpr auto always_true = true;
 
