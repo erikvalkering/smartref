@@ -149,12 +149,10 @@ namespace smartref {
 
 // TODO: This currently needs to be declared in the smartref namespace.
 //       Figure out a way that it can be declared within an arbitrary namespace.
-DECLARE_USING_MEMBER_TYPE(baz);
-
 template<typename Derived>
 struct ::smartref::Members<foobar::Bla, Derived>
-  : USING_MEMBER_TYPE(foobar::Bla, baz)
 {
+    using baz = typename foobar::Bla::baz;
 };
 
 } // namespace smartref
