@@ -5,8 +5,6 @@
 
 namespace reflection {
 
-// TODO: Rename to intrusive and non-intrusive
-
 template<typename T, size_t counter>
 struct reflected_member
 {

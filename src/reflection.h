@@ -22,7 +22,7 @@ struct Reflection<Class, std::index_sequence<indices_intrusive...>, std::index_s
     auto members() const
     {
         return std::tuple<
-            reflected_class_member_t<Class, indices_intrusive>...,
+            reflected_member_intrusive_t<Class, indices_intrusive>...,
             reflected_member_t<Class, indices_non_intrusive>...
         >{};
     }
@@ -33,7 +33,7 @@ struct Reflection<Class, std::index_sequence<indices_intrusive...>, std::index_s
 template<typename Class>
 using Reflection = detail::Reflection<
     Class,
-    std::make_index_sequence<reflected_class_member_count_v<Class>>,
+    std::make_index_sequence<reflected_member_intrusive_count_v<Class>>,
     std::make_index_sequence<reflected_member_count_v<Class>>
 >;
 

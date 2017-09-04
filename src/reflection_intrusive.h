@@ -7,23 +7,23 @@
 namespace reflection {
 
 template<typename T, size_t counter, typename = void>
-struct reflected_class_member
+struct reflected_member_intrusive
 {
     using type = void;
 };
 
 // TODO: unify non-intrusive to use same mechanism
 template<typename T, size_t counter>
-struct reflected_class_member<T, counter, std::enable_if_t<decltype(std::declval<T>().__reflect(counter::Counter<counter>{}))::value == counter>>
+struct reflected_member_intrusive<T, counter, std::enable_if_t<decltype(std::declval<T>().__reflect(counter::Counter<counter>{}))::value == counter>>
 {
     using type = decltype(std::declval<T>().__reflect(counter::Counter<counter>{}));
 };
 
 template<typename T, size_t counter>
-using reflected_class_member_t = typename reflected_class_member<T, counter>::type;
+using reflected_member_intrusive_t = typename reflected_member_intrusive<T, counter>::type;
 
 template<typename T>
-constexpr auto reflected_class_member_count_v = reflected_member_count<reflected_class_member_t, T>::value;
+constexpr auto reflected_member_intrusive_count_v = reflected_member_count<reflected_member_intrusive_t, T>::value;
 
 } // namespace reflection
 
