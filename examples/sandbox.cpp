@@ -138,24 +138,24 @@ int main()
         o.bar<int>();
     }
 
-    {
-        Property<foobar::GenericClassA> a;
-        a.foobar();
-        a.foobar(1);
-        a.foobar(1.0);
-        static_assert(std::is_same<decltype(a)::some_type, GenericClassA::some_type>::value);
+    // {
+    //     Property<foobar::GenericClassA> a;
+    //     a.foobar();
+    //     a.foobar(1);
+    //     a.foobar(1.0);
+    //     static_assert(std::is_same<decltype(a)::some_type, GenericClassA::some_type>::value);
 
-        Property<foobar::GenericClassB> b;
-        b.foobar();
-        b.foobar(1);
-        static_assert(std::is_same<decltype(b)::some_type, GenericClassB::some_type>::value);
+    //     Property<foobar::GenericClassB> b;
+    //     b.foobar();
+    //     b.foobar(1);
+    //     static_assert(std::is_same<decltype(b)::some_type, GenericClassB::some_type>::value);
 
-        Property<foobar::ClassTemplate<int>> c;
-        c.foobarbaz();
-        static_assert(std::is_same<decltype(c)::some_foo_type, ClassTemplate<int>::some_foo_type>::value);
+    //     Property<foobar::ClassTemplate<int>> c;
+    //     c.foobarbaz();
+    //     static_assert(std::is_same<decltype(c)::some_foo_type, ClassTemplate<int>::some_foo_type>::value);
 
-        Property<foobar::ClassTemplate<float>> d;
-        d.foobarbaz();
-        static_assert(std::is_same<decltype(d)::some_foo_type, ClassTemplate<float>::some_foo_type>::value);
-    }
+    //     Property<foobar::ClassTemplate<float>> d;
+    //     d.foobarbaz();
+    //     static_assert(std::is_same<decltype(d)::some_foo_type, ClassTemplate<float>::some_foo_type>::value);
+    // }
 }
