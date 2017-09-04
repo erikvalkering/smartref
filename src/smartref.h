@@ -59,20 +59,20 @@ struct Forwarder
 template<typename Delegate, class Derived>
 struct Members {};
 
-template<typename Delegate, class Derived, size_t index>
+template<typename Delegate, class Derived, typename Reflection>
 using using_member_t = decltype(
     reflection::reify(
-        std::get<index>(reflection::reflect<Delegate>.members()),
+        Reflection{},
         Forwarder<Delegate, Derived>{}
     )
 );
 
-template<typename Delegate, class Derived, typename index_pack>
+template<typename Delegate, class Derived, typename Members>
 struct ReflectedMembersImpl;
 
-template<typename Delegate, class Derived, size_t... indices>
-struct ReflectedMembersImpl<Delegate, Derived, std::index_sequence<indices...>>
-    : using_member_t<Delegate, Derived, indices>...
+template<typename Delegate, class Derived, typename... Reflections>
+struct ReflectedMembersImpl<Delegate, Derived, std::tuple<Reflections...>>
+    : using_member_t<Delegate, Derived, Reflections>...
 {
 };
 
@@ -80,7 +80,7 @@ template<typename Delegate, class Derived>
 using ReflectedMembers = ReflectedMembersImpl<
     Delegate,
     Derived,
-    std::make_index_sequence<std::tuple_size<decltype(reflection::reflect<Delegate>.members())>::value>
+    decltype(reflection::reflect<Delegate>.members())
 >;
 
 template<typename MemberTypeTag, typename Delegate, typename = void>
