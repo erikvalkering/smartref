@@ -16,20 +16,29 @@ struct reflected_member
 template<typename T, size_t counter>
 using reflected_member_t = typename reflected_member<T, counter>::type;
 
-template<typename T, size_t count = 0, typename = reflected_member_t<T, count>>
+template<
+    template<typename, size_t> class reflected_member_slot_t,
+    typename T,
+    size_t count = 0,
+    typename = reflected_member_slot_t<T, count>
+>
 struct reflected_member_count
 {
-    static constexpr auto value = reflected_member_count<T, count + 1>::value;
+    static constexpr auto value = reflected_member_count<reflected_member_slot_t, T, count + 1>::value;
 };
 
-template<typename T, size_t count>
-struct reflected_member_count<T, count, void>
+template<
+    template<typename, size_t> class reflected_member_slot_t,
+    typename T,
+    size_t count
+>
+struct reflected_member_count<reflected_member_slot_t, T, count, void>
 {
     static constexpr auto value = count;
 };
 
 template<typename T>
-constexpr auto reflected_member_count_v = reflected_member_count<T>::value;
+constexpr auto reflected_member_count_v = reflected_member_count<reflected_member_t, T>::value;
 
 template<typename T, size_t counter, typename = void>
 struct reflected_class_member
@@ -46,21 +55,8 @@ struct reflected_class_member<T, counter, std::enable_if_t<decltype(std::declval
 template<typename T, size_t counter>
 using reflected_class_member_t = typename reflected_class_member<T, counter>::type;
 
-// TODO: Get rid of code duplication between reflected_member_count and reflected_class_member_count
-template<typename T, size_t count = 0, typename = reflected_class_member_t<T, count>>
-struct reflected_class_member_count
-{
-    static constexpr auto value = reflected_class_member_count<T, count + 1>::value;
-};
-
-template<typename T, size_t count>
-struct reflected_class_member_count<T, count, void>
-{
-    static constexpr auto value = count;
-};
-
 template<typename T>
-constexpr auto reflected_class_member_count_v = reflected_class_member_count<T>::value;
+constexpr auto reflected_class_member_count_v = reflected_member_count<reflected_class_member_t, T>::value;
 
 // A helper type trait to be used in an std::enable_if.
 // The template parameter is an expression that is supposed to be
