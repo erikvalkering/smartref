@@ -6,8 +6,6 @@
 
 namespace reflection {
 
-// TODO: Move all the low-level stuff in a details namespace
-
 template<
     template<typename, size_t> class reflected_member_slot_t,
     typename T,
