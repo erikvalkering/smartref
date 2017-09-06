@@ -56,7 +56,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 #define REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
     template<typename F>                                                            \
-    class reflect_member_type                                                       \
+    class ReflectorClassName                                                        \
         : public reflection::reflect_base<reflection::reflected_kind::member_type>  \
     {                                                                               \
     public:                                                                         \
