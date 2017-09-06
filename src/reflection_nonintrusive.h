@@ -27,7 +27,6 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
         {                                                               \
             REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(               \
                 reflect_member_type,                                    \
-                Class,                                                  \
                 member);                                                \
                                                                         \
             REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(           \

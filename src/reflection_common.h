@@ -54,18 +54,18 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 } // namespace reflection
 
-#define REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, Class_, member) \
-    template<typename F>                                                                \
-    class reflect_member_type                                                           \
-        : public reflection::reflect_base<reflection::reflected_kind::member_type>      \
-    {                                                                                   \
-    public:                                                                             \
-        using member = typename F::Class::member;                                       \
-    };                                                                                  \
-                                                                                        \
-    template<typename F>                                                                \
-    using detect_is_member_type = decltype(                                             \
-        std::declval<typename F::Class::member>())                                      \
+#define REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
+    template<typename F>                                                            \
+    class reflect_member_type                                                       \
+        : public reflection::reflect_base<reflection::reflected_kind::member_type>  \
+    {                                                                               \
+    public:                                                                         \
+        using member = typename F::Class::member;                                   \
+    };                                                                              \
+                                                                                    \
+    template<typename F>                                                            \
+    using detect_is_member_type = decltype(                                         \
+        std::declval<typename F::Class::member>())                                  \
 
 #define REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
     template<typename F>                                                                \
