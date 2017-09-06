@@ -76,11 +76,14 @@ struct ReflectedMembersImpl<Delegate, Derived, std::tuple<Reflections...>>
 {
 };
 
-template<typename Delegate, class Derived>
+template<
+    typename Delegate,
+    class Derived,
+    class ReflectionClass = Delegate>
 using ReflectedMembers = ReflectedMembersImpl<
     Delegate,
     Derived,
-    decltype(reflection::reflect<Delegate>.members())
+    decltype(reflection::reflect<ReflectionClass>.members())
 >;
 
 template<typename MemberTypeTag, typename Delegate, typename = void>
