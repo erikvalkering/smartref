@@ -41,6 +41,10 @@ auto &delegate(Base &base)
 template<typename Delegate, class Derived>
 struct Forwarder
 {
+    // TODO: Maybe not access this directly,
+    //       but using a helper function.
+    using Class = Delegate;
+
     template<typename Self, typename F, typename... Args>
     auto operator()(Self &self, F f, Args &&... args)
     {

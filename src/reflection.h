@@ -40,13 +40,13 @@ using Reflection = detail::Reflection<
 template<typename Class>
 constexpr auto reflect = Reflection<Class>{};
 
-template<typename Reflection>
-using detect_is_member_type = typename Reflection::template detect_is_member_type<void>;
+template<typename Reflection, typename F>
+using detect_is_member_type = typename Reflection::template detect_is_member_type<F>;
 
-template<class Reflection>
+template<class Reflection, typename F>
 constexpr static auto is_member_type()
 {
-    return utils::is_detected_v<detect_is_member_type, Reflection>;
+    return utils::is_detected_v<detect_is_member_type, Reflection, F>;
 }
 
 template<class Reflection>
@@ -63,7 +63,8 @@ constexpr static auto is_member_function()
 template<class Reflection, typename F>
 constexpr static auto reify(Reflection refl, F)
 {
-    if constexpr (is_member_type<Reflection>())
+    // TODO: Shouldn't we be passing the class instead of F?
+    if constexpr (is_member_type<Reflection, F>())
     {
         return typename Reflection::template reflect_member_type<F>{};
     }
