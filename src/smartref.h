@@ -154,6 +154,7 @@ class using_ : public using_base<Delegate, Derived>
              , public Members<Delegate, using_<Delegate, Derived>>
              , public STL<Delegate, using_<Delegate, Derived>>
              , public ReflectedMembers<Delegate, using_<Delegate, Derived>>
+             , public ReflectedMembers<Delegate, using_<Delegate, Derived>, reflection::auto_>
 {
 };
 
