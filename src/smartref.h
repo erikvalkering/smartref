@@ -71,11 +71,11 @@ using using_member_t = decltype(
     )
 );
 
-template<typename Delegate, class Derived, typename Members>
+template<typename tag, typename Delegate, class Derived, typename Members>
 struct ReflectedMembersImpl;
 
-template<typename Delegate, class Derived, typename... Reflections>
-struct ReflectedMembersImpl<Delegate, Derived, std::tuple<Reflections...>>
+template<typename tag, typename Delegate, class Derived, typename... Reflections>
+struct ReflectedMembersImpl<tag, Delegate, Derived, std::tuple<Reflections...>>
     : using_member_t<Delegate, Derived, Reflections>...
 {
 };
@@ -85,6 +85,7 @@ template<
     class Derived,
     class ReflectionClass = Delegate>
 using ReflectedMembers = ReflectedMembersImpl<
+    ReflectionClass,
     Delegate,
     Derived,
     decltype(reflection::reflect<ReflectionClass>.members())
