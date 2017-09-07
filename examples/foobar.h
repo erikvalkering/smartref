@@ -167,7 +167,10 @@ REFLECT(foobar::Bla, bla); // Member-type
 REFLECT(foobar::Overloads, foo);
 REFLECT(foobar::Overloads, bar);
 
-// REFLECT(auto, foobar);
-// REFLECT(auto, some_type);
-// REFLECT(auto, foobarbaz);
-// REFLECT(auto, some_foo_type);
+// TODO: Come up with a mechanism to support 'auto' syntax
+REFLECT(reflection::auto_, foobar);
+REFLECT(reflection::auto_, some_type);
+REFLECT(reflection::auto_, foobarbaz);
+REFLECT(reflection::auto_, some_foo_type);
+
+static_assert(std::tuple_size<decltype(reflection::reflect<reflection::auto_>.members())>::value == 4);
