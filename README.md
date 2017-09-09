@@ -62,21 +62,21 @@ for (auto &x : v)
 }
 ```
 
-Out of the box, the `using_` class-template defines member-functions and member-types corresponding to all those found in the data types defined by the `STL`. In order to support user-defined types, their member-functions and member-types need to be _registered_. For this, the `smartref` library comes with a tiny reflection utility, which provides an intrusive as well as a non-intrusive `REFLECT` macro, to annotate the classes.
+Out of the box, the `using_` class-template defines member-functions and member-types corresponding to all those found in the data types defined by the `STL`. In order to support user-defined types, their member-functions and member-types need to be _registered_. For this, the `smartref` library comes with a tiny reflection utility, which provides an intrusive as well as a non-intrusive `REFLECTABLE` macro, to annotate the classes.
 
 For example, by wrapping the name of a member-function inside this macro, this member-function can be picked-up automatically by the `using_` class-template.
 
 ```c++
 struct Foo
 {
-    int REFLECT(bar)(bool a, unique_ptr<double> b) {...}
+    int REFLECTABLE(bar)(bool a, unique_ptr<double> b) {...}
 };
 
 proxy<Foo> foo = ...;
 auto x = foo.bar(true, make_unique<double>(3.141592654));
 ```
 
-Non-intrusive reflection is also possible using the `REFLECT` macro, for example to support 3rd-party data-types:
+Non-intrusive reflection is also possible using the `REFLECTABLE` macro, for example to support 3rd-party data-types:
 
 ```c++
 struct Bar
@@ -85,7 +85,7 @@ struct Bar
     bool baz(T x) {...}
 };
 
-REFLECT(Bar, baz);
+REFLECTABLE(Bar, baz);
 
 proxy<Bar> bar = ...;
 if (bar.baz(foo)) ...
@@ -106,8 +106,8 @@ The following features are planned to be implemented:
         - [ ] Full support of STL
     - [ ] User-defined types
         - [x] Explicit definition of member-types
-        - [x] Non-intrusive discovery of member-types using the REFLECT macro
-        - [ ] Intrusive discovery of member-types using the REFLECT macro
+        - [x] Non-intrusive discovery of member-types using the REFLECTABLE macro
+        - [ ] Intrusive discovery of member-types using the REFLECTABLE macro
 - [ ] Member-functions
     - [ ] Core
         - [x] Non-const member-functions
@@ -120,16 +120,16 @@ The following features are planned to be implemented:
         - [ ] Full support of STL
     - [x] User-defined types
         - [x] Explicit definition of member-functions
-        - [x] Non-intrusive discovery of member-functions using the REFLECT macro
-        - [x] Intrusive discovery of member-functions using the REFLECT macro
+        - [x] Non-intrusive discovery of member-functions using the REFLECTABLE macro
+        - [x] Intrusive discovery of member-functions using the REFLECTABLE macro
 - [ ] Member-fields
     - [ ] STL
         - [ ] Proof-of-concept member-fields: `first`, `second`
         - [ ] Full support of STL
     - [ ] User-defined types
         - [ ] Explicit definition of member-fields
-        - [ ] Non-intrusive discovery of member-fields using the REFLECT macro
-        - [ ] Intrusive discovery of member-fields using the REFLECT macro
+        - [ ] Non-intrusive discovery of member-fields using the REFLECTABLE macro
+        - [ ] Intrusive discovery of member-fields using the REFLECTABLE macro
     - [ ] Opt-in zero-overhead declaration
 - [ ] Support for fundamental types (e.g. size_t, bool, double).
 - [ ] Concept-based reflection
