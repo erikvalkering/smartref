@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../reflection_intrusive.h"
-#include "../reflection_nonintrusive.h"
 #include "reflect.h"
+#include "reflectable_intrusive.h"
+#include "reflectable_nonintrusive.h"
 
 #include <tuple>
 
