@@ -17,7 +17,6 @@
         REFLECTION_REFLECTABLE_INTRUSIVE      \
     )(__VA_ARGS__)                            \
 
-// TODO: Rename to REFLECTABLE
 #ifndef REFLECTION_USE_PREFIX
 #define REFLECTABLE(...) REFLECTION_REFLECTABLE(__VA_ARGS__)
 #endif
