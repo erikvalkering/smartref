@@ -6,8 +6,8 @@ namespace tests_reflection_nonintrusive {
 
 struct Foo {};
 
-static_assert(!REFLECTION_IS_AUTO(Foo));
-static_assert(!REFLECTION_IS_AUTO(reflection::auto_));
-static_assert( REFLECTION_IS_AUTO(auto));
+static_assert(!REFLECTION_IS_AUTO_KEYWORD(Foo));
+static_assert(!REFLECTION_IS_AUTO_KEYWORD(reflection::auto_));
+static_assert( REFLECTION_IS_AUTO_KEYWORD(auto));
 
 } // namespace tests_reflection_nonintrusive

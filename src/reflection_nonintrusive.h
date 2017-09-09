@@ -19,22 +19,22 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 
 namespace detail {
 
-auto is_auto = [](auto is_auto_tester)
+auto is_auto_keyword = [](auto is_auto_keyword_tester)
 {
     auto fallback = [](...)
     {
         return true;
     };
 
-    return utils::make_combiner(is_auto_tester, fallback)(nullptr);
+    return utils::make_combiner(is_auto_keyword_tester, fallback)(nullptr);
 };
 
 } // namespace detail
 
 } // namespace reflection
 
-#define REFLECTION_IS_AUTO(Class)               \
-    reflection::detail::is_auto(                \
+#define REFLECTION_IS_AUTO_KEYWORD(Class)       \
+    reflection::detail::is_auto_keyword(        \
         [](auto ptr, Class * = decltype(ptr){}) \
         {                                       \
             return false;                       \
