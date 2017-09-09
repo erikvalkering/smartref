@@ -35,11 +35,11 @@ template<class Reflection, typename F>
 constexpr static auto reify(Reflection refl, F)
 {
     // TODO: Shouldn't we be passing the class instead of F?
-    if constexpr (is_member_type<Reflection, F>())
+    if constexpr (detail::is_member_type<Reflection, F>())
     {
         return typename Reflection::template reflect_member_type<F>{};
     }
-    else if constexpr (is_member_function<Reflection>())
+    else if constexpr (detail::is_member_function<Reflection>())
     {
         return typename Reflection::template reflect_member_function<F>{};
     }
