@@ -41,9 +41,6 @@ constexpr auto current_class_counter(F f)
 
 } // namespace counter
 
-#define TOKENPASTE2(x, y) x ## y
-#define TOKENPASTE(x, y) TOKENPASTE2(x, y)
-
 #define CURRENT_COUNTER_IMPL(T, FUNCTION)                   \
     decltype(FUNCTION(counter::Counter<255, T>{}))::value   \
 
@@ -52,8 +49,8 @@ constexpr auto current_class_counter(F f)
 
 #define INC_COUNTER(T)                                                                                      \
     namespace counter {                                                                                     \
-    constexpr auto TOKENPASTE(value_, __LINE__) = CURRENT_COUNTER(T);                                       \
-    Counter<TOKENPASTE(value_, __LINE__) + 1, T> __counter(Counter<TOKENPASTE(value_, __LINE__) + 1, T>);   \
+    constexpr auto CONCAT(value_, __LINE__) = CURRENT_COUNTER(T);                                       \
+    Counter<CONCAT(value_, __LINE__) + 1, T> __counter(Counter<CONCAT(value_, __LINE__) + 1, T>);   \
     } /* namespace counter */                                                                               \
 
 #define CURRENT_CLASS_COUNTER()                                 \
@@ -64,9 +61,9 @@ constexpr auto current_class_counter(F f)
         })                                                      \
 
 #define INC_CLASS_COUNTER()                                                                     \
-    static constexpr auto TOKENPASTE(value_, __LINE__) = CURRENT_CLASS_COUNTER();               \
-    static constexpr auto __class_counter(counter::Counter<TOKENPASTE(value_, __LINE__) + 1>)   \
-        -> counter::Counter<TOKENPASTE(value_, __LINE__) + 1>                                   \
+    static constexpr auto CONCAT(value_, __LINE__) = CURRENT_CLASS_COUNTER();               \
+    static constexpr auto __class_counter(counter::Counter<CONCAT(value_, __LINE__) + 1>)   \
+        -> counter::Counter<CONCAT(value_, __LINE__) + 1>                                   \
     {                                                                                           \
         return {};                                                                              \
     }                                                                                           \

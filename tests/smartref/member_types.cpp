@@ -95,7 +95,7 @@ namespace smartref {
 DECLARE_USING_MEMBER_TYPE(type);
 
 template<typename Derived>
-struct ::smartref::MemberFunctions<tests::test_user_defined_types::UserDefined, Derived>
+struct ::smartref::Members<tests::test_user_defined_types::UserDefined, Derived>
   : USING_MEMBER_TYPE(tests::test_user_defined_types::UserDefined, type)
 {
 };
@@ -125,7 +125,7 @@ struct UserDefined
 
 } // namespace tests
 
-REFLECT(tests::test_nonintrusive_reflect::UserDefined, type);
+REFLECTABLE(tests::test_nonintrusive_reflect::UserDefined, type);
 
 namespace tests {
 

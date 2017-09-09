@@ -2,6 +2,7 @@
 
 #include <smartref.h>
 #include <reflection.h>
+#include <utils.h>
 
 #include <iostream>
 #include <typeinfo>
@@ -36,12 +37,12 @@ struct Bar
 
 struct Baz
 {
-    void REFLECT(baz)()
+    void REFLECTABLE(baz)()
     {
         std::cout << "Baz::baz" << std::endl;
     }
 
-    void REFLECT(baz2)()
+    void REFLECTABLE(baz2)()
     {
         std::cout << "Baz::baz2" << std::endl;
     }
@@ -49,12 +50,12 @@ struct Baz
 
 struct Bat
 {
-    void REFLECT(bat)()
+    void REFLECTABLE(bat)()
     {
         std::cout << "Bat::bat" << std::endl;
     }
 
-    void REFLECT(bat2)()
+    void REFLECTABLE(bat2)()
     {
         std::cout << "Bat::bat2" << std::endl;
     }
@@ -67,7 +68,7 @@ struct Bla
         std::cout << "Bla::foo" << std::endl;
     }
 
-    void REFLECT(bar)()
+    void REFLECTABLE(bar)()
     {
         std::cout << "Bla::bar" << std::endl;
     }
@@ -95,10 +96,52 @@ struct Overloads
     }
 };
 
+struct GenericClassA
+{
+    void foobar()
+    {
+        std::cout << "GenericClassA::foobar()" << std::endl;
+    }
+
+    template<typename T>
+    void foobar(T x)
+    {
+        std::cout << "GenericClassA::foobar(" << typeid(x).name() << ")" << std::endl;
+    }
+
+    using some_type = int;
+};
+
+struct GenericClassB
+{
+    void foobar()
+    {
+        std::cout << "GenericClassB::foobar()" << std::endl;
+    }
+
+    void foobar(int x)
+    {
+        std::cout << "GenericClassB::foobar(int)" << std::endl;
+    }
+
+    using some_type = float;
+};
+
+template<typename T>
+struct ClassTemplate
+{
+    void foobarbaz()
+    {
+        std::cout << "ClassTemplate<" << typeid(T).name() << ">::foobarbaz()" << std::endl;
+    }
+
+    using some_foo_type = double;
+};
+
 } // namespace foobar
 
 template<typename Derived>
-struct smartref::MemberFunctions<foobar::Foo, Derived>
+struct smartref::Members<foobar::Foo, Derived>
 {
     USING_MEMBER(foo)
 };
@@ -107,22 +150,27 @@ namespace smartref {
 
 // TODO: This currently needs to be declared in the smartref namespace.
 //       Figure out a way that it can be declared within an arbitrary namespace.
-DECLARE_USING_MEMBER_TYPE(baz);
-
 template<typename Derived>
-struct ::smartref::MemberFunctions<foobar::Bla, Derived>
-  : USING_MEMBER_TYPE(foobar::Bla, baz)
+struct ::smartref::Members<foobar::Bla, Derived>
 {
+    using baz = typename foobar::Bla::baz;
 };
 
 } // namespace smartref
 
-REFLECT(foobar::Bar, bar);
-REFLECT(foobar::Bar, bar2);
-REFLECT(foobar::Bar, bar3);
+REFLECTABLE(foobar::Bar, bar);
+REFLECTABLE(foobar::Bar, bar2);
+REFLECTABLE(foobar::Bar, bar3);
 
-REFLECT(foobar::Bla, foo); // Member-function
-REFLECT(foobar::Bla, bla); // Member-type
+REFLECTABLE(foobar::Bla, foo); // Member-function
+REFLECTABLE(foobar::Bla, bla); // Member-type
 
-REFLECT(foobar::Overloads, foo);
-REFLECT(foobar::Overloads, bar);
+REFLECTABLE(foobar::Overloads, foo);
+REFLECTABLE(foobar::Overloads, bar);
+
+REFLECTABLE(auto, foobar);
+REFLECTABLE(auto, some_type);
+REFLECTABLE(auto, foobarbaz);
+REFLECTABLE(auto, some_foo_type);
+
+static_assert(utils::pack_size(members(REFLECTION_REFLECT_AUTO(auto))) == 4);

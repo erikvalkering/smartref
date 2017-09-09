@@ -36,6 +36,15 @@ decltype(auto) delayed(Arg &&arg)
     return std::forward<Arg>(arg);
 }
 
+template<typename... Ts>
+constexpr auto always_true = true;
+
+template<template<typename...> class T, typename... Us>
+constexpr auto pack_size(T<Us...>)
+{
+    return sizeof...(Us);
+}
+
 template<typename...>
 using void_t = void;
 
@@ -82,3 +91,6 @@ template<class Default, template<class...> class Op, class... Args>
 using detected_or_t = typename detected_or<Default, Op, Args...>::type;
 
 } // namespace utils
+
+#define CONCAT2(x, y) x ## y
+#define CONCAT(x, y) CONCAT2(x, y)

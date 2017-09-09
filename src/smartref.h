@@ -41,6 +41,10 @@ auto &delegate(Base &base)
 template<typename Delegate, class Derived>
 struct Forwarder
 {
+    // TODO: Maybe not access this directly,
+    //       but using a helper function.
+    using Class = Delegate;
+
     template<typename Self, typename F, typename... Args>
     auto operator()(Self &self, F f, Args &&... args)
     {
@@ -57,50 +61,35 @@ struct Forwarder
 };
 
 template<typename Delegate, class Derived>
-struct MemberFunctions {};
+struct Members {};
 
-template<typename Delegate, class Derived, size_t index>
+template<typename Delegate, class Derived, typename Reflection>
 using using_member_t = decltype(
     reflection::reify(
-        std::get<index>(reflection::reflect<Delegate>.members()),
+        Reflection{},
         Forwarder<Delegate, Derived>{}
     )
 );
 
-template<typename Delegate, class Derived, typename index_pack>
-struct ReflectedMemberFunctionsImpl;
+template<typename tag, typename Delegate, class Derived, typename Members>
+struct ReflectedMembersImpl;
 
-template<typename Delegate, class Derived, size_t... indices>
-struct ReflectedMemberFunctionsImpl<Delegate, Derived, std::index_sequence<indices...>>
-    : using_member_t<Delegate, Derived, indices>...
+template<typename tag, typename Delegate, class Derived, typename... Reflections>
+struct ReflectedMembersImpl<tag, Delegate, Derived, std::tuple<Reflections...>>
+    : using_member_t<Delegate, Derived, Reflections>...
 {
 };
 
-// TODO: Rename this to emphasize it's not only about member-functions, but also member-types (as well as member-fields, once implemented)
-template<typename Delegate, class Derived>
-using ReflectedMemberFunctions = ReflectedMemberFunctionsImpl<
+template<
+    typename Delegate,
+    class Derived,
+    class ReflectionClass = Delegate>
+using ReflectedMembers = ReflectedMembersImpl<
+    ReflectionClass,
     Delegate,
     Derived,
-    std::make_index_sequence<reflection::reflected_member_count_v<Delegate>>>;
-
-// TODO: Unify these two type-functions
-template<typename Delegate, class Derived, size_t index>
-using using_class_member_t = typename reflection::reflected_class_member_t<Delegate, index>::template reflect<Forwarder<Delegate, Derived>>;
-
-template<typename Delegate, class Derived, typename index_pack>
-struct ReflectedClassMemberFunctionsImpl;
-
-template<typename Delegate, class Derived, size_t... indices>
-struct ReflectedClassMemberFunctionsImpl<Delegate, Derived, std::index_sequence<indices...>>
-    : using_class_member_t<Delegate, Derived, indices>...
-{
-};
-
-template<typename Delegate, class Derived>
-using ReflectedClassMemberFunctions = ReflectedClassMemberFunctionsImpl<
-    Delegate,
-    Derived,
-    std::make_index_sequence<reflection::reflected_class_member_count_v<Delegate>>>;
+    decltype(members(reflection::reflect<ReflectionClass>))
+>;
 
 template<typename MemberTypeTag, typename Delegate, typename = void>
 struct member_type_introducer
@@ -162,11 +151,11 @@ struct using_base<Delegate, void>
 };
 
 template<typename Delegate, class Derived>
-class using_ : public using_base<Delegate, Derived>,
-               public MemberFunctions<Delegate, using_<Delegate, Derived>>,
-               public STL<Delegate, using_<Delegate, Derived>>,
-               public ReflectedMemberFunctions<Delegate, using_<Delegate, Derived>>,
-               public ReflectedClassMemberFunctions<Delegate, using_<Delegate, Derived>>
+class using_ : public using_base<Delegate, Derived>
+             , public Members<Delegate, using_<Delegate, Derived>>
+             , public STL<Delegate, using_<Delegate, Derived>>
+             , public ReflectedMembers<Delegate, using_<Delegate, Derived>>
+             , public ReflectedMembers<Delegate, using_<Delegate, Derived>, utils::Delayed<reflection::auto_, Delegate>>
 {
 };
 
