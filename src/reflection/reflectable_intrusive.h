@@ -1,7 +1,7 @@
 #pragma once
 
 #include "counter.h"
-#include "reflection_common.h"
+#include "reflectable_common.h"
 #include "utils.h"
 
 namespace reflection {

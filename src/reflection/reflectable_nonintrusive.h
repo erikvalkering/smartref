@@ -1,9 +1,9 @@
 #pragma once
 
 #include "counter.h"
-#include "reflection/reflect_auto.h"
-#include "reflection/reify.h"
-#include "reflection_common.h"
+#include "reflect_auto.h"
+#include "reflectable_common.h"
+#include "reify.h"
 
 namespace reflection {
 
