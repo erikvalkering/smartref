@@ -168,10 +168,9 @@ REFLECT(foobar::Bla, bla); // Member-type
 REFLECT(foobar::Overloads, foo);
 REFLECT(foobar::Overloads, bar);
 
-// TODO: Come up with a mechanism to support 'auto' syntax
-REFLECT(reflection::auto_, foobar);
-REFLECT(reflection::auto_, some_type);
-REFLECT(reflection::auto_, foobarbaz);
-REFLECT(reflection::auto_, some_foo_type);
+REFLECT(auto, foobar);
+REFLECT(auto, some_type);
+REFLECT(auto, foobarbaz);
+REFLECT(auto, some_foo_type);
 
-static_assert(utils::pack_size(members(reflection::reflect<reflection::auto_>)) == 4);
+static_assert(utils::pack_size(members(REFLECTION_REFLECT_AUTO(auto))) == 4);
