@@ -88,7 +88,7 @@ using ReflectedMembers = ReflectedMembersImpl<
     ReflectionClass,
     Delegate,
     Derived,
-    decltype(reflection::reflect<ReflectionClass>.members())
+    decltype(members(reflection::reflect<ReflectionClass>))
 >;
 
 template<typename MemberTypeTag, typename Delegate, typename = void>
