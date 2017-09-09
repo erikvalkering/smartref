@@ -16,7 +16,7 @@ struct Members;
 template<typename Class, size_t... indices_intrusive, size_t... indices_non_intrusive>
 struct Members<Class, std::index_sequence<indices_intrusive...>, std::index_sequence<indices_non_intrusive...>>
 {
-    static auto _() const
+    static auto _()
     {
         return std::tuple<
             reflected_member_intrusive_t<Class, indices_intrusive>...,
