@@ -41,20 +41,33 @@ auto is_auto_keyword = [](auto is_auto_keyword_tester)
         }                                       \
     )                                           \
 
-#define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                  \
-    template<>                                                          \
-    struct reflection::reflected_member<Class, CURRENT_COUNTER(Class)>  \
-    {                                                                   \
-        using type = struct                                             \
-        {                                                               \
-            REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(               \
-                reflect_member_type,                                    \
-                member);                                                \
-                                                                        \
-            REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(           \
-                reflect_member_function,                                \
-                member);                                                \
-        };                                                              \
-    };                                                                  \
-                                                                        \
-    INC_COUNTER(Class)                                                  \
+#define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)          \
+    constexpr auto CONCAT(IS_AUTO, __LINE__) =                  \
+        REFLECTION_IS_AUTO_KEYWORD(Class);                      \
+                                                                \
+    using CONCAT(CLASS, __LINE__) =                             \
+        std::conditional_t<                                     \
+            CONCAT(IS_AUTO, __LINE__),                          \
+            reflection::auto_,                                  \
+            Class                                               \
+        >;                                                      \
+                                                                \
+    template<>                                                  \
+    struct reflection::reflected_member<                        \
+        CONCAT(CLASS, __LINE__),                                \
+        CURRENT_COUNTER(CONCAT(CLASS, __LINE__))                \
+    >                                                           \
+    {                                                           \
+        using type = struct                                     \
+        {                                                       \
+            REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(       \
+                reflect_member_type,                            \
+                member);                                        \
+                                                                \
+            REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(   \
+                reflect_member_function,                        \
+                member);                                        \
+        };                                                      \
+    };                                                          \
+                                                                \
+    INC_COUNTER(CONCAT(CLASS, __LINE__))                        \
