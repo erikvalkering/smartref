@@ -39,6 +39,12 @@ decltype(auto) delayed(Arg &&arg)
 template<typename... Ts>
 constexpr auto always_true = true;
 
+template<template<typename...> class T, typename... Us>
+constexpr auto pack_size(T<Us...>)
+{
+    return sizeof...(Us);
+}
+
 template<typename...>
 using void_t = void;
 

@@ -2,6 +2,7 @@
 
 #include <smartref.h>
 #include <reflection.h>
+#include <utils.h>
 
 #include <iostream>
 #include <typeinfo>
@@ -173,4 +174,4 @@ REFLECT(reflection::auto_, some_type);
 REFLECT(reflection::auto_, foobarbaz);
 REFLECT(reflection::auto_, some_foo_type);
 
-static_assert(std::tuple_size<decltype(members(reflection::reflect<reflection::auto_>))>::value == 4);
+static_assert(utils::pack_size(members(reflection::reflect<reflection::auto_>)) == 4);
