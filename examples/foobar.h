@@ -173,4 +173,4 @@ REFLECT(reflection::auto_, some_type);
 REFLECT(reflection::auto_, foobarbaz);
 REFLECT(reflection::auto_, some_foo_type);
 
-static_assert(std::tuple_size<decltype(reflection::reflect<reflection::auto_>.members())>::value == 4);
+static_assert(std::tuple_size<decltype(members(reflection::reflect<reflection::auto_>))>::value == 4);
