@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../utils.h"
+#include "reflect.h"
 
 namespace reflection {
 
@@ -27,6 +28,9 @@ constexpr static auto is_member_function()
 }
 
 } // namespace detail
+
+template<typename T>
+constexpr static auto reify(Reflection<T>) -> T;
 
 template<class Reflection, typename F>
 constexpr static auto reify(Reflection refl, F)
