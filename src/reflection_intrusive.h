@@ -27,11 +27,11 @@ constexpr auto reflected_member_intrusive_count_v = reflected_member_count<refle
 
 } // namespace reflection
 
-// TODO: REFLECT currently doesn't support member-functions declared using 'auto' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
-// TODO: REFLECT currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
-// TODO: REFLECT currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECT_NONINTRUSIVE
-#define REFLECTION_REFLECT_INTRUSIVE_IMPL(member)                       \
-    REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(                   \
+// TODO: REFLECTABLE currently doesn't support member-functions declared using 'auto' --> workaround: REFLECTION_REFLECTABLE_NONINTRUSIVE
+// TODO: REFLECTABLE currently doesn't support member-functions templates --> workaround: REFLECTION_REFLECTABLE_NONINTRUSIVE
+// TODO: REFLECTABLE currently doesn't support member-functions declared using 'virtual' --> workaround: REFLECTION_REFLECTABLE_NONINTRUSIVE
+#define REFLECTION_REFLECTABLE_INTRUSIVE_IMPL(member)                   \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(               \
         __reflect__##member,                                            \
         member);                                                        \
                                                                         \
@@ -75,5 +75,5 @@ constexpr auto reflected_member_intrusive_count_v = reflected_member_count<refle
     /* of the original member-function.                                                             */  \
     auto __injection_impl_##member                                                                      \
 
-#define REFLECTION_REFLECT_INTRUSIVE(member)                                \
-    INJECT_CODE_MEMBER_FUNCTION(member, REFLECTION_REFLECT_INTRUSIVE_IMPL)  \
+#define REFLECTION_REFLECTABLE_INTRUSIVE(member)                                \
+    INJECT_CODE_MEMBER_FUNCTION(member, REFLECTION_REFLECTABLE_INTRUSIVE_IMPL)  \

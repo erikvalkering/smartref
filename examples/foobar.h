@@ -37,12 +37,12 @@ struct Bar
 
 struct Baz
 {
-    void REFLECT(baz)()
+    void REFLECTABLE(baz)()
     {
         std::cout << "Baz::baz" << std::endl;
     }
 
-    void REFLECT(baz2)()
+    void REFLECTABLE(baz2)()
     {
         std::cout << "Baz::baz2" << std::endl;
     }
@@ -50,12 +50,12 @@ struct Baz
 
 struct Bat
 {
-    void REFLECT(bat)()
+    void REFLECTABLE(bat)()
     {
         std::cout << "Bat::bat" << std::endl;
     }
 
-    void REFLECT(bat2)()
+    void REFLECTABLE(bat2)()
     {
         std::cout << "Bat::bat2" << std::endl;
     }
@@ -68,7 +68,7 @@ struct Bla
         std::cout << "Bla::foo" << std::endl;
     }
 
-    void REFLECT(bar)()
+    void REFLECTABLE(bar)()
     {
         std::cout << "Bla::bar" << std::endl;
     }
@@ -158,19 +158,19 @@ struct ::smartref::Members<foobar::Bla, Derived>
 
 } // namespace smartref
 
-REFLECT(foobar::Bar, bar);
-REFLECT(foobar::Bar, bar2);
-REFLECT(foobar::Bar, bar3);
+REFLECTABLE(foobar::Bar, bar);
+REFLECTABLE(foobar::Bar, bar2);
+REFLECTABLE(foobar::Bar, bar3);
 
-REFLECT(foobar::Bla, foo); // Member-function
-REFLECT(foobar::Bla, bla); // Member-type
+REFLECTABLE(foobar::Bla, foo); // Member-function
+REFLECTABLE(foobar::Bla, bla); // Member-type
 
-REFLECT(foobar::Overloads, foo);
-REFLECT(foobar::Overloads, bar);
+REFLECTABLE(foobar::Overloads, foo);
+REFLECTABLE(foobar::Overloads, bar);
 
-REFLECT(auto, foobar);
-REFLECT(auto, some_type);
-REFLECT(auto, foobarbaz);
-REFLECT(auto, some_foo_type);
+REFLECTABLE(auto, foobar);
+REFLECTABLE(auto, some_type);
+REFLECTABLE(auto, foobarbaz);
+REFLECTABLE(auto, some_foo_type);
 
 static_assert(utils::pack_size(members(REFLECTION_REFLECT_AUTO(auto))) == 4);

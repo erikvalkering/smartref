@@ -10,7 +10,7 @@ struct Bar
 {
     void bar();
 };
-REFLECT(Bar, bar);
+REFLECTABLE(Bar, bar);
 static_assert(!std::is_same<void, reflection::reflected_member_t<Bar, 0>>::value);
 static_assert( std::is_same<void, reflection::reflected_member_t<Bar, 1>>::value);
 static_assert(reflection::reflected_member_count_v<Bar> == 1);
@@ -20,8 +20,8 @@ struct Baz
     void baz();
     void baz2();
 };
-REFLECT(Baz, baz);
-REFLECT(Baz, baz2);
+REFLECTABLE(Baz, baz);
+REFLECTABLE(Baz, baz2);
 static_assert(!std::is_same<void, reflection::reflected_member_t<Baz, 0>>::value);
 static_assert(!std::is_same<void, reflection::reflected_member_t<Baz, 1>>::value);
 static_assert( std::is_same<void, reflection::reflected_member_t<Baz, 2>>::value);
@@ -29,8 +29,8 @@ static_assert(reflection::reflected_member_count_v<Baz> == 2);
 
 struct Bat
 {
-    void REFLECT(bat)();
-    void REFLECT(bat2)();
+    void REFLECTABLE(bat)();
+    void REFLECTABLE(bat2)();
 };
 
 static_assert(!std::is_same<void, reflection::reflected_member_intrusive_t<Bat, 0>>::value);
@@ -48,8 +48,8 @@ struct Foo
 
 } // namespace member_types
 
-REFLECT(member_types::Foo, bar);
-REFLECT(member_types::Foo, baz);
+REFLECTABLE(member_types::Foo, bar);
+REFLECTABLE(member_types::Foo, baz);
 
 using reflected_bar = reflection::reflected_member_t<member_types::Foo, 0>;
 using reflected_baz = reflection::reflected_member_t<member_types::Foo, 1>;

@@ -54,46 +54,46 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 } // namespace reflection
 
-#define REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
-    template<typename F>                                                            \
-    class ReflectorClassName                                                        \
-        : public reflection::reflect_base<reflection::reflected_kind::member_type>  \
-    {                                                                               \
-    public:                                                                         \
-        using member = typename F::Class::member;                                   \
-    };                                                                              \
-                                                                                    \
-    template<typename F>                                                            \
-    using detect_is_member_type = decltype(                                         \
-        std::declval<typename F::Class::member>())                                  \
-
-#define REFLECTION_REFLECT_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
     template<typename F>                                                                \
     class ReflectorClassName                                                            \
-        : public reflection::reflect_base<reflection::reflected_kind::member_function>  \
+        : public reflection::reflect_base<reflection::reflected_kind::member_type>      \
     {                                                                                   \
-    private:                                                                            \
-        template<typename... ExplicitArgs, typename... Args>                            \
-        decltype(auto) indirect(Args &&... args)                                        \
-        {                                                                               \
-            auto f = [](auto &obj, auto &&... args)                                     \
-            {                                                                           \
-                /* TODO: What if *this was an rvalue, then it should be auto &&obj */   \
-                if constexpr (sizeof...(ExplicitArgs) == 0)                             \
-                    return obj.member(std::forward<Args>(args)...);                     \
-                else if constexpr (utils::always_true<Args...>)                         \
-                    return obj.template member<ExplicitArgs...>(                        \
-                        std::forward<Args>(args)...);                                   \
-            };                                                                          \
-                                                                                        \
-            return F{}(*this, f, std::forward<Args>(args)...);                          \
-        }                                                                               \
-                                                                                        \
     public:                                                                             \
-        template<typename... ExplicitArgs, typename... Args>                            \
-        auto member(Args &&... args)                                                    \
-            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))         \
-        {                                                                               \
-            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);              \
-        }                                                                               \
-    }                                                                                   \
+        using member = typename F::Class::member;                                       \
+    };                                                                                  \
+                                                                                        \
+    template<typename F>                                                                \
+    using detect_is_member_type = decltype(                                             \
+        std::declval<typename F::Class::member>())                                      \
+
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
+    template<typename F>                                                                    \
+    class ReflectorClassName                                                                \
+        : public reflection::reflect_base<reflection::reflected_kind::member_function>      \
+    {                                                                                       \
+    private:                                                                                \
+        template<typename... ExplicitArgs, typename... Args>                                \
+        decltype(auto) indirect(Args &&... args)                                            \
+        {                                                                                   \
+            auto f = [](auto &obj, auto &&... args)                                         \
+            {                                                                               \
+                /* TODO: What if *this was an rvalue, then it should be auto &&obj */       \
+                if constexpr (sizeof...(ExplicitArgs) == 0)                                 \
+                    return obj.member(std::forward<Args>(args)...);                         \
+                else if constexpr (utils::always_true<Args...>)                             \
+                    return obj.template member<ExplicitArgs...>(                            \
+                        std::forward<Args>(args)...);                                       \
+            };                                                                              \
+                                                                                            \
+            return F{}(*this, f, std::forward<Args>(args)...);                              \
+        }                                                                                   \
+                                                                                            \
+    public:                                                                                 \
+        template<typename... ExplicitArgs, typename... Args>                                \
+        auto member(Args &&... args)                                                        \
+            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))             \
+        {                                                                                   \
+            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);                  \
+        }                                                                                   \
+    }                                                                                       \
