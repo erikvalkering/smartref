@@ -31,6 +31,7 @@ target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/reif
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection_common.h)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection_intrusive.h)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection_nonintrusive.h)
+target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/utils.h)
 target_include_directories(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src)
 target_compile_features(libreflection INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(libreflection INTERFACE libcounter)
