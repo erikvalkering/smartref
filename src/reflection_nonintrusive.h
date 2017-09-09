@@ -28,6 +28,7 @@ auto is_auto = [](auto is_auto_tester)
 
     return utils::make_combiner(is_auto_tester, fallback)(nullptr);
 };
+
 } // namespace detail
 
 } // namespace reflection
