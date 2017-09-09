@@ -17,7 +17,28 @@ using reflected_member_t = typename reflected_member<T, counter>::type;
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<reflected_member_t, T>::value;
 
+namespace detail {
+
+auto is_auto = [](auto is_auto_tester)
+{
+    auto fallback = [](...)
+    {
+        return true;
+    };
+
+    return utils::make_combiner(is_auto_tester, fallback)(nullptr);
+};
+} // namespace detail
+
 } // namespace reflection
+
+#define REFLECTION_IS_AUTO(Class)               \
+    reflection::detail::is_auto(                \
+        [](auto ptr, Class * = decltype(ptr){}) \
+        {                                       \
+            return false;                       \
+        }                                       \
+    )                                           \
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)                  \
     template<>                                                          \
