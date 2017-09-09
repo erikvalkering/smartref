@@ -91,6 +91,21 @@ proxy<Bar> bar = ...;
 if (bar.baz(foo)) ...
 ```
 
+Generic reflection is also possible, by specifying `auto` as the class in the `REFLECTABLE` macro:
+
+```c++
+template<typename T>
+struct Baz
+{
+    void foobar(T x) {...}
+};
+
+REFLECTABLE(auto, foobar);
+
+proxy<Baz<int>> baz = ...;
+baz.foobar(42);
+```
+
 > ##### Limitations
 > - Member-variables are currently not supported. ~At the moment, I don't know of a way to add support for them without breaking the zero-overhead principle.~ Nevertheless, this might be some future research topic.
 
@@ -132,7 +147,7 @@ The following features are planned to be implemented:
         - [ ] Intrusive discovery of member-fields using the REFLECTABLE macro
     - [ ] Opt-in zero-overhead declaration
 - [ ] Support for fundamental types (e.g. size_t, bool, double).
-- [ ] Concept-based reflection
+- [x] Generic reflection
 - [ ] Conflict-resolution
 - [ ] More test coverage
   - [ ] Implicit conversions while passing to function
