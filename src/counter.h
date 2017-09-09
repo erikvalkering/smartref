@@ -41,9 +41,6 @@ constexpr auto current_class_counter(F f)
 
 } // namespace counter
 
-#define CONCAT2(x, y) x ## y
-#define CONCAT(x, y) CONCAT2(x, y)
-
 #define CURRENT_COUNTER_IMPL(T, FUNCTION)                   \
     decltype(FUNCTION(counter::Counter<255, T>{}))::value   \
 
