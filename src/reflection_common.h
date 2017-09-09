@@ -52,9 +52,6 @@ private:
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
-//! A tag-type that can be used to create generic reflections.
-struct auto_;
-
 } // namespace reflection
 
 #define REFLECTION_REFLECT_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \

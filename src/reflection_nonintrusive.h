@@ -1,7 +1,7 @@
 #pragma once
 
 #include "counter.h"
-#include "reflection/reflect.h"
+#include "reflection/reflect_auto.h"
 #include "reflection/reify.h"
 #include "reflection_common.h"
 
@@ -19,37 +19,11 @@ using reflected_member_t = typename reflected_member<T, counter>::type;
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<reflected_member_t, T>::value;
 
-namespace detail {
-
-auto safe_reflect = [](auto is_auto_keyword_tester)
-{
-    auto fallback = [](...)
-    {
-        return reflect<auto_>;
-    };
-
-    return utils::make_combiner(is_auto_keyword_tester, fallback)(nullptr);
-};
-
-} // namespace detail
-
 } // namespace reflection
-
-#define REFLECTION_SAFE_REFLECT(Class)              \
-    reflection::detail::safe_reflect(               \
-        [](auto ptr, Class * cls = decltype(ptr){}) \
-        {                                           \
-            return reflection::reflect<             \
-                std::remove_pointer_t<              \
-                    decltype(cls)                   \
-                >                                   \
-            >;                                      \
-        }                                           \
-    )                                               \
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)          \
     constexpr auto CONCAT(reflection, __LINE__) =               \
-        REFLECTION_SAFE_REFLECT(Class);                         \
+        REFLECTION_REFLECT_AUTO(Class);                         \
                                                                 \
     using CONCAT(CLASS, __LINE__) =                             \
         decltype(reify(CONCAT(reflection, __LINE__)));          \
