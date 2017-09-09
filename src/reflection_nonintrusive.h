@@ -1,6 +1,8 @@
 #pragma once
 
 #include "counter.h"
+#include "reflection/reflect.h"
+#include "reflection/reify.h"
 #include "reflection_common.h"
 
 namespace reflection {
@@ -19,11 +21,11 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 
 namespace detail {
 
-auto is_auto_keyword = [](auto is_auto_keyword_tester)
+auto safe_reflect = [](auto is_auto_keyword_tester)
 {
-    auto fallback = [](...) -> auto_ *
+    auto fallback = [](...)
     {
-        return nullptr;
+        return reflect<auto_>;
     };
 
     return utils::make_combiner(is_auto_keyword_tester, fallback)(nullptr);
@@ -33,22 +35,24 @@ auto is_auto_keyword = [](auto is_auto_keyword_tester)
 
 } // namespace reflection
 
-#define REFLECTION_IS_AUTO_KEYWORD(Class)                   \
-    reflection::detail::is_auto_keyword(                    \
-        [](auto ptr, Class * = decltype(ptr){}) -> Class *  \
-        {                                                   \
-            return nullptr;                                 \
-        }                                                   \
-    )                                                       \
+#define REFLECTION_SAFE_REFLECT(Class)              \
+    reflection::detail::safe_reflect(               \
+        [](auto ptr, Class * cls = decltype(ptr){}) \
+        {                                           \
+            return reflection::reflect<             \
+                std::remove_pointer_t<              \
+                    decltype(cls)                   \
+                >                                   \
+            >;                                      \
+        }                                           \
+    )                                               \
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)          \
-    constexpr auto CONCAT(IS_AUTO_KEYWORD, __LINE__) =          \
-        REFLECTION_IS_AUTO_KEYWORD(Class);                      \
+    constexpr auto CONCAT(reflection, __LINE__) =               \
+        REFLECTION_SAFE_REFLECT(Class);                         \
                                                                 \
     using CONCAT(CLASS, __LINE__) =                             \
-        std::remove_pointer_t<                                  \
-            decltype(CONCAT(IS_AUTO_KEYWORD, __LINE__))         \
-        >;                                                      \
+        decltype(reify(CONCAT(reflection, __LINE__)));          \
                                                                 \
     template<>                                                  \
     struct reflection::reflected_member<                        \

@@ -1,13 +1,14 @@
-#include "reflection_nonintrusive.h"
-
-#include <type_traits>
+#include <reflection/reflect.h>
+#include <reflection_nonintrusive.h>
 
 namespace tests_reflection_nonintrusive {
 
 struct Foo {};
 
-static_assert(!REFLECTION_IS_AUTO_KEYWORD(Foo));
-static_assert(!REFLECTION_IS_AUTO_KEYWORD(reflection::auto_));
-static_assert( REFLECTION_IS_AUTO_KEYWORD(auto));
+using namespace reflection;
+
+static_assert(REFLECTION_SAFE_REFLECT(Foo)    == reflect<Foo>);
+static_assert(REFLECTION_SAFE_REFLECT(auto_)  == reflect<auto_>);
+static_assert(REFLECTION_SAFE_REFLECT(auto)   == reflect<auto_>);
 
 } // namespace tests_reflection_nonintrusive
