@@ -135,16 +135,16 @@ The following features are planned to be implemented:
         - [ ] Full support of STL
     - [x] User-defined types
         - [x] Explicit definition of member-functions
-        - [x] Non-intrusive discovery of member-functions using the REFLECTABLE macro
-        - [x] Intrusive discovery of member-functions using the REFLECTABLE macro
+        - [x] Non-intrusive discovery of member-functions using the `REFLECTABLE` macro
+        - [x] Intrusive discovery of member-functions using the `REFLECTABLE` macro
 - [ ] Member-fields
     - [ ] STL
         - [ ] Proof-of-concept member-fields: `first`, `second`
         - [ ] Full support of STL
     - [ ] User-defined types
         - [ ] Explicit definition of member-fields
-        - [ ] Non-intrusive discovery of member-fields using the REFLECTABLE macro
-        - [ ] Intrusive discovery of member-fields using the REFLECTABLE macro
+        - [ ] Non-intrusive discovery of member-fields using the `REFLECTABLE` macro
+        - [ ] Intrusive discovery of member-fields using the `REFLECTABLE` macro
     - [ ] Opt-in zero-overhead declaration
 - [ ] Support for fundamental types (e.g. size_t, bool, double).
 - [x] Generic reflection
