@@ -15,9 +15,6 @@ constexpr static auto is_member_type()
     return utils::is_detected_v<detect_is_member_type, Reflection, F>;
 }
 
-template<typename... Ts>
-constexpr auto always_true = true;
-
 template<class Reflection>
 constexpr static auto is_member_function()
 {
@@ -26,7 +23,7 @@ constexpr static auto is_member_function()
     //! in case the reflected entity wasn't a member-function.
     // TODO: It might still be an annoyance for IDEs, though, where it could show
     //       the candidate member-functions, even though none exists.
-    return always_true<Reflection>;
+    return utils::always_true<Reflection>;
 }
 
 } // namespace detail

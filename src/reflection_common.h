@@ -84,7 +84,7 @@ struct auto_;
                 /* TODO: What if *this was an rvalue, then it should be auto &&obj */   \
                 if constexpr (sizeof...(ExplicitArgs) == 0)                             \
                     return obj.member(std::forward<Args>(args)...);                     \
-                else if constexpr (reflection::always_true<Args...>)                    \
+                else if constexpr (utils::always_true<Args...>)                         \
                     return obj.template member<ExplicitArgs...>(                        \
                         std::forward<Args>(args)...);                                   \
             };                                                                          \

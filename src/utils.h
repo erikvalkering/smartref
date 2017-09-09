@@ -36,6 +36,9 @@ decltype(auto) delayed(Arg &&arg)
     return std::forward<Arg>(arg);
 }
 
+template<typename... Ts>
+constexpr auto always_true = true;
+
 template<typename...>
 using void_t = void;
 
