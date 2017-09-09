@@ -21,9 +21,9 @@ namespace detail {
 
 auto is_auto_keyword = [](auto is_auto_keyword_tester)
 {
-    auto fallback = [](...)
+    auto fallback = [](...) -> auto_ *
     {
-        return true;
+        return nullptr;
     };
 
     return utils::make_combiner(is_auto_keyword_tester, fallback)(nullptr);
@@ -33,23 +33,21 @@ auto is_auto_keyword = [](auto is_auto_keyword_tester)
 
 } // namespace reflection
 
-#define REFLECTION_IS_AUTO_KEYWORD(Class)       \
-    reflection::detail::is_auto_keyword(        \
-        [](auto ptr, Class * = decltype(ptr){}) \
-        {                                       \
-            return false;                       \
-        }                                       \
-    )                                           \
+#define REFLECTION_IS_AUTO_KEYWORD(Class)                   \
+    reflection::detail::is_auto_keyword(                    \
+        [](auto ptr, Class * = decltype(ptr){}) -> Class *  \
+        {                                                   \
+            return nullptr;                                 \
+        }                                                   \
+    )                                                       \
 
 #define REFLECTION_REFLECT_NONINTRUSIVE(Class, member)          \
-    constexpr auto CONCAT(IS_AUTO, __LINE__) =                  \
+    constexpr auto CONCAT(IS_AUTO_KEYWORD, __LINE__) =          \
         REFLECTION_IS_AUTO_KEYWORD(Class);                      \
                                                                 \
     using CONCAT(CLASS, __LINE__) =                             \
-        std::conditional_t<                                     \
-            CONCAT(IS_AUTO, __LINE__),                          \
-            reflection::auto_,                                  \
-            Class                                               \
+        std::remove_pointer_t<                                  \
+            decltype(CONCAT(IS_AUTO_KEYWORD, __LINE__))         \
         >;                                                      \
                                                                 \
     template<>                                                  \
