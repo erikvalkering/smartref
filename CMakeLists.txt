@@ -59,20 +59,27 @@ add_test(reflection test_reflection)
 # Smartref library                                                             #
 ################################################################################
 add_library(libsmartref INTERFACE)
-target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref.h)
+target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/explicit.h)
+target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/implicit.h)
+target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/smartref.h)
 target_include_directories(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src)
 target_compile_features(libsmartref INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(libsmartref INTERFACE libreflection)
+target_link_libraries(libsmartref INTERFACE libutils)
 
 # Unit tests
-add_executable(test_member_types tests/smartref/member_types.cpp)
-target_sources(test_member_types PRIVATE ${PROJECT_SOURCE_DIR}/tests/main.cpp)
-target_link_libraries(test_member_types PRIVATE libsmartref)
-add_test(smartref test_member_types)
+add_executable(test_smartref ${PROJECT_SOURCE_DIR}/tests/main.cpp)
+target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/smartref.cpp)
+target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/implicit.cpp)
+target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/explicit.cpp)
+target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/member_types.cpp)
+target_link_libraries(test_smartref PRIVATE libsmartref)
+add_test(smartref test_smartref)
 
 # Examples
 add_executable(sandbox examples/sandbox.cpp)
 target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
+target_link_libraries(sandbox PRIVATE libreflection)
 target_link_libraries(sandbox PRIVATE libsmartref)
 add_test(examples sandbox)
 ################################################################################
