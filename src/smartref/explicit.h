@@ -61,20 +61,6 @@ struct member_type_introducer
 #define USING_MEMBER_TYPE(Delegate, name)                                                   \
     smartref::member_type_introducer<tag_##name, Delegate>::template Forwarder<Delegate>    \
 
-DECLARE_USING_MEMBER_TYPE(value_type);
-DECLARE_USING_MEMBER_TYPE(difference_type);
-DECLARE_USING_MEMBER_TYPE(iterator);
-
-template<typename Delegate, class Derived>
-struct STL : USING_MEMBER_TYPE(Delegate, value_type)
-           , USING_MEMBER_TYPE(Delegate, difference_type)
-           , USING_MEMBER_TYPE(Delegate, iterator)
-{
-    USING_MEMBER(push_back)
-    USING_MEMBER(begin)
-    USING_MEMBER(end)
-};
-
 template<typename Delegate, class Derived>
 struct Members {};
 

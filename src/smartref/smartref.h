@@ -2,6 +2,7 @@
 
 #include "explicit.h"
 #include "implicit.h"
+#include "stl.h"
 
 #include <utils/utils.h>
 
