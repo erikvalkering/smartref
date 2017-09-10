@@ -48,6 +48,8 @@ static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_revers
 // TODO: Test all overloads
 // TODO: (constructor)
 // TODO: operator=
+// static_assert(IS_VALID(_.operator=(_)));
+// static_assert(IS_VALID(_ = _));
 static_assert(IS_VALID(_.assign(0, 0)));
 static_assert(IS_VALID(_.assign(begin(_), end(_))));
 static_assert(IS_VALID(_.get_allocator()));
@@ -55,6 +57,8 @@ static_assert(IS_VALID(_.get_allocator()));
 //! Element access
 static_assert(IS_VALID(_.at(T::size_type{})));
 // TODO: operator[]
+// static_assert(IS_VALID(_.operator[](0)));
+// static_assert(IS_VALID(_[0]));
 static_assert(IS_VALID(_.front()));
 static_assert(IS_VALID(_.back()));
 static_assert(IS_VALID(_.data()));
