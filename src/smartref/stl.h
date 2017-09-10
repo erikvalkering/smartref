@@ -69,8 +69,8 @@ REFLECTABLE(auto, crend);
 // TODO: shrink_to_fit
 REFLECTABLE(auto, clear);
 REFLECTABLE(auto, insert);
-// TODO: emplace
-// TODO: erase
+REFLECTABLE(auto, emplace);
+REFLECTABLE(auto, erase);
 REFLECTABLE(auto, push_back);
 // TODO: emplace_back
 // TODO: pop_back

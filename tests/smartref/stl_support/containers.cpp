@@ -78,8 +78,9 @@ static_assert(IS_VALID(crend()));
 //! Modifiers
 static_assert(IS_VALID(clear()));
 static_assert(IS_VALID(insert(begin(_), 0)));
-// TODO: emplace
-// TODO: erase
+static_assert(IS_VALID(emplace(begin(_), 0)));
+static_assert(IS_VALID(template emplace<int>(begin(_), 0)));
+static_assert(IS_VALID(erase(begin(_))));
 static_assert(IS_VALID(push_back(0)));
 // TODO: emplace_back
 // TODO: pop_back
