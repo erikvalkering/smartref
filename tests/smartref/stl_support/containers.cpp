@@ -68,12 +68,12 @@ static_assert(IS_VALID(rend()));
 static_assert(IS_VALID(crend()));
 
 //! Capacity
-// TODO: empty
-// TODO: size
-// TODO: max_size
-// TODO: reserve
-// TODO: capacity
-// TODO: shrink_to_fit
+static_assert(IS_VALID(empty()));
+static_assert(IS_VALID(size()));
+static_assert(IS_VALID(max_size()));
+static_assert(IS_VALID(reserve(T::size_type{})));
+static_assert(IS_VALID(capacity()));
+static_assert(IS_VALID(shrink_to_fit()));
 
 //! Modifiers
 static_assert(IS_VALID(clear()));

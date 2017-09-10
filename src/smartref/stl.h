@@ -61,12 +61,12 @@ REFLECTABLE(auto, rbegin);
 REFLECTABLE(auto, crbegin);
 REFLECTABLE(auto, rend);
 REFLECTABLE(auto, crend);
-// TODO: empty
-// TODO: size
-// TODO: max_size
-// TODO: reserve
-// TODO: capacity
-// TODO: shrink_to_fit
+REFLECTABLE(auto, empty);
+REFLECTABLE(auto, size);
+REFLECTABLE(auto, max_size);
+REFLECTABLE(auto, reserve);
+REFLECTABLE(auto, capacity);
+REFLECTABLE(auto, shrink_to_fit);
 REFLECTABLE(auto, clear);
 REFLECTABLE(auto, insert);
 REFLECTABLE(auto, emplace);
