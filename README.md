@@ -134,7 +134,7 @@ The following features are planned to be implemented:
         - [x] Templates (non-deducible)
     - [ ] STL
         - [x] Proof-of-concept member-functions: `begin()`, `end()`, `push_back()`
-        - [ ] std::vector
+        - [x] std::vector
         - [ ] Full support of STL
     - [x] User-defined types
         - [x] Explicit definition of member-functions
@@ -150,6 +150,7 @@ The following features are planned to be implemented:
         - [ ] Intrusive discovery of member-fields using the `REFLECTABLE` macro
     - [ ] Opt-in zero-overhead declaration
 - [ ] Support for fundamental types (e.g. size_t, bool, double).
+- [ ] Support for non-member functions (std::vector)
 - [x] Generic reflection
 - [ ] Conflict-resolution
 - [ ] More test coverage
