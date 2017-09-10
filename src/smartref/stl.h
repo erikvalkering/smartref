@@ -46,8 +46,8 @@ REFLECTABLE(auto, const_reverse_iterator);
 //! member-functions
 // TODO: (constructor)
 // TODO: operator=
-// TODO: assign
-// TODO: get_allocator
+REFLECTABLE(auto, assign);
+REFLECTABLE(auto, get_allocator);
 REFLECTABLE(auto, at);
 // TODO: operator[]
 // TODO: front

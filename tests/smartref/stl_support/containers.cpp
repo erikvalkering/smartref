@@ -45,10 +45,12 @@ static_assert(reflect<Ref<T>::reverse_iterator>       == reflect<T::reverse_iter
 static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_reverse_iterator>);
 
 //! Member functions
+// TODO: Test all overloads
 // TODO: (constructor)
 // TODO: operator=
-// TODO: assign
-// TODO: get_allocator
+static_assert(IS_VALID(assign(0, 0)));
+static_assert(IS_VALID(assign(begin(_), end(_))));
+static_assert(IS_VALID(get_allocator()));
 
 //! Element access
 static_assert(IS_VALID(at(T::size_type{})));
