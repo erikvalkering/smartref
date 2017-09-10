@@ -1,4 +1,4 @@
-#include "counter.h"
+#include <utils/counter.h>
 
 static_assert(CURRENT_COUNTER(void) == 0);
 static_assert(CURRENT_COUNTER(void) == 0);
@@ -32,7 +32,3 @@ struct DerivedTest : CounterTest
     static_assert(CURRENT_CLASS_COUNTER() == 4);
     static_assert(CURRENT_CLASS_COUNTER() == 4);
 };
-
-int main()
-{
-}

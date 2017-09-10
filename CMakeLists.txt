@@ -8,16 +8,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 enable_testing()
 
 ################################################################################
-# Counter library                                                              #
+# Utils library                                                                #
 ################################################################################
-add_library(libcounter INTERFACE)
-target_sources(libcounter INTERFACE ${PROJECT_SOURCE_DIR}/src/counter.h)
-target_include_directories(libcounter INTERFACE ${PROJECT_SOURCE_DIR}/src)
-target_compile_features(libcounter INTERFACE cxx_constexpr cxx_decltype_auto)
+add_library(libutils INTERFACE)
+target_sources(libutils INTERFACE ${PROJECT_SOURCE_DIR}/src/utils/counter.h)
+target_sources(libutils INTERFACE ${PROJECT_SOURCE_DIR}/src/utils/cpp17.h)
+target_sources(libutils INTERFACE ${PROJECT_SOURCE_DIR}/src/utils/utils.h)
+target_include_directories(libutils INTERFACE ${PROJECT_SOURCE_DIR}/src)
+target_compile_features(libutils INTERFACE cxx_constexpr cxx_decltype_auto)
 
-add_executable(test_counter tests/counter.cpp)
-target_link_libraries(test_counter PRIVATE libcounter)
-add_test(counter test_counter)
+add_executable(test_utils ${PROJECT_SOURCE_DIR}/tests/main.cpp)
+target_sources(test_utils PRIVATE ${PROJECT_SOURCE_DIR}/tests/utils/counter.cpp)
+target_sources(test_utils PRIVATE ${PROJECT_SOURCE_DIR}/tests/utils/cpp17.cpp)
+target_sources(test_utils PRIVATE ${PROJECT_SOURCE_DIR}/tests/utils/utils.cpp)
+target_link_libraries(test_utils PRIVATE libutils)
+add_test(utils test_utils)
 ################################################################################
 
 
