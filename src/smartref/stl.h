@@ -44,6 +44,12 @@ REFLECTABLE(auto, reverse_iterator);
 REFLECTABLE(auto, const_reverse_iterator);
 
 //! member-functions
-REFLECTABLE(auto, push_back);
 REFLECTABLE(auto, begin);
+REFLECTABLE(auto, cbegin);
 REFLECTABLE(auto, end);
+REFLECTABLE(auto, cend);
+REFLECTABLE(auto, rbegin);
+REFLECTABLE(auto, crbegin);
+REFLECTABLE(auto, rend);
+REFLECTABLE(auto, crend);
+REFLECTABLE(auto, push_back);

@@ -48,14 +48,14 @@ static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_revers
 // TODO: data
 
 //! Iterators
-static_assert(reflect<decltype(std::declval<Ref<T>>().begin())> == reflect<decltype(std::declval<T>().begin())>);
-// TODO: cbegin
-static_assert(reflect<decltype(std::declval<Ref<T>>().end())> == reflect<decltype(std::declval<T>().end())>);
-// TODO: cend
-// TODO: rbegin
-// TODO: crbegin
-// TODO: rend
-// TODO: crend
+static_assert(reflect<decltype(std::declval<Ref<T>>().begin())>   == reflect<decltype(std::declval<T>().begin())>);
+static_assert(reflect<decltype(std::declval<Ref<T>>().cbegin())>  == reflect<decltype(std::declval<T>().cbegin())>);
+static_assert(reflect<decltype(std::declval<Ref<T>>().end())>     == reflect<decltype(std::declval<T>().end())>);
+static_assert(reflect<decltype(std::declval<Ref<T>>().cend())>    == reflect<decltype(std::declval<T>().cend())>);
+static_assert(reflect<decltype(std::declval<Ref<T>>().rbegin())>  == reflect<decltype(std::declval<T>().rbegin())>);
+static_assert(reflect<decltype(std::declval<Ref<T>>().crbegin())> == reflect<decltype(std::declval<T>().crbegin())>);
+static_assert(reflect<decltype(std::declval<Ref<T>>().rend())>    == reflect<decltype(std::declval<T>().rend())>);
+static_assert(reflect<decltype(std::declval<Ref<T>>().crend())>   == reflect<decltype(std::declval<T>().crend())>);
 
 //! Capacity
 // TODO: empty
