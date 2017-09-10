@@ -1,6 +1,10 @@
 #pragma once
 
-#include "explicit.h"
+#include <reflection/reflection.h>
+
+#if 0
+//! This block contains the old-style STL-support, and has been superseeded by
+//! the generic reflection support.
 
 namespace smartref {
 
@@ -19,3 +23,12 @@ struct STL : USING_MEMBER_TYPE(Delegate, value_type)
 };
 
 } // namespace smartref
+#endif
+
+//! std::vector support
+REFLECTABLE(auto, value_type);
+REFLECTABLE(auto, difference_type);
+REFLECTABLE(auto, iterator);
+REFLECTABLE(auto, push_back);
+REFLECTABLE(auto, begin);
+REFLECTABLE(auto, end);
