@@ -1,8 +1,8 @@
 #pragma once
 
-#include <smartref.h>
-#include <reflection.h>
-#include <utils.h>
+#include <smartref/smartref.h>
+#include <reflection/reflection.h>
+#include <utils/utils.h>
 
 #include <iostream>
 #include <typeinfo>
