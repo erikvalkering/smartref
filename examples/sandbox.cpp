@@ -1,5 +1,6 @@
-#include <smartref.h>
 #include "foobar.h"
+
+#include <smartref/smartref.h>
 
 #include <iostream>
 #include <vector>

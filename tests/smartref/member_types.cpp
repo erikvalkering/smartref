@@ -1,9 +1,8 @@
-#include <smartref.h>
+#include <smartref/smartref.h>
 
 #include <type_traits>
 #include <vector>
 #include <list>
-
 
 namespace tests {
 

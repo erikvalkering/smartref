@@ -1,8 +1,8 @@
 #pragma once
 
-#include <smartref.h>
-#include <reflection.h>
-#include <utils.h>
+#include <smartref/smartref.h>
+#include <reflection/reflection.h>
+#include <utils/utils.h>
 
 #include <iostream>
 #include <typeinfo>
@@ -173,4 +173,6 @@ REFLECTABLE(auto, some_type);
 REFLECTABLE(auto, foobarbaz);
 REFLECTABLE(auto, some_foo_type);
 
-static_assert(utils::pack_size(members(REFLECTION_REFLECT_AUTO(auto))) == 4);
+//! TODO: This is no longer valid, since we switched to generic reflection for the STL.
+//        Create a unit-test that tests this in isolation.
+// static_assert(utils::pack_size(members(REFLECTION_REFLECT_AUTO(auto))) == 4);

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "counter.h"
 #include "reflect_auto.h"
 #include "reflectable_common.h"
 #include "reify.h"
+
+#include <utils/counter.h>
 
 namespace reflection {
 

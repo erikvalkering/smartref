@@ -118,6 +118,7 @@ The following features are planned to be implemented:
 - [ ] Member-types
     - [ ] STL
         - [x] Proof-of-concept member-types `value_type`, `difference_type`, `iterator`
+        - [x] std::vector
         - [ ] Full support of STL
     - [ ] User-defined types
         - [x] Explicit definition of member-types
@@ -127,11 +128,13 @@ The following features are planned to be implemented:
     - [ ] Core
         - [x] Non-const member-functions
         - [ ] const member-functions
+        - [ ] Operators
         - [x] Overloads
         - [x] Templates (deducible)
         - [x] Templates (non-deducible)
     - [ ] STL
         - [x] Proof-of-concept member-functions: `begin()`, `end()`, `push_back()`
+        - [x] std::vector
         - [ ] Full support of STL
     - [x] User-defined types
         - [x] Explicit definition of member-functions
@@ -147,6 +150,7 @@ The following features are planned to be implemented:
         - [ ] Intrusive discovery of member-fields using the `REFLECTABLE` macro
     - [ ] Opt-in zero-overhead declaration
 - [ ] Support for fundamental types (e.g. size_t, bool, double).
+- [ ] Support for non-member functions (std::vector)
 - [x] Generic reflection
 - [ ] Conflict-resolution
 - [ ] More test coverage

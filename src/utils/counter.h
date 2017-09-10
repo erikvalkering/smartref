@@ -47,11 +47,11 @@ constexpr auto current_class_counter(F f)
 #define CURRENT_COUNTER(T)              \
     CURRENT_COUNTER_IMPL(T, __counter)  \
 
-#define INC_COUNTER(T)                                                                                      \
-    namespace counter {                                                                                     \
-    constexpr auto CONCAT(value_, __LINE__) = CURRENT_COUNTER(T);                                       \
+#define INC_COUNTER(T)                                                                              \
+    namespace counter {                                                                             \
+    constexpr auto CONCAT(value_, __LINE__) = CURRENT_COUNTER(T);                                   \
     Counter<CONCAT(value_, __LINE__) + 1, T> __counter(Counter<CONCAT(value_, __LINE__) + 1, T>);   \
-    } /* namespace counter */                                                                               \
+    } /* namespace counter */                                                                       \
 
 #define CURRENT_CLASS_COUNTER()                                 \
     counter::current_class_counter(                             \
@@ -60,12 +60,12 @@ constexpr auto current_class_counter(F f)
             return __class_counter(counter);                    \
         })                                                      \
 
-#define INC_CLASS_COUNTER()                                                                     \
+#define INC_CLASS_COUNTER()                                                                 \
     static constexpr auto CONCAT(value_, __LINE__) = CURRENT_CLASS_COUNTER();               \
     static constexpr auto __class_counter(counter::Counter<CONCAT(value_, __LINE__) + 1>)   \
         -> counter::Counter<CONCAT(value_, __LINE__) + 1>                                   \
-    {                                                                                           \
-        return {};                                                                              \
-    }                                                                                           \
+    {                                                                                       \
+        return {};                                                                          \
+    }                                                                                       \
 
 // EXTRA NEWLINE FOR GCC WHICH HAS PROBLEMS WITH MULTILINE MACROS
