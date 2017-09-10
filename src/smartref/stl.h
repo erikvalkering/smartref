@@ -44,6 +44,15 @@ REFLECTABLE(auto, reverse_iterator);
 REFLECTABLE(auto, const_reverse_iterator);
 
 //! member-functions
+// TODO: (constructor)
+// TODO: operator=
+// TODO: assign
+// TODO: get_allocator
+REFLECTABLE(auto, at);
+// TODO: operator[]
+// TODO: front
+// TODO: back
+// TODO: data
 REFLECTABLE(auto, begin);
 REFLECTABLE(auto, cbegin);
 REFLECTABLE(auto, end);
@@ -52,4 +61,18 @@ REFLECTABLE(auto, rbegin);
 REFLECTABLE(auto, crbegin);
 REFLECTABLE(auto, rend);
 REFLECTABLE(auto, crend);
+// TODO: empty
+// TODO: size
+// TODO: max_size
+// TODO: reserve
+// TODO: capacity
+// TODO: shrink_to_fit
+// TODO: clear
+// TODO: insert
+// TODO: emplace
+// TODO: erase
 REFLECTABLE(auto, push_back);
+// TODO: emplace_back
+// TODO: pop_back
+// TODO: resize
+// TODO: swap

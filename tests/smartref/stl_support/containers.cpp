@@ -49,7 +49,7 @@ static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_revers
 // TODO: get_allocator
 
 //! Element access
-// TODO: at
+static_assert(is_valid([](auto &&x) {x.at(T::size_type{});}));
 // TODO: operator[]
 // TODO: front
 // TODO: back
