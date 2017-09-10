@@ -55,9 +55,9 @@ static_assert(IS_VALID(get_allocator()));
 //! Element access
 static_assert(IS_VALID(at(T::size_type{})));
 // TODO: operator[]
-// TODO: front
-// TODO: back
-// TODO: data
+static_assert(IS_VALID(front()));
+static_assert(IS_VALID(back()));
+static_assert(IS_VALID(data()));
 
 //! Iterators
 static_assert(IS_VALID(begin()));

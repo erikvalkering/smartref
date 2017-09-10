@@ -50,9 +50,9 @@ REFLECTABLE(auto, assign);
 REFLECTABLE(auto, get_allocator);
 REFLECTABLE(auto, at);
 // TODO: operator[]
-// TODO: front
-// TODO: back
-// TODO: data
+REFLECTABLE(auto, front);
+REFLECTABLE(auto, back);
+REFLECTABLE(auto, data);
 REFLECTABLE(auto, begin);
 REFLECTABLE(auto, cbegin);
 REFLECTABLE(auto, end);
