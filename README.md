@@ -118,6 +118,7 @@ The following features are planned to be implemented:
 - [ ] Member-types
     - [ ] STL
         - [x] Proof-of-concept member-types `value_type`, `difference_type`, `iterator`
+        - [x] std::vector
         - [ ] Full support of STL
     - [ ] User-defined types
         - [x] Explicit definition of member-types
@@ -132,6 +133,7 @@ The following features are planned to be implemented:
         - [x] Templates (non-deducible)
     - [ ] STL
         - [x] Proof-of-concept member-functions: `begin()`, `end()`, `push_back()`
+        - [ ] std::vector
         - [ ] Full support of STL
     - [x] User-defined types
         - [x] Explicit definition of member-functions
