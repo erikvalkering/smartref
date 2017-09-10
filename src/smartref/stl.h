@@ -72,7 +72,7 @@ REFLECTABLE(auto, insert);
 REFLECTABLE(auto, emplace);
 REFLECTABLE(auto, erase);
 REFLECTABLE(auto, push_back);
-// TODO: emplace_back
-// TODO: pop_back
-// TODO: resize
-// TODO: swap
+REFLECTABLE(auto, emplace_back);
+REFLECTABLE(auto, pop_back);
+REFLECTABLE(auto, resize);
+REFLECTABLE(auto, swap);

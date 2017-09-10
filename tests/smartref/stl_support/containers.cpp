@@ -82,10 +82,11 @@ static_assert(IS_VALID(emplace(begin(_), 0)));
 static_assert(IS_VALID(template emplace<int>(begin(_), 0)));
 static_assert(IS_VALID(erase(begin(_))));
 static_assert(IS_VALID(push_back(0)));
-// TODO: emplace_back
-// TODO: pop_back
-// TODO: resize
-// TODO: swap
+static_assert(IS_VALID(emplace_back(0)));
+static_assert(IS_VALID(template emplace_back<int>(0)));
+static_assert(IS_VALID(pop_back()));
+static_assert(IS_VALID(resize(T::size_type{})));
+static_assert(IS_VALID(swap(_)));
 
 //! Non-member functions
 // TODO: operator==
