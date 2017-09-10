@@ -21,6 +21,14 @@ using T = std::vector<int>;
 using reflection::reflect;
 
 //! Member-types
+constexpr auto is_valid = [](auto expression)
+{
+  auto expected = reflect<decltype(expression(std::declval<    T >()))>;
+  auto actual   = reflect<decltype(expression(std::declval<Ref<T>>()))>;
+
+  return actual == expected;
+};
+
 static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
 static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
 static_assert(reflect<Ref<T>::size_type>              == reflect<T::size_type>);
@@ -48,14 +56,14 @@ static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_revers
 // TODO: data
 
 //! Iterators
-static_assert(reflect<decltype(std::declval<Ref<T>>().begin())>   == reflect<decltype(std::declval<T>().begin())>);
-static_assert(reflect<decltype(std::declval<Ref<T>>().cbegin())>  == reflect<decltype(std::declval<T>().cbegin())>);
-static_assert(reflect<decltype(std::declval<Ref<T>>().end())>     == reflect<decltype(std::declval<T>().end())>);
-static_assert(reflect<decltype(std::declval<Ref<T>>().cend())>    == reflect<decltype(std::declval<T>().cend())>);
-static_assert(reflect<decltype(std::declval<Ref<T>>().rbegin())>  == reflect<decltype(std::declval<T>().rbegin())>);
-static_assert(reflect<decltype(std::declval<Ref<T>>().crbegin())> == reflect<decltype(std::declval<T>().crbegin())>);
-static_assert(reflect<decltype(std::declval<Ref<T>>().rend())>    == reflect<decltype(std::declval<T>().rend())>);
-static_assert(reflect<decltype(std::declval<Ref<T>>().crend())>   == reflect<decltype(std::declval<T>().crend())>);
+static_assert(is_valid([](auto x) {x.begin();}));
+static_assert(is_valid([](auto x) {x.cbegin();}));
+static_assert(is_valid([](auto x) {x.end();}));
+static_assert(is_valid([](auto x) {x.cend();}));
+static_assert(is_valid([](auto x) {x.rbegin();}));
+static_assert(is_valid([](auto x) {x.crbegin();}));
+static_assert(is_valid([](auto x) {x.rend();}));
+static_assert(is_valid([](auto x) {x.crend();}));
 
 //! Capacity
 // TODO: empty
@@ -70,7 +78,7 @@ static_assert(reflect<decltype(std::declval<Ref<T>>().crend())>   == reflect<dec
 // TODO: insert
 // TODO: emplace
 // TODO: erase
-static_assert(reflect<decltype(std::declval<Ref<T>>().push_back(0))> == reflect<decltype(std::declval<T>().push_back(0))>);
+static_assert(is_valid([](auto x) {x.push_back(0);}));
 // TODO: emplace_back
 // TODO: pop_back
 // TODO: resize
