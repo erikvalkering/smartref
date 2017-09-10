@@ -29,7 +29,7 @@ constexpr auto is_valid = [](auto expression)
   return actual == expected;
 };
 
-#define IS_VALID(expression) is_valid([](auto &&_) {_.expression;})
+#define IS_VALID(expression) is_valid([](auto &&_) {expression;})
 
 static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
 static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
@@ -48,47 +48,47 @@ static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_revers
 // TODO: Test all overloads
 // TODO: (constructor)
 // TODO: operator=
-static_assert(IS_VALID(assign(0, 0)));
-static_assert(IS_VALID(assign(begin(_), end(_))));
-static_assert(IS_VALID(get_allocator()));
+static_assert(IS_VALID(_.assign(0, 0)));
+static_assert(IS_VALID(_.assign(begin(_), end(_))));
+static_assert(IS_VALID(_.get_allocator()));
 
 //! Element access
-static_assert(IS_VALID(at(T::size_type{})));
+static_assert(IS_VALID(_.at(T::size_type{})));
 // TODO: operator[]
-static_assert(IS_VALID(front()));
-static_assert(IS_VALID(back()));
-static_assert(IS_VALID(data()));
+static_assert(IS_VALID(_.front()));
+static_assert(IS_VALID(_.back()));
+static_assert(IS_VALID(_.data()));
 
 //! Iterators
-static_assert(IS_VALID(begin()));
-static_assert(IS_VALID(cbegin()));
-static_assert(IS_VALID(end()));
-static_assert(IS_VALID(cend()));
-static_assert(IS_VALID(rbegin()));
-static_assert(IS_VALID(crbegin()));
-static_assert(IS_VALID(rend()));
-static_assert(IS_VALID(crend()));
+static_assert(IS_VALID(_.begin()));
+static_assert(IS_VALID(_.cbegin()));
+static_assert(IS_VALID(_.end()));
+static_assert(IS_VALID(_.cend()));
+static_assert(IS_VALID(_.rbegin()));
+static_assert(IS_VALID(_.crbegin()));
+static_assert(IS_VALID(_.rend()));
+static_assert(IS_VALID(_.crend()));
 
 //! Capacity
-static_assert(IS_VALID(empty()));
-static_assert(IS_VALID(size()));
-static_assert(IS_VALID(max_size()));
-static_assert(IS_VALID(reserve(T::size_type{})));
-static_assert(IS_VALID(capacity()));
-static_assert(IS_VALID(shrink_to_fit()));
+static_assert(IS_VALID(_.empty()));
+static_assert(IS_VALID(_.size()));
+static_assert(IS_VALID(_.max_size()));
+static_assert(IS_VALID(_.reserve(T::size_type{})));
+static_assert(IS_VALID(_.capacity()));
+static_assert(IS_VALID(_.shrink_to_fit()));
 
 //! Modifiers
-static_assert(IS_VALID(clear()));
-static_assert(IS_VALID(insert(begin(_), 0)));
-static_assert(IS_VALID(emplace(begin(_), 0)));
-static_assert(IS_VALID(template emplace<int>(begin(_), 0)));
-static_assert(IS_VALID(erase(begin(_))));
-static_assert(IS_VALID(push_back(0)));
-static_assert(IS_VALID(emplace_back(0)));
-static_assert(IS_VALID(template emplace_back<int>(0)));
-static_assert(IS_VALID(pop_back()));
-static_assert(IS_VALID(resize(T::size_type{})));
-static_assert(IS_VALID(swap(_)));
+static_assert(IS_VALID(_.clear()));
+static_assert(IS_VALID(_.insert(begin(_), 0)));
+static_assert(IS_VALID(_.emplace(begin(_), 0)));
+static_assert(IS_VALID(_.template emplace<int>(begin(_), 0)));
+static_assert(IS_VALID(_.erase(begin(_))));
+static_assert(IS_VALID(_.push_back(0)));
+static_assert(IS_VALID(_.emplace_back(0)));
+static_assert(IS_VALID(_.template emplace_back<int>(0)));
+static_assert(IS_VALID(_.pop_back()));
+static_assert(IS_VALID(_.resize(T::size_type{})));
+static_assert(IS_VALID(_.swap(_)));
 
 //! Non-member functions
 // TODO: operator==
