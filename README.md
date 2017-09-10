@@ -117,13 +117,12 @@ The implementation has been tested using the following compilers:
 The following features are planned to be implemented:
 - [ ] Member-types
     - [ ] STL
-        - [x] Proof-of-concept member-types `value_type`, `difference_type`, `iterator`
-        - [x] std::vector
-        - [ ] Full support of STL
+        - [x] All of `std::vector`
+        - [ ] Full support of the STL
     - [ ] User-defined types
         - [x] Explicit definition of member-types
-        - [x] Non-intrusive discovery of member-types using the REFLECTABLE macro
-        - [ ] Intrusive discovery of member-types using the REFLECTABLE macro
+        - [x] Non-intrusive discovery of member-types using the `REFLECTABLE` macro
+        - [ ] Intrusive discovery of member-types using the `REFLECTABLE` macro
 - [ ] Member-functions
     - [ ] Core
         - [x] Non-const member-functions
@@ -133,9 +132,8 @@ The following features are planned to be implemented:
         - [x] Templates (deducible)
         - [x] Templates (non-deducible)
     - [ ] STL
-        - [x] Proof-of-concept member-functions: `begin()`, `end()`, `push_back()`
-        - [x] std::vector
-        - [ ] Full support of STL
+        - [x] All of `std::vector`
+        - [ ] Full support of the STL
     - [x] User-defined types
         - [x] Explicit definition of member-functions
         - [x] Non-intrusive discovery of member-functions using the `REFLECTABLE` macro
@@ -149,8 +147,8 @@ The following features are planned to be implemented:
         - [ ] Non-intrusive discovery of member-fields using the `REFLECTABLE` macro
         - [ ] Intrusive discovery of member-fields using the `REFLECTABLE` macro
     - [ ] Opt-in zero-overhead declaration
-- [ ] Support for fundamental types (e.g. size_t, bool, double).
-- [ ] Support for non-member functions (std::vector)
+- [ ] Support for fundamental types (e.g. `size_t`, `bool`, `double`).
+- [ ] Support for non-member functions (`std::vector`)
 - [x] Generic reflection
 - [ ] Conflict-resolution
 - [ ] More test coverage
