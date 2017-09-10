@@ -29,6 +29,8 @@ constexpr auto is_valid = [](auto expression)
   return actual == expected;
 };
 
+#define IS_VALID(expression) is_valid([](auto &&x) {x.expression;})
+
 static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
 static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
 static_assert(reflect<Ref<T>::size_type>              == reflect<T::size_type>);
@@ -49,21 +51,21 @@ static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_revers
 // TODO: get_allocator
 
 //! Element access
-static_assert(is_valid([](auto &&x) {x.at(T::size_type{});}));
+static_assert(IS_VALID(at(T::size_type{})));
 // TODO: operator[]
 // TODO: front
 // TODO: back
 // TODO: data
 
 //! Iterators
-static_assert(is_valid([](auto x) {x.begin();}));
-static_assert(is_valid([](auto x) {x.cbegin();}));
-static_assert(is_valid([](auto x) {x.end();}));
-static_assert(is_valid([](auto x) {x.cend();}));
-static_assert(is_valid([](auto x) {x.rbegin();}));
-static_assert(is_valid([](auto x) {x.crbegin();}));
-static_assert(is_valid([](auto x) {x.rend();}));
-static_assert(is_valid([](auto x) {x.crend();}));
+static_assert(IS_VALID(begin()));
+static_assert(IS_VALID(cbegin()));
+static_assert(IS_VALID(end()));
+static_assert(IS_VALID(cend()));
+static_assert(IS_VALID(rbegin()));
+static_assert(IS_VALID(crbegin()));
+static_assert(IS_VALID(rend()));
+static_assert(IS_VALID(crend()));
 
 //! Capacity
 // TODO: empty
@@ -78,7 +80,7 @@ static_assert(is_valid([](auto x) {x.crend();}));
 // TODO: insert
 // TODO: emplace
 // TODO: erase
-static_assert(is_valid([](auto x) {x.push_back(0);}));
+static_assert(IS_VALID(push_back(0)));
 // TODO: emplace_back
 // TODO: pop_back
 // TODO: resize
