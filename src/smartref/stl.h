@@ -67,8 +67,8 @@ REFLECTABLE(auto, crend);
 // TODO: reserve
 // TODO: capacity
 // TODO: shrink_to_fit
-// TODO: clear
-// TODO: insert
+REFLECTABLE(auto, clear);
+REFLECTABLE(auto, insert);
 // TODO: emplace
 // TODO: erase
 REFLECTABLE(auto, push_back);

@@ -29,7 +29,7 @@ constexpr auto is_valid = [](auto expression)
   return actual == expected;
 };
 
-#define IS_VALID(expression) is_valid([](auto &&x) {x.expression;})
+#define IS_VALID(expression) is_valid([](auto &&_) {_.expression;})
 
 static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
 static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
@@ -76,8 +76,8 @@ static_assert(IS_VALID(crend()));
 // TODO: shrink_to_fit
 
 //! Modifiers
-// TODO: clear
-// TODO: insert
+static_assert(IS_VALID(clear()));
+static_assert(IS_VALID(insert(begin(_), 0)));
 // TODO: emplace
 // TODO: erase
 static_assert(IS_VALID(push_back(0)));
