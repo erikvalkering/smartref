@@ -8,9 +8,6 @@
 
 namespace smartref {
 
-template<typename Delegate, class Derived = void>
-class using_;
-
 template<typename Delegate, class Derived>
 struct using_base
 {
@@ -29,7 +26,7 @@ struct using_base<Delegate, void>
     virtual operator Delegate &() = 0;
 };
 
-template<typename Delegate, class Derived>
+template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
              , public Members<Delegate, using_<Delegate, Derived>>
              , public ReflectedMembers<Delegate, using_<Delegate, Derived>>
