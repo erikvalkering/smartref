@@ -127,7 +127,7 @@ The following features are planned to be implemented:
     - [ ] Core
         - [x] Non-const member-functions
         - [ ] const member-functions
-        - [ ] Operators
+        - [x] Operators
         - [x] Overloads
         - [x] Templates (deducible)
         - [x] Templates (non-deducible)
