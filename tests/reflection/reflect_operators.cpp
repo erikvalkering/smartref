@@ -1,3 +1,3 @@
 #include <reflection/reflection.h>
 
-REFLECTABLE(auto, operator[]);
+REFLECTABLE(auto, operator[], member_function);
