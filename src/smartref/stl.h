@@ -49,7 +49,7 @@ REFLECTABLE(auto, const_reverse_iterator);
 REFLECTABLE(auto, assign);
 REFLECTABLE(auto, get_allocator);
 REFLECTABLE(auto, at);
-// TODO: operator[]
+REFLECTABLE(auto, operator[], member_function);
 REFLECTABLE(auto, front);
 REFLECTABLE(auto, back);
 REFLECTABLE(auto, data);
