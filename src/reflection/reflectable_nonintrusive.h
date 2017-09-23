@@ -22,7 +22,30 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 
 } // namespace reflection
 
-#define REFLECTION_REFLECTABLE_NONINTRUSIVE(Class, member)          \
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER_FUNCTION(Class, member, unused)  \
+    constexpr auto CONCAT(reflection, __LINE__) =                                   \
+        REFLECTION_REFLECT_AUTO(Class);                                             \
+                                                                                    \
+    using CONCAT(CLASS, __LINE__) =                                                 \
+        decltype(reify(CONCAT(reflection, __LINE__)));                              \
+                                                                                    \
+    template<>                                                                      \
+    struct reflection::reflected_member<                                            \
+        CONCAT(CLASS, __LINE__),                                                    \
+        CURRENT_COUNTER(CONCAT(CLASS, __LINE__))                                    \
+    >                                                                               \
+    {                                                                               \
+        using type = struct                                                         \
+        {                                                                           \
+            REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(                   \
+                reflect_member_function,                                            \
+                member);                                                            \
+        };                                                                          \
+    };                                                                              \
+                                                                                    \
+    INC_COUNTER(CONCAT(CLASS, __LINE__))                                            \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(Class, member)  \
     constexpr auto CONCAT(reflection, __LINE__) =                   \
         REFLECTION_REFLECT_AUTO(Class);                             \
                                                                     \
@@ -48,3 +71,11 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     };                                                              \
                                                                     \
     INC_COUNTER(CONCAT(CLASS, __LINE__))                            \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(_1, _2, _3, NAME, ...) NAME
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE(...)                \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(          \
+        __VA_ARGS__,                                            \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER_FUNCTION,    \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED             \
+    )(__VA_ARGS__)                                              \
