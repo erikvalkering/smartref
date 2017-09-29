@@ -1,6 +1,6 @@
 #include <reflection/reflection.h>
 
-REFLECTABLE(auto, operator!,    member_function);
+// REFLECTABLE(auto, operator!,    member_function);
 REFLECTABLE(auto, operator!=,   member_function);
 REFLECTABLE(auto, operator%,    member_function);
 REFLECTABLE(auto, operator%=,   member_function);
@@ -13,11 +13,11 @@ REFLECTABLE(auto, operator*=,   member_function);
 REFLECTABLE(auto, operator+,    member_function);
 REFLECTABLE(auto, operator++,   member_function);
 REFLECTABLE(auto, operator+=,   member_function);
-REFLECTABLE(auto, operator,,    member_function);
+// REFLECTABLE(auto, operator,,    member_function);
 REFLECTABLE(auto, operator-,    member_function);
 REFLECTABLE(auto, operator--,   member_function);
 REFLECTABLE(auto, operator-=,   member_function);
-REFLECTABLE(auto, operator->,   member_function);
+// REFLECTABLE(auto, operator->,   member_function);
 REFLECTABLE(auto, operator->*,  member_function);
 REFLECTABLE(auto, operator/,    member_function);
 REFLECTABLE(auto, operator/=,   member_function);
@@ -35,6 +35,6 @@ REFLECTABLE(auto, operator[],   member_function);
 REFLECTABLE(auto, operator|,    member_function);
 REFLECTABLE(auto, operator|=,   member_function);
 REFLECTABLE(auto, operator||,   member_function);
-REFLECTABLE(auto, operator~,    member_function);
-REFLECTABLE(auto, operatorˆ,    member_function);
-REFLECTABLE(auto, operatorˆ=,   member_function);
+// REFLECTABLE(auto, operator~,    member_function);
+// REFLECTABLE(auto, operatorˆ,    member_function);
+// REFLECTABLE(auto, operatorˆ=,   member_function);
