@@ -49,7 +49,6 @@ REFLECTABLE(auto, const_reverse_iterator);
 REFLECTABLE(auto, assign);
 REFLECTABLE(auto, get_allocator);
 REFLECTABLE(auto, at);
-REFLECTABLE(auto, operator[], member_function);
 REFLECTABLE(auto, front);
 REFLECTABLE(auto, back);
 REFLECTABLE(auto, data);
@@ -76,3 +75,6 @@ REFLECTABLE(auto, emplace_back);
 REFLECTABLE(auto, pop_back);
 REFLECTABLE(auto, resize);
 REFLECTABLE(auto, swap);
+
+//! operators
+REFLECTABLE(auto, operator[], member_function);
