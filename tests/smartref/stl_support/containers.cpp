@@ -23,13 +23,13 @@ using reflection::reflect;
 //! Member-types
 constexpr auto is_valid = [](auto expression)
 {
-  auto expected = reflect<decltype(expression(std::declval<    T >()))>;
-  auto actual   = reflect<decltype(expression(std::declval<Ref<T>>()))>;
+  auto expected = reflect<decltype(expression(std::declval<    T >(), std::declval<    T >()))>;
+  auto actual   = reflect<decltype(expression(std::declval<Ref<T>>(), std::declval<    T >()))>;
 
   return actual == expected;
 };
 
-#define IS_VALID(expression) is_valid([](auto &&_) {expression;})
+#define IS_VALID(expression) is_valid([](auto &&_, auto &&__) {expression;})
 
 static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
 static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
