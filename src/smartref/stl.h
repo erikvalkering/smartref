@@ -44,7 +44,6 @@ REFLECTABLE(auto, reverse_iterator);
 REFLECTABLE(auto, const_reverse_iterator);
 
 //! member-functions
-// TODO: (constructor)
 // TODO: operator=
 REFLECTABLE(auto, assign);
 REFLECTABLE(auto, get_allocator);
