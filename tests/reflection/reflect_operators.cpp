@@ -36,5 +36,5 @@ REFLECTABLE(auto, operator|,    member_function);
 REFLECTABLE(auto, operator|=,   member_function);
 REFLECTABLE(auto, operator||,   member_function);
 REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator~,    member_function);
-REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operatorˆ,    member_function);
+REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator^,    member_function);
 REFLECTABLE(auto, operator^=,   member_function);
