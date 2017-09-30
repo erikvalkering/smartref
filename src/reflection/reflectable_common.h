@@ -67,6 +67,31 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     using detect_is_member_type = decltype(                                             \
         std::declval<typename F::Class::member>())                                      \
 
+// TODO: Get rid of code duplication
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
+    template<typename F>                                                                                \
+    class ReflectorClassName                                                                            \
+        : public reflection::reflect_base<reflection::reflected_kind::member_function>                  \
+    {                                                                                                   \
+    private:                                                                                            \
+        decltype(auto) indirect()                                                                       \
+        {                                                                                               \
+            auto f = [](auto &obj)                                                                      \
+            {                                                                                           \
+                /* TODO: What if *this was an rvalue, then it should be auto &&obj */                   \
+                return obj.member();                                                                    \
+            };                                                                                          \
+                                                                                                        \
+            return F{}(*this, f);                                                                       \
+        }                                                                                               \
+                                                                                                        \
+    public:                                                                                             \
+        auto member() -> decltype(indirect())                                                           \
+        {                                                                                               \
+            return indirect();                                                                          \
+        }                                                                                               \
+    }                                                                                                   \
+
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
     template<typename F>                                                                    \
     class ReflectorClassName                                                                \
