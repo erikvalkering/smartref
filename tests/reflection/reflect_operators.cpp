@@ -1,22 +1,21 @@
 #include <reflection/reflection.h>
 
-REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator!,    member_function);
-REFLECTABLE(auto, operator!=,                 member_function);
-REFLECTABLE(auto, operator%,                  member_function);
-REFLECTABLE(auto, operator%=,                 member_function);
-REFLECTABLE(auto, operator&,                  member_function);
-REFLECTABLE(auto, operator&&,                 member_function);
-REFLECTABLE(auto, operator&=,                 member_function);
-REFLECTABLE(auto, operator(),                 member_function);
-REFLECTABLE(auto, operator*,                  member_function);
-REFLECTABLE(auto, operator*=,                 member_function);
-REFLECTABLE(auto, operator+,                  member_function);
-REFLECTABLE(auto, operator++,                 member_function);
-REFLECTABLE(auto, operator+=,                 member_function);
+
+REFLECTABLE(auto, operator!=,   member_function);
+REFLECTABLE(auto, operator%,    member_function);
+REFLECTABLE(auto, operator%=,   member_function);
+REFLECTABLE(auto, operator&,    member_function);
+REFLECTABLE(auto, operator&&,   member_function);
+REFLECTABLE(auto, operator&=,   member_function);
+REFLECTABLE(auto, operator(),   member_function);
+REFLECTABLE(auto, operator*,    member_function);
+REFLECTABLE(auto, operator*=,   member_function);
+REFLECTABLE(auto, operator+,    member_function);
+REFLECTABLE(auto, operator++,   member_function);
+REFLECTABLE(auto, operator+=,   member_function);
 REFLECTABLE(auto, operator-,    member_function);
 REFLECTABLE(auto, operator--,   member_function);
 REFLECTABLE(auto, operator-=,   member_function);
-REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator->,   member_function);
 REFLECTABLE(auto, operator->*,  member_function);
 REFLECTABLE(auto, operator/,    member_function);
 REFLECTABLE(auto, operator/=,   member_function);
@@ -34,9 +33,12 @@ REFLECTABLE(auto, operator[],   member_function);
 REFLECTABLE(auto, operator|,    member_function);
 REFLECTABLE(auto, operator|=,   member_function);
 REFLECTABLE(auto, operator||,   member_function);
-REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator~,    member_function);
-REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator^,    member_function);
 REFLECTABLE(auto, operator^=,   member_function);
+
+REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator!,   member_function);
+REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator->,  member_function);
+REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator~,   member_function);
+REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator^,   member_function);
 
 // TODO: operator,
 // #define REFLECTION_OPERATOR_COMMA operator,
