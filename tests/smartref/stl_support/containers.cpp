@@ -72,7 +72,7 @@ auto test = []{
 };
 
 auto test_int = test<int>;
-// auto test_ref = test<Ref>;
+auto test_ref = test<Ref>;
 
 // using T = int;
 // using T = std::vector<int>;
