@@ -70,12 +70,12 @@ auto test = []{
   T d = 0;
   T e = {0};
   T f = a;
-  // T g = {a};
-  // auto h = T{};
-  // auto i = a;
-  // auto j = {a};
-  // auto k{T{}};
-  // auto l{a};
+  T g = {a};
+  auto h = T{};
+  auto i = a;
+  auto j = {a};
+  auto k{T{}};
+  auto l{a};
 
   // a = 0;
   // a = b;
