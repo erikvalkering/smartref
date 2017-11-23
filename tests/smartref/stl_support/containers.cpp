@@ -66,8 +66,8 @@ struct Ref : smartref::reflect_member_function<Ref>
 template<typename T>
 auto test = []{
   T a;
-  // T b{};
-  // T c = {};
+  T b{};
+  T c = {};
   // T d = 0;
   // T e = {0};
   // T f = a;
