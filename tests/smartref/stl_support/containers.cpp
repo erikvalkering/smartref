@@ -29,11 +29,12 @@ struct Ref : smartref::reflect_member_function<Ref>
     return ref;
   }
 
-  Ref() = default;
-  Ref(int arg) : ref{arg} {}
+  // Ref() = default;
+  // Ref(const Ref &) = default;
+  // Ref(int arg) : ref{arg} {}
 
-  using Base = smartref::reflect_member_function<Ref>;
-  using Base::operator=;
+  // using Base = smartref::reflect_member_function<Ref>;
+  // using Base::operator=;
 
   // int &operator=(int arg)
   // {
@@ -46,9 +47,15 @@ struct Ref : smartref::reflect_member_function<Ref>
   // Ref() = default;
 
   // Ref(const Ref &) = default;
-  Ref &operator=(const Ref &) = default;
+  // Ref &operator=(const Ref &) = default;
   // Ref(Ref &&) = default;
   // Ref &operator=(Ref &&) = default;
+
+  Ref() = delete;
+  Ref(const Ref &) = delete;
+  Ref(Ref &&) = delete;
+  Ref &operator=(const Ref &) = delete;
+  Ref &operator=(Ref &&) = delete;
 };
 
 // struct uiop {

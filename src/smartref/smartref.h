@@ -36,15 +36,17 @@ struct using_base<int, void>
         // decltype(auto) indirect(Arg&& arg)
         // decltype(auto) indirect(Arg arg)
         // auto indirect(Arg arg)
-        auto indirect(Arg arg)
+        auto indirect(Arg arg) -> decltype(std::declval<int>() = arg)
         {
             //! Downcast to the derived class
             auto &derived = static_cast<utils::Delayed<Derived, Arg> &>(*this);
 
-            // //! Now invoke the conversion operator
+            //! Now invoke the conversion operator
             // auto &delegate = static_cast<int &>(derived);
+            auto &delegate = static_cast<utils::Delayed<int, Arg> &>(derived);
 
-            // return delegate = arg;
+            return delegate = arg;
+            // return operator=(delegate, arg);
 
             // // auto f = [](auto&& obj, auto&& arg2) -> decltype(auto)
             // auto f = [](auto &obj, auto arg2) -> decltype(auto)
@@ -67,13 +69,18 @@ struct using_base<int, void>
 
     public:
         // reflect_member_function(int) {}
+        reflect_member_function() = default;
+        reflect_member_function(const reflect_member_function &) = default;
+        reflect_member_function(reflect_member_function &&) = default;
+        reflect_member_function &operator=(const reflect_member_function &) = default;
+        reflect_member_function &operator=(reflect_member_function &&) = default;
 
         // auto operator=(int) {}
         template <typename Arg>
         // decltype(auto)
         auto
          // operator=(Arg&& arg)
-         operator=(Arg arg)
+         operator=(Arg &&arg)
          // operator=(int arg)
             // -> decltype(indirect(std::forward<Arg>(arg)))
             -> decltype(indirect(arg))
@@ -84,12 +91,6 @@ struct using_base<int, void>
         }
 
         // auto operator=(int) {}
-        // reflect_member_function() = default;
-        // reflect_member_function(const reflect_member_function &) = default;
-        reflect_member_function &operator=(const reflect_member_function &) = default;
-        // reflect_member_function(reflect_member_function &&) = default;
-        // reflect_member_function &operator=(const reflect_member_function &) = default;
-        // reflect_member_function &operator=(reflect_member_function &&) = default;
     };
 // };
 
