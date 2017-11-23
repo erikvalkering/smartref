@@ -59,20 +59,20 @@ struct Ref : smartref::reflect_member_function<Ref>
 // };
 template<typename T>
 auto test = []{
-  T a;
-  T b{};
-  T c = {};
-  T d = 0;
-  T e = {0};
-  T f = a;
-  T g = {a};
-  auto h = T{};
-  auto i = a;
-  auto j = {a};
-  auto k{T{}};
-  auto l{a};
+  // T a;
+  // T b{};
+  // T c = {};
+  // T d = 0;
+  // T e = {0};
+  // T f = a;
+  // T g = {a};
+  // auto h = T{};
+  // auto i = a;
+  // auto j = {a};
+  // auto k{T{}};
+  // auto l{a};
 
-  a = 0;
+  // a = 0;
   // a = b;
   // a = b = 0;
   // a = b = c;
