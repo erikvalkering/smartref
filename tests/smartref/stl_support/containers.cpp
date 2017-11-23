@@ -29,6 +29,14 @@ struct Ref// : smartref::reflect_member_function<Ref>
     return ref;
   }
 
+  Ref() = default;
+  Ref(int arg) : ref{arg} {}
+
+  int &operator=(int arg)
+  {
+    return ref = arg;
+  }
+
   // using smartref::using_<T>::using_;
   // using smartref::using_<T>::operator=;
 
