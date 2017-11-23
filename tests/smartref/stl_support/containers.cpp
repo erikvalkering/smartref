@@ -19,7 +19,7 @@ namespace tests_containers {
 //     auto operator=(Args&&... args) -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...)) { return indirect<ExplicitArgs...>(std::forward<Args>(args)...); }
 // };
 // template<typename T>
-struct Ref// : smartref::reflect_member_function<Ref>
+struct Ref : smartref::reflect_member_function<Ref>
 // struct Ref : smartref::using_<T>
 {
   int ref;
@@ -57,19 +57,19 @@ struct Ref// : smartref::reflect_member_function<Ref>
 template<typename T>
 auto test = []{
   T u;
-  T v{};
-  T w = {};
-  T x = 0;
-  T y = {0};
+  // T v{};
+  // T w = {};
+  // T x = 0;
+  // T y = {0};
 
-  u = 0;
-  u = v;
-  u = v = 0;
-  u = v = w;
-  u = (v = 0);
-  u = (v = w);
-  (u = v) = 0;
-  (u = v) = w;
+  // u = 0;
+  // u = v;
+  // u = v = 0;
+  // u = v = w;
+  // u = (v = 0);
+  // u = (v = w);
+  // (u = v) = 0;
+  // (u = v) = w;
 
   // TODO: test both initialized ({} and assignment) and uninitialized construction
   // Ref<int> x = 4;
