@@ -67,9 +67,9 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     using detect_is_member_type = decltype(                                             \
         std::declval<typename F::Class::member>())                                      \
 
-// TODO: Get rid of code duplication
+// TODO:  Get rid of code duplication!!!
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
-    template<typename F>                                                                                \
+    template<typename Forwarder>                                                                        \
     class ReflectorClassName                                                                            \
         : public reflection::reflect_base<reflection::reflected_kind::member_function>                  \
     {                                                                                                   \
@@ -82,7 +82,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
                 return obj.member();                                                                    \
             };                                                                                          \
                                                                                                         \
-            return F{}(*this, f);                                                                       \
+            return Forwarder{}(*this, f);                                                               \
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
@@ -93,7 +93,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     }                                                                                                   \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
-    template<typename F>                                                                    \
+    template<typename Forwarder>                                                            \
     class ReflectorClassName                                                                \
         : public reflection::reflect_base<reflection::reflected_kind::member_function>      \
     {                                                                                       \
@@ -104,6 +104,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
             auto f = [](auto &obj, auto &&... args)                                         \
             {                                                                               \
                 /* TODO: What if *this was an rvalue, then it should be auto &&obj */       \
+                /* TODO: std::forward<Args>(args) is most definitely wrong */               \
                 if constexpr (sizeof...(ExplicitArgs) == 0)                                 \
                     return obj.member(std::forward<Args>(args)...);                         \
                 else if constexpr (utils::always_true<Args...>)                             \
@@ -111,7 +112,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
                         std::forward<Args>(args)...);                                       \
             };                                                                              \
                                                                                             \
-            return F{}(*this, f, std::forward<Args>(args)...);                              \
+            return Forwarder{}(*this, f, std::forward<Args>(args)...);                      \
         }                                                                                   \
                                                                                             \
     public:                                                                                 \

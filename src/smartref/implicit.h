@@ -6,6 +6,8 @@
 
 namespace smartref {
 
+template<typename T>
+using name = typename T::asdf;
 template<typename Delegate, class Derived>
 struct Forwarder
 {
@@ -13,18 +15,24 @@ struct Forwarder
     //       but using a helper function.
     using Class = Delegate;
 
-    template<typename Self, typename F, typename... Args>
-    auto operator()(Self &self, F f, Args &&... args)
+    template<typename Self, typename F, typename Arg>
+    // decltype(auto) operator()(Self &self, F f, Args &&... args)
+    decltype(auto) operator()(Self &self, F f, Arg arg)
     {
-        static_assert(std::is_base_of<Self, Derived>::value);
+        // static_assert(std::is_base_of<Self, Derived>::value);
+        // using x = name<Arg>;
 
         //! Downcast to the derived class
         auto &derived = static_cast<Derived &>(self);
 
         //! Now invoke the conversion operator
         auto &delegate = static_cast<Delegate &>(derived);
-
-        return f(delegate, std::forward<decltype(args)>(args)...);
+// int x = 0;
+        // return f(x, std::forward<decltype(args)>(args)...);
+        return f(delegate, arg);
+        // return derived;
+        // return f(delegate, std::forward<decltype(args)>(args)...);
+        // return 42;
     }
 };
 
@@ -44,6 +52,7 @@ struct ReflectedMembersImpl<tag, Delegate, Derived, std::tuple<Reflections...>>
     : using_member_t<Delegate, Derived, Reflections>...
 {
 };
+
 
 template<
     typename Delegate,
