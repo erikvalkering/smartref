@@ -39,7 +39,7 @@ struct using_base<int, void>
         auto indirect(Arg arg)
         {
             //! Downcast to the derived class
-            auto &derived = static_cast<Derived &>(*this);
+            auto &derived = static_cast<utils::Delayed<Derived, Arg> &>(*this);
 
             // //! Now invoke the conversion operator
             // auto &delegate = static_cast<int &>(derived);
@@ -86,7 +86,7 @@ struct using_base<int, void>
         // auto operator=(int) {}
         // reflect_member_function() = default;
         // reflect_member_function(const reflect_member_function &) = default;
-        // reflect_member_function &operator=(const reflect_member_function &) = default;
+        reflect_member_function &operator=(const reflect_member_function &) = default;
         // reflect_member_function(reflect_member_function &&) = default;
         // reflect_member_function &operator=(const reflect_member_function &) = default;
         // reflect_member_function &operator=(reflect_member_function &&) = default;
