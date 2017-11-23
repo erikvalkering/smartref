@@ -31,7 +31,7 @@ struct Ref : smartref::reflect_member_function<Ref>
 
   // Ref() = default;
   // Ref(const Ref &) = default;
-  // Ref(int arg) : ref{arg} {}
+  Ref(int arg) : ref{arg} {}
 
   // using Base = smartref::reflect_member_function<Ref>;
   // using Base::operator=;
@@ -68,7 +68,7 @@ auto test = []{
   T a;
   T b{};
   T c = {};
-  // T d = 0;
+  T d = 0;
   // T e = {0};
   // T f = a;
   // T g = {a};
