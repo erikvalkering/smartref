@@ -46,15 +46,33 @@ struct Ref// : smartref::reflect_member_function<Ref>
 // struct qwerty : uiop {
 //   using uiop::operator=;
 // };
-auto x = []{
+template<typename T>
+auto test = []{
+  T u;
+  T v{};
+  T w = {};
+  T x = 0;
+  T y = {0};
+
+  u = 0;
+  u = v;
+  u = v = 0;
+  u = v = w;
+  u = (v = 0);
+  u = (v = w);
+  (u = v) = 0;
+  (u = v) = w;
+
   // TODO: test both initialized ({} and assignment) and uninitialized construction
   // Ref<int> x = 4;
   // Ref<int> x;
   // Ref<int> x{};
-  Ref y{};
   // qwerty x;
   // x = 7;
 };
+
+auto test_int = test<int>;
+// auto test_ref = test<Ref>;
 
 // using T = int;
 // using T = std::vector<int>;
