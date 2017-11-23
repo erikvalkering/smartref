@@ -41,10 +41,10 @@ struct using_base<int, void>
             //! Downcast to the derived class
             auto &derived = static_cast<Derived &>(*this);
 
-            //! Now invoke the conversion operator
-            auto &delegate = static_cast<int &>(derived);
+            // //! Now invoke the conversion operator
+            // auto &delegate = static_cast<int &>(derived);
 
-            return delegate = arg;
+            // return delegate = arg;
 
             // // auto f = [](auto&& obj, auto&& arg2) -> decltype(auto)
             // auto f = [](auto &obj, auto arg2) -> decltype(auto)

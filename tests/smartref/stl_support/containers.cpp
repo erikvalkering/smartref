@@ -32,10 +32,13 @@ struct Ref : smartref::reflect_member_function<Ref>
   Ref() = default;
   Ref(int arg) : ref{arg} {}
 
-  int &operator=(int arg)
-  {
-    return ref = arg;
-  }
+  using Base = smartref::reflect_member_function<Ref>;
+  using Base::operator=;
+
+  // int &operator=(int arg)
+  // {
+  //   return ref = arg;
+  // }
 
   // using smartref::using_<T>::using_;
   // using smartref::using_<T>::operator=;
@@ -57,10 +60,10 @@ struct Ref : smartref::reflect_member_function<Ref>
 template<typename T>
 auto test = []{
   T u;
-  T v{};
-  T w = {};
-  T x = 0;
-  T y = {0};
+  // T v{};
+  // T w = {};
+  // T x = 0;
+  // T y = {0};
 
   // u = 0;
   // u = v;
