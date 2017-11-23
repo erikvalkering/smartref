@@ -80,13 +80,6 @@ auto test = []{
   // a = (b = c);
   // (a = b) = 0;
   // (a = b) = c;
-
-  // TODO: test both initialized ({} and assignment) and uninitialized construction
-  // Ref<int> x = 4;
-  // Ref<int> x;
-  // Ref<int> x{};
-  // qwerty x;
-  // x = 7;
 };
 
 auto test_int = test<int>;
