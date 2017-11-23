@@ -69,7 +69,7 @@ auto test = []{
   T b{};
   T c = {};
   T d = 0;
-  // T e = {0};
+  T e = {0};
   // T f = a;
   // T g = {a};
   // auto h = T{};
