@@ -44,14 +44,13 @@ struct Ref : smartref::reflect_member_function<Ref>
   // using smartref::using_<T>::using_;
   // using smartref::using_<T>::operator=;
 
-  // Ref() = default;
+  Ref() = default;
 
   // Ref(const Ref &) = default;
   // Ref &operator=(const Ref &) = default;
   // Ref(Ref &&) = default;
   // Ref &operator=(Ref &&) = default;
 
-  Ref() = delete;
   Ref(const Ref &) = delete;
   Ref(Ref &&) = delete;
   Ref &operator=(const Ref &) = delete;
@@ -66,7 +65,7 @@ struct Ref : smartref::reflect_member_function<Ref>
 // };
 template<typename T>
 auto test = []{
-  // T a;
+  T a;
   // T b{};
   // T c = {};
   // T d = 0;
