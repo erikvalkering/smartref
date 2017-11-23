@@ -64,6 +64,8 @@ auto test = []{
   T w = {};
   T x = 0;
   T y = {0};
+  T z = u;
+  T s = {u};
 
   u = 0;
   // u = v;
