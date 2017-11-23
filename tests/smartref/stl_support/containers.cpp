@@ -59,22 +59,22 @@ struct Ref : smartref::reflect_member_function<Ref>
 // };
 template<typename T>
 auto test = []{
-  T u;
-  T v{};
-  T w = {};
-  T x = 0;
-  T y = {0};
-  T z = u;
-  T s = {u};
+  T a;
+  T b{};
+  T c = {};
+  T d = 0;
+  T e = {0};
+  T f = a;
+  T g = {a};
 
-  u = 0;
-  // u = v;
-  // u = v = 0;
-  // u = v = w;
-  // u = (v = 0);
-  // u = (v = w);
-  // (u = v) = 0;
-  // (u = v) = w;
+  a = 0;
+  // a = b;
+  // a = b = 0;
+  // a = b = c;
+  // a = (b = 0);
+  // a = (b = c);
+  // (a = b) = 0;
+  // (a = b) = c;
 
   // TODO: test both initialized ({} and assignment) and uninitialized construction
   // Ref<int> x = 4;
