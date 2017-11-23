@@ -32,11 +32,11 @@ struct using_base<int, void>
     class reflect_member_function
      /*: public reflection::reflect_base<reflection::reflected_kind::member_function> */{
     private:
-        // template <typename Arg>
+        template <typename Arg>
         // decltype(auto) indirect(Arg&& arg)
         // decltype(auto) indirect(Arg arg)
         // auto indirect(Arg arg)
-        auto indirect(int arg)
+        auto indirect(Arg arg)
         {
             //! Downcast to the derived class
             auto &derived = static_cast<Derived &>(*this);
@@ -69,12 +69,12 @@ struct using_base<int, void>
         // reflect_member_function(int) {}
 
         // auto operator=(int) {}
-        // template <typename Arg>
+        template <typename Arg>
         // decltype(auto)
         auto
          // operator=(Arg&& arg)
-         // operator=(Arg arg)
-         operator=(int arg)
+         operator=(Arg arg)
+         // operator=(int arg)
             // -> decltype(indirect(std::forward<Arg>(arg)))
             -> decltype(indirect(arg))
         {
