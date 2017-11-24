@@ -33,8 +33,8 @@ struct Ref : smartref::reflect_member_function<Ref>
   // Ref(const Ref &) = default;
   Ref(int arg) : ref{arg} {}
 
-  // using Base = smartref::reflect_member_function<Ref>;
-  // using Base::operator=;
+  using Base = smartref::reflect_member_function<Ref>;
+  using Base::operator=;
 
   // int &operator=(int arg)
   // {
@@ -47,13 +47,9 @@ struct Ref : smartref::reflect_member_function<Ref>
   Ref() = default;
 
   Ref(const Ref &) = default;
-  // Ref &operator=(const Ref &) = default;
-  // Ref(Ref &&) = default;
-  // Ref &operator=(Ref &&) = default;
-
-  Ref(Ref &&) = delete;
-  Ref &operator=(const Ref &) = delete;
-  Ref &operator=(Ref &&) = delete;
+  Ref &operator=(const Ref &) = default;
+  Ref(Ref &&) = default;
+  Ref &operator=(Ref &&) = default;
 };
 
 // struct uiop {
@@ -77,7 +73,7 @@ auto test = []{
   auto k{T{}};
   auto l{a};
 
-  // a = 0;
+  a = 0;
   // a = b;
   // a = b = 0;
   // a = b = c;
