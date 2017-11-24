@@ -100,14 +100,15 @@ auto test = []{
   auto z = T{0};
   auto A = {T{0}};
 
+  //! Assignments
   a = 0;
-  // a = b;
-  // a = b = 0;
-  // a = b = c;
-  // a = (b = 0);
-  // a = (b = c);
-  // (a = b) = 0;
-  // (a = b) = c;
+  a = b;
+  a = b = 0;
+  a = b = c;
+  a = (b = 0);
+  a = (b = c);
+  (a = b) = 0;
+  (a = b) = c;
 };
 
 auto test_int = test<int>;
