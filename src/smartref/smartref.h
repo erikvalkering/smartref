@@ -37,7 +37,7 @@ struct using_base<int, void>
         // decltype(auto) indirect(Arg&& arg)
         // decltype(auto) indirect(Arg arg)
         // auto indirect(Arg arg)
-        auto indirect(Arg arg) -> decltype(std::declval<int &>() = arg)
+        auto indirect(Arg &&arg) -> decltype(std::declval<int &>() = arg)
         {
             //! Downcast to the derived class
             auto &derived = static_cast<Derived &>(*this);
