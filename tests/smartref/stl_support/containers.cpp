@@ -101,18 +101,22 @@ auto test = []{
   auto A = {T{0}};
 
   //! Assignments
-  a = 0;
-  a = b;
-  a = b = 0;
-  a = b = c;
-  a = (b = 0);
-  a = (b = c);
-  (a = b) = 0;
-  (a = b) = c;
+  printf("a = 0: "); a = 0;
+  printf("a = b: "); a = b;
+  printf("a = b = 0: "); a = b = 0;
+  printf("a = b = c: "); a = b = c;
+  printf("a = (b = 0): "); a = (b = 0);
+  printf("a = (b = c): "); a = (b = c);
+  printf("(a = b) = 0: "); (a = b) = 0;
+  printf("(a = b) = c: "); (a = b) = c;
+
+  printf("qwerty\n");
+
+  return 0;
 };
 
-auto test_int = test<int>;
-auto test_ref = test<Ref>;
+auto test_int = test<int>();
+auto test_ref = test<Ref>();
 
 // using T = int;
 // using T = std::vector<int>;
