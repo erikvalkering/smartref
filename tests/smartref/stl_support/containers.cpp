@@ -60,18 +60,45 @@ struct Ref : smartref::reflect_member_function<Ref>
 // };
 template<typename T>
 auto test = []{
+  //! Uninitialized construction
   T a;
+
+  //! Default construction
   T b{};
   T c = {};
-  T d = 0;
-  T e = {0};
-  T f = a;
-  T g = {a};
-  auto h = T{};
-  auto i = a;
-  auto j = {a};
-  auto k{T{}};
-  auto l{a};
+
+  //! Copy construction
+  T d{a};
+  T e = a;
+  T f = {a};
+  auto g{a};
+  auto h = a;
+  auto i = {a};
+
+  //! Move construction
+  T j{std::move(a)};
+  T k = std::move(a);
+  T l = {std::move(a)};
+  auto m{T{}};
+  auto n = T{};
+  auto o = {T{}};
+
+  //! Delegate type copy construction
+  int O = 0;
+  T p{O};
+  T q = O;
+  T r = {O};
+  auto s{T{O}};
+  auto t = T{O};
+  auto u = {T{O}};
+
+  //! Delegate type move construction
+  T v{0};
+  T w = 0;
+  T x = {0};
+  auto y{T{0}};
+  auto z = T{0};
+  auto A = {T{0}};
 
   a = 0;
   // a = b;
