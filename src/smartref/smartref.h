@@ -39,11 +39,12 @@ struct using_base<int, void>
         auto indirect(Arg arg) -> decltype(std::declval<int>() = arg)
         {
             //! Downcast to the derived class
-            auto &derived = static_cast<utils::Delayed<Derived, Arg> &>(*this);
+            auto &derived = static_cast<Derived &>(*this);
+            // auto &derived = static_cast<utils::Delayed<Derived, Arg> &>(*this);
 
             //! Now invoke the conversion operator
-            // auto &delegate = static_cast<int &>(derived);
-            auto &delegate = static_cast<utils::Delayed<int, Arg> &>(derived);
+            auto &delegate = static_cast<int &>(derived);
+            // auto &delegate = static_cast<utils::Delayed<int, Arg> &>(derived);
 
             return delegate = arg;
             // return operator=(delegate, arg);
