@@ -93,15 +93,17 @@ auto test = []{
   auto z = T{std::move(delegate)};
   auto A = {T{std::move(delegate)}};
 
-  //! Assignments
-  a = std::move(delegate);
+  //! Copy assignments
   a = b;
-  a = b = std::move(delegate);
   a = b = c;
-  a = (b = std::move(delegate));
   a = (b = c);
-  (a = b) = std::move(delegate);
   (a = b) = c;
+
+  //! Move assignments
+  a = std::move(delegate);
+  a = b = std::move(delegate);
+  a = (b = std::move(delegate));
+  (a = b) = std::move(delegate);
 
   return 0;
 };
@@ -109,9 +111,17 @@ auto test = []{
 auto test_int = test<int>();
 
 auto test_ref = []{
-  Ref::counter() = 0;
-  test<Ref>();
-  assert(Ref::counter() == 18);
+  Ref<int>::counter() = 0;
+  test<Ref<int>>();
+  assert(Ref<int>::counter() == 18);
+
+  Ref<float>::counter() = 0;
+  test<Ref<float>>();
+  assert(Ref<float>::counter() == 18);
+
+  Ref<bool>::counter() = 0;
+  test<Ref<bool>>();
+  assert(Ref<bool>::counter() == 18);
 
   return 0;
 }();
