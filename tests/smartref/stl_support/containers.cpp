@@ -51,7 +51,7 @@ struct Ref : smartref::reflect_member_function<Ref>
   Ref &operator=(Ref &&) = default;
 };
 
-template<typename T, typename Delegate = int>
+template<typename T, typename Delegate>
 auto test = []{
   //! Uninitialized construction
   T a;
@@ -120,19 +120,19 @@ auto test = []{
   return 0;
 };
 
-auto test_int = test<int>();
+auto test_int = test<int, int>();
 
 auto test_ref = []{
   Ref<int>::counter() = 0;
-  test<Ref<int>>();
+  test<Ref<int>, int>();
   assert(Ref<int>::counter() == 18);
 
   Ref<float>::counter() = 0;
-  test<Ref<float>>();
+  test<Ref<float>, float>();
   assert(Ref<float>::counter() == 18);
 
   Ref<bool>::counter() = 0;
-  test<Ref<bool>>();
+  test<Ref<bool>, bool>();
   assert(Ref<bool>::counter() == 18);
 
   return 0;
