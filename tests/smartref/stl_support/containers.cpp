@@ -51,7 +51,7 @@ struct Ref : smartref::reflect_member_function<Ref>
   Ref &operator=(Ref &&) = default;
 };
 
-template<typename T>
+template<typename T, typename Delegate = int>
 auto test = []{
   //! Uninitialized construction
   T a;
@@ -77,30 +77,30 @@ auto test = []{
   auto o = {T{}};
 
   //! Delegate type copy construction
-  int O = 0;
-  T p{O};
-  T q = O;
-  T r = {O};
-  auto s{T{O}};
-  auto t = T{O};
-  auto u = {T{O}};
+  auto delegate = Delegate{};
+  T p{delegate};
+  T q = delegate;
+  T r = {delegate};
+  auto s{T{delegate}};
+  auto t = T{delegate};
+  auto u = {T{delegate}};
 
   //! Delegate type move construction
-  T v{0};
-  T w = 0;
-  T x = {0};
-  auto y{T{0}};
-  auto z = T{0};
-  auto A = {T{0}};
+  T v{std::move(delegate)};
+  T w = std::move(delegate);
+  T x = {std::move(delegate)};
+  auto y{T{std::move(delegate)}};
+  auto z = T{std::move(delegate)};
+  auto A = {T{std::move(delegate)}};
 
   //! Assignments
-  a = 0;
+  a = std::move(delegate);
   a = b;
-  a = b = 0;
+  a = b = std::move(delegate);
   a = b = c;
-  a = (b = 0);
+  a = (b = std::move(delegate));
   a = (b = c);
-  (a = b) = 0;
+  (a = b) = std::move(delegate);
   (a = b) = c;
 
   return 0;
