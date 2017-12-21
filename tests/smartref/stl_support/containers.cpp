@@ -125,15 +125,15 @@ auto test_int = test<int, int>();
 auto test_ref = []{
   Ref<int>::counter() = 0;
   test<Ref<int>, int>();
-  assert(Ref<int>::counter() == 18);
+  assert(Ref<int>::counter() == 32);
 
   Ref<float>::counter() = 0;
   test<Ref<float>, float>();
-  assert(Ref<float>::counter() == 18);
+  assert(Ref<float>::counter() == 32);
 
   Ref<bool>::counter() = 0;
   test<Ref<bool>, bool>();
-  assert(Ref<bool>::counter() == 18);
+  assert(Ref<bool>::counter() == 32);
 
   return 0;
 }();
