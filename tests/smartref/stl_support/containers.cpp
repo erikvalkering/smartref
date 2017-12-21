@@ -2,6 +2,7 @@
 #include <smartref/smartref.h>
 
 // #include <vector>
+#include <cassert>
 
 namespace tests_containers {
 
@@ -19,13 +20,21 @@ namespace tests_containers {
 //     auto operator=(Args&&... args) -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...)) { return indirect<ExplicitArgs...>(std::forward<Args>(args)...); }
 // };
 // template<typename T>
+
 struct Ref : smartref::reflect_member_function<Ref>
 // struct Ref : smartref::using_<T>
 {
   int ref;
 
+  static auto &counter()
+  {
+    static auto count = 0;
+    return count;
+  }
+
   operator int &()
   {
+    ++counter();
     return ref;
   }
 
@@ -48,6 +57,7 @@ struct Ref : smartref::reflect_member_function<Ref>
 // struct qwerty : uiop {
 //   using uiop::operator=;
 // };
+
 template<typename T>
 auto test = []{
   //! Uninitialized construction
@@ -91,22 +101,27 @@ auto test = []{
   auto A = {T{0}};
 
   //! Assignments
-  printf("a = 0: "); a = 0;
-  printf("a = b: "); a = b;
-  printf("a = b = 0: "); a = b = 0;
-  printf("a = b = c: "); a = b = c;
-  printf("a = (b = 0): "); a = (b = 0);
-  printf("a = (b = c): "); a = (b = c);
-  printf("(a = b) = 0: "); (a = b) = 0;
-  printf("(a = b) = c: "); (a = b) = c;
-
-  printf("qwerty\n");
+  a = 0;
+  a = b;
+  a = b = 0;
+  a = b = c;
+  a = (b = 0);
+  a = (b = c);
+  (a = b) = 0;
+  (a = b) = c;
 
   return 0;
 };
 
 auto test_int = test<int>();
-auto test_ref = test<Ref>();
+
+auto test_ref = []{
+  Ref::counter() = 0;
+  test<Ref>();
+  assert(Ref::counter() == 18);
+
+  return 0;
+}();
 
 // using T = int;
 // using T = std::vector<int>;
