@@ -51,13 +51,6 @@ struct Ref : smartref::reflect_member_function<Ref>
   Ref &operator=(Ref &&) = default;
 };
 
-// struct uiop {
-//   auto operator=(int) {}
-// };
-// struct qwerty : uiop {
-//   using uiop::operator=;
-// };
-
 template<typename T>
 auto test = []{
   //! Uninitialized construction
