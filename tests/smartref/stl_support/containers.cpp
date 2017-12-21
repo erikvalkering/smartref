@@ -100,6 +100,18 @@ auto test = []{
   (a = b) = c;
 
   //! Move assignments
+  a = std::move(b);
+  a = b = std::move(c);
+  a = (b = std::move(c));
+  (a = b) = std::move(c);
+
+  //! Delegate type copy assignments
+  a = delegate;
+  a = b = delegate;
+  a = (b = delegate);
+  (a = b) = delegate;
+
+  //! Delegate type move assignments
   a = std::move(delegate);
   a = b = std::move(delegate);
   a = (b = std::move(delegate));
