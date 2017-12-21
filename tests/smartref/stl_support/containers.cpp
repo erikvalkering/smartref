@@ -93,25 +93,25 @@ auto test = []{
   auto z = T{std::move(delegate)};
   auto A = {T{std::move(delegate)}};
 
-  //! Copy assignments
+  //! Copy assignment
   a = b;
   a = b = c;
   a = (b = c);
   (a = b) = c;
 
-  //! Move assignments
+  //! Move assignment
   a = std::move(b);
   a = b = std::move(c);
   a = (b = std::move(c));
   (a = b) = std::move(c);
 
-  //! Delegate type copy assignments
+  //! Delegate type copy assignment
   a = delegate;
   a = b = delegate;
   a = (b = delegate);
   (a = b) = delegate;
 
-  //! Delegate type move assignments
+  //! Delegate type move assignment
   a = std::move(delegate);
   a = b = std::move(delegate);
   a = (b = std::move(delegate));
