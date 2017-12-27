@@ -151,6 +151,7 @@ The following features are planned to be implemented:
 - [ ] Support for non-member functions (`std::vector`)
 - [x] Generic reflection
 - [ ] Conflict-resolution
+- [ ] Reference-leaking control (e.g. operator=() currently returns int & for int-wrappers), and maybe a more general control mechanism
 - [ ] More test coverage
   - [ ] Implicit conversions while passing to function
   - [ ] Performance tests
