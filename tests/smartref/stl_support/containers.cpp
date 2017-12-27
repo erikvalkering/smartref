@@ -19,12 +19,12 @@ namespace tests_containers {
 //     template <typename... ExplicitArgs, typename... Args>
 //     auto operator=(Args&&... args) -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...)) { return indirect<ExplicitArgs...>(std::forward<Args>(args)...); }
 // };
-// template<typename T>
 
-struct Ref : smartref::reflect_member_function<Ref>
+template<typename T>
+struct Ref : smartref::reflect_member_function<Ref<T>>
 // struct Ref : smartref::using_<T>
 {
-  int ref;
+  T ref;
 
   static auto &counter()
   {
@@ -32,13 +32,13 @@ struct Ref : smartref::reflect_member_function<Ref>
     return count;
   }
 
-  operator int &()
+  operator T &()
   {
     ++counter();
     return ref;
   }
 
-  Ref(int arg) : ref{arg} {}
+  Ref(T arg) : ref{arg} {}
 
   using Base = smartref::reflect_member_function<Ref>;
   using Base::operator=;
