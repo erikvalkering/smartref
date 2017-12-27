@@ -21,7 +21,7 @@ namespace tests_containers {
 // };
 
 template<typename T>
-struct Ref : smartref::reflect_member_function<Ref<T>>
+struct Ref : smartref::reflect_member_function<smartref::Forwarder<T, Ref<T>>, Ref<T>>
 // struct Ref : smartref::using_<T>
 {
   T ref;
@@ -40,7 +40,7 @@ struct Ref : smartref::reflect_member_function<Ref<T>>
 
   Ref(T arg) : ref{arg} {}
 
-  using Base = smartref::reflect_member_function<Ref>;
+  using Base = smartref::reflect_member_function<smartref::Forwarder<T, Ref<T>>, Ref>;
   using Base::operator=;
 
   Ref() = default;

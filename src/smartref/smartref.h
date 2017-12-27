@@ -28,7 +28,7 @@ struct using_base<int, void>
 };
 
 // struct ASDF {
-    template <typename Derived>
+    template <typename Forwarder, typename Derived>
     class reflect_member_function
      /*: public reflection::reflect_base<reflection::reflected_kind::member_function> */{
     private:
