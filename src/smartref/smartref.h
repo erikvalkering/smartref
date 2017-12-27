@@ -27,7 +27,6 @@ struct using_base<int, void>
     virtual operator int &() = 0;
 };
 
-            static auto count = 0;
 // struct ASDF {
     template <typename Derived>
     class reflect_member_function
@@ -41,13 +40,10 @@ struct using_base<int, void>
         {
             //! Downcast to the derived class
             auto &derived = static_cast<Derived &>(*this);
-            // auto &derived = static_cast<utils::Delayed<Derived, Arg> &>(*this);
 
             //! Now invoke the conversion operator
             auto &delegate = static_cast<int &>(derived);
-            // auto &delegate = static_cast<utils::Delayed<int, Arg> &>(derived);
 
-            printf("asdf: %d\n", ++count);
             return delegate = arg;
 
             // // auto f = [](auto&& obj, auto&& arg2) -> decltype(auto)
