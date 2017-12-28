@@ -32,37 +32,19 @@ struct using_base<int, void>
     class reflect_member_function
      /*: public reflection::reflect_base<reflection::reflected_kind::member_function> */{
     private:
+        template<typename Obj, typename Arg>
+        static auto f(Obj &obj, Arg arg)
+        {
+            return obj = arg;
+        };
+
         template <typename Arg>
         // decltype(auto) indirect(Arg&& arg)
         // decltype(auto) indirect(Arg arg)
         // auto indirect(Arg arg)
-        auto indirect(Arg &&arg) -> decltype(std::declval<int &>() = arg)
+        auto indirect(Arg &&arg) -> decltype(Forwarder{}(*this, f, arg))
         {
-            //! Downcast to the derived class
-            auto &derived = static_cast<Derived &>(*this);
-
-            //! Now invoke the conversion operator
-            auto &delegate = static_cast<int &>(derived);
-
-            return delegate = arg;
-
-            // // auto f = [](auto&& obj, auto&& arg2) -> decltype(auto)
-            // auto f = [](auto &obj, auto arg2) -> decltype(auto)
-            // {
-            //     // return 0;
-            //     return obj = arg2;
-            //     // return obj = std::forward<Arg>(arg);
-            //     // if constexpr (sizeof...(ExplicitArgs) == 0)
-            //     //     return obj.operator=(std::forward<Args>(args)...);
-            //     // else if constexpr (utils::always_true<Args...>)
-            //     //     return obj.template operator=<ExplicitArgs...>(std::forward<Args>(args)...);
-            // };
-
-            // // auto FF = F{};
-            // // return f(8, 8);
-            // // return FF(*this, f);
-            // return F{}(*this, f, arg);
-            // // return F{}(*this, f, std::forward<Arg>(arg));
+            return Forwarder{}(*this, f, arg);
         }
 
     public:
