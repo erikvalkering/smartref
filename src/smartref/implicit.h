@@ -25,9 +25,7 @@ struct Forwarder
         auto &derived = static_cast<Derived &>(self);
 
         //! Now invoke the conversion operator
-        auto &delegate = static_cast<Delegate &>(derived);
-
-        return delegate;
+        return static_cast<Delegate &>(derived);
     }
 
     template<typename Self, typename F, typename Arg>
