@@ -99,6 +99,7 @@ auto test = []{
   a = b = c;
   a = (b = c);
   (a = b) = c;
+  (a = b) = delegate; // TODO: also add similar checks for other tests.
 
   //! Move assignment
   a = std::move(b);
@@ -126,15 +127,15 @@ auto test_int = test<int, int>();
 auto test_ref = []{
   Ref<int>::counter() = 0;
   test<Ref<int>, int>();
-  assert(Ref<int>::counter() == 32);
+  assert(Ref<int>::counter() == 34);
 
   Ref<float>::counter() = 0;
   test<Ref<float>, float>();
-  assert(Ref<float>::counter() == 32);
+  assert(Ref<float>::counter() == 34);
 
   Ref<bool>::counter() = 0;
   test<Ref<bool>, bool>();
-  assert(Ref<bool>::counter() == 32);
+  assert(Ref<bool>::counter() == 34);
 
   return 0;
 }();
