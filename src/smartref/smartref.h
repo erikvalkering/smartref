@@ -32,19 +32,23 @@ struct using_base<int, void>
     class reflect_member_function
      /*: public reflection::reflect_base<reflection::reflected_kind::member_function> */{
     private:
-        template<typename Obj, typename Arg>
-        static auto f(Obj &obj, Arg arg)
+        struct F2
         {
-            return obj = arg;
+            template<typename Obj, typename Arg>
+            auto operator()(Obj &obj, Arg arg)
+              -> decltype(obj = arg)
+            {
+                return obj = arg;
+            };
         };
 
         template <typename Arg>
         // decltype(auto) indirect(Arg&& arg)
         // decltype(auto) indirect(Arg arg)
         // auto indirect(Arg arg)
-        auto indirect(Arg &&arg) -> decltype(Forwarder{}(*this, f, arg))
+        auto indirect(Arg &&arg) -> decltype(Forwarder{}(*this, F2{}, arg))
         {
-            return Forwarder{}(*this, f, arg);
+            return Forwarder{}(*this, F2{}, arg);
         }
 
     public:
