@@ -93,6 +93,7 @@ auto test = []{
   auto z = T{std::move(delegate)};
   auto A = {T{std::move(delegate)}};
 
+  // TODO: Check whether semantics are right (e.g. (a = b)++ changes a, instead of a copy).
   //! Copy assignment
   a = b;
   a = b = c;
