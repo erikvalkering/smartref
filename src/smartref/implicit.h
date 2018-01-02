@@ -30,7 +30,8 @@ struct Forwarder
 
     template<typename Self, typename F, typename Arg>
     // decltype(auto) operator()(Self &self, F f, Args &&... args)
-    auto operator()(Self &self, F f, Arg arg) -> decltype(f(delegate(self), arg))
+    auto operator()(Self &self, F f, Arg arg)
+        -> decltype(f(delegate(self), arg))
     {
 // int x = 0;
         // return f(x, std::forward<decltype(args)>(args)...);
