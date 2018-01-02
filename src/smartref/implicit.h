@@ -15,9 +15,8 @@ struct Forwarder
     //       but using a helper function.
     using Class = Delegate;
 
-    template<typename Self, typename F, typename Arg>
-    // decltype(auto) operator()(Self &self, F f, Args &&... args)
-    decltype(auto) operator()(Self &self, F f, Arg arg)
+    template<typename Self>
+    decltype(auto) delegate(Self &self)
     {
         // static_assert(std::is_base_of<Self, Derived>::value);
         // using x = name<Arg>;
@@ -27,9 +26,17 @@ struct Forwarder
 
         //! Now invoke the conversion operator
         auto &delegate = static_cast<Delegate &>(derived);
+
+        return delegate;
+    }
+
+    template<typename Self, typename F, typename Arg>
+    // decltype(auto) operator()(Self &self, F f, Args &&... args)
+    decltype(auto) operator()(Self &self, F f, Arg arg)
+    {
 // int x = 0;
         // return f(x, std::forward<decltype(args)>(args)...);
-        return f(delegate, arg);
+        return f(delegate(self), arg);
         // return derived;
         // return f(delegate, std::forward<decltype(args)>(args)...);
         // return 42;
