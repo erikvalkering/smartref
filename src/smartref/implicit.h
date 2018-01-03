@@ -23,11 +23,11 @@ struct Forwarder
         return static_cast<Delegate &>(derived);
     }
 
-    template<typename Self, typename F, typename Arg>
-    auto operator()(Self &self, F f, Arg arg)
-        -> decltype(f(delegate(self), arg))
+    template<typename Self, typename F, typename... Args>
+    auto operator()(Self &self, F f, Args &&... args)
+        -> decltype(f(delegate(self), std::forward<Args>(args)...))
     {
-        return f(delegate(self), arg);
+        return f(delegate(self), std::forward<Args>(args)...);
     }
 };
 
