@@ -6,20 +6,6 @@
 
 namespace tests_containers {
 
-// template <typename F>
-// class reflect_member_function : public reflection::reflect_base<reflection::reflected_kind::member_function> {
-// private:
-//     template <typename... ExplicitArgs, typename... Args>
-//     decltype(auto) indirect(Args&&... args)
-//     {
-//         auto f = [](auto& obj, auto&&... args) { if constexpr (sizeof...(ExplicitArgs) == 0) return obj.operator=(std::forward<Args>(args)...); else if constexpr (utils::always_true<Args...>) return obj.template operator=<ExplicitArgs...>( std::forward<Args>(args)...); };
-//         return F{}(*this, f, std::forward<Args>(args)...);
-//     }
-// public:
-//     template <typename... ExplicitArgs, typename... Args>
-//     auto operator=(Args&&... args) -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...)) { return indirect<ExplicitArgs...>(std::forward<Args>(args)...); }
-// };
-
 template<typename T>
 struct Ref : smartref::reflect_member_function<smartref::Forwarder<T, Ref<T>>, Ref<T>>
 // struct Ref : smartref::using_<T>
