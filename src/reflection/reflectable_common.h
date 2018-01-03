@@ -92,34 +92,45 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         }                                                                                               \
     }                                                                                                   \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
-    template<typename Forwarder>                                                            \
-    class ReflectorClassName                                                                \
-        : public reflection::reflect_base<reflection::reflected_kind::member_function>      \
-    {                                                                                       \
-    private:                                                                                \
-        template<typename... ExplicitArgs, typename... Args>                                \
-        decltype(auto) indirect(Args &&... args)                                            \
-        {                                                                                   \
-            auto f = [](auto &obj, auto &&... args)                                         \
-            {                                                                               \
-                /* TODO: What if *this was an rvalue, then it should be auto &&obj */       \
-                /* TODO: std::forward<Args>(args) is most definitely wrong */               \
-                if constexpr (sizeof...(ExplicitArgs) == 0)                                 \
-                    return obj.member(std::forward<Args>(args)...);                         \
-                else if constexpr (utils::always_true<Args...>)                             \
-                    return obj.template member<ExplicitArgs...>(                            \
-                        std::forward<Args>(args)...);                                       \
-            };                                                                              \
-                                                                                            \
-            return Forwarder{}(*this, f, std::forward<Args>(args)...);                      \
-        }                                                                                   \
-                                                                                            \
-    public:                                                                                 \
-        template<typename... ExplicitArgs, typename... Args>                                \
-        auto member(Args &&... args)                                                        \
-            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))             \
-        {                                                                                   \
-            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);                  \
-        }                                                                                   \
-    }                                                                                       \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
+    template<typename Forwarder>                                                                        \
+    class ReflectorClassName                                                                            \
+        : public reflection::reflect_base<reflection::reflected_kind::member_function>                  \
+    {                                                                                                   \
+    private:                                                                                            \
+        template<typename... ExplicitArgs>                                                              \
+        struct Indirect;                                                                                \
+                                                                                                        \
+        template<>                                                                                      \
+        struct Indirect<>                                                                               \
+        {                                                                                               \
+            /* TODO: What if *this was an rvalue, then it should be auto &&obj */                       \
+            template<typename Obj, typename... Args>                                                    \
+            auto operator()(Obj &obj, Args &&... args)                                                  \
+                -> decltype(obj.member(std::forward<Args>(args)...))                                    \
+            {                                                                                           \
+                return obj.member(std::forward<Args>(args)...);                                         \
+            };                                                                                          \
+        };                                                                                              \
+                                                                                                        \
+        template<typename... ExplicitArgs>                                                              \
+        struct Indirect<typename... ExplicitArgs>                                                       \
+        {                                                                                               \
+            template<typename Obj, typename... Args>                                                    \
+            auto operator()(Obj &obj, Args &&... args)                                                  \
+                -> decltype(obj.template member<ExplicitArgs...>(                                       \
+                        std::forward<Args>(args)...))                                                   \
+            {                                                                                           \
+                return obj.template member<ExplicitArgs...>(                                            \
+                    std::forward<Args>(args)...);                                                       \
+            };                                                                                          \
+        };                                                                                              \
+                                                                                                        \
+    public:                                                                                             \
+        template<typename... ExplicitArgs, typename... Args>                                            \
+        auto member(Args &&... args)                                                                    \
+            -> decltype(Forwarder{}(*this, Indirect<ExplicitArgs...>{}, std::forward<Args>(args)...))   \
+        {                                                                                               \
+            return Forwarder{}(*this, Indirect<ExplicitArgs...>{}, std::forward<Args>(args)...);        \
+        }                                                                                               \
+    }                                                                                                   \
