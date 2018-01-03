@@ -6,9 +6,6 @@
 
 namespace reflection {
 
-template<typename T>
-using name = typename T::asdf;
-
 namespace detail {
 
 template<typename Reflection, typename F>
@@ -39,9 +36,6 @@ constexpr static auto reify(Reflection<T>) -> T;
 template<class Reflection, typename F>
 constexpr static auto reify(Reflection refl, F)
 {
-    // using X = name<Reflection>;
-    // using X = name<F>;
-
     // TODO: Shouldn't we be passing the class instead of F?
     if constexpr (detail::is_member_type<Reflection, F>())
     {
@@ -49,7 +43,6 @@ constexpr static auto reify(Reflection refl, F)
     }
     else if constexpr (detail::is_member_function<Reflection>())
     {
-
         return typename Reflection::template reflect_member_function<F>{};
     }
 }
