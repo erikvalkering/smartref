@@ -27,10 +27,9 @@ struct using_base<int, void>
     virtual operator int &() = 0;
 };
 
-// struct ASDF {
     template<typename Forwarder, typename Derived>
     class reflect_member_function
-     /*: public reflection::reflect_base<reflection::reflected_kind::member_function> */{
+    {
     private:
         struct F2
         {
@@ -42,7 +41,7 @@ struct using_base<int, void>
             };
         };
 
-        template <typename Arg>
+        template<typename Arg>
         auto indirect(Arg &&arg)
             -> decltype(Forwarder{}(*this, F2{}, arg))
         {
@@ -56,7 +55,7 @@ struct using_base<int, void>
         reflect_member_function &operator=(const reflect_member_function &) = default;
         reflect_member_function &operator=(reflect_member_function &&) = default;
 
-        template <typename Arg>
+        template<typename Arg>
         auto operator=(Arg &&arg)
             -> decltype(indirect(arg))
         {
