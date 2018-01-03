@@ -28,7 +28,7 @@ struct using_base<int, void>
 };
 
 // struct ASDF {
-    template <typename Forwarder, typename Derived>
+    template<typename Forwarder, typename Derived>
     class reflect_member_function
      /*: public reflection::reflect_base<reflection::reflected_kind::member_function> */{
     private:
@@ -36,47 +36,33 @@ struct using_base<int, void>
         {
             template<typename Obj, typename Arg>
             auto operator()(Obj &obj, Arg arg)
-              -> decltype(obj = arg)
+                -> decltype(obj = arg)
             {
                 return obj = arg;
             };
         };
 
         template <typename Arg>
-        // decltype(auto) indirect(Arg&& arg)
-        // decltype(auto) indirect(Arg arg)
-        // auto indirect(Arg arg)
-        auto indirect(Arg &&arg) -> decltype(Forwarder{}(*this, F2{}, arg))
+        auto indirect(Arg &&arg)
+            -> decltype(Forwarder{}(*this, F2{}, arg))
         {
             return Forwarder{}(*this, F2{}, arg);
         }
 
     public:
-        // reflect_member_function(int) {}
         reflect_member_function() = default;
         reflect_member_function(const reflect_member_function &) = default;
         reflect_member_function(reflect_member_function &&) = default;
         reflect_member_function &operator=(const reflect_member_function &) = default;
         reflect_member_function &operator=(reflect_member_function &&) = default;
 
-        // auto operator=(int) {}
         template <typename Arg>
-        // decltype(auto)
-        auto
-         // operator=(Arg&& arg)
-         operator=(Arg &&arg)
-         // operator=(int arg)
-            // -> decltype(indirect(std::forward<Arg>(arg)))
+        auto operator=(Arg &&arg)
             -> decltype(indirect(arg))
         {
-            // return 0;
             return indirect(arg);
-            // return indirect(std::forward<Arg>(arg));
         }
-
-        // auto operator=(int) {}
     };
-// };
 
 // template<class Derived>
 // using MemberForInt = using_member_t<
