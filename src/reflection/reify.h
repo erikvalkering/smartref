@@ -8,13 +8,13 @@ namespace reflection {
 
 namespace detail {
 
-template<typename Reflection, typename F>
-using detect_is_member_type = typename Reflection::template detect_is_member_type<F>;
+template<typename Reflection, typename Class>
+using detect_is_member_type = typename Reflection::template detect_is_member_type<Class>;
 
-template<class Reflection, typename F>
+template<class Reflection, typename Class>
 constexpr static auto is_member_type()
 {
-    return utils::is_detected_v<detect_is_member_type, Reflection, F>;
+    return utils::is_detected_v<detect_is_member_type, Reflection, Class>;
 }
 
 template<class Reflection>
@@ -37,9 +37,9 @@ template<class Reflection, typename F>
 constexpr static auto reify(Reflection refl, F)
 {
     // TODO: Shouldn't we be passing the class instead of F?
-    if constexpr (detail::is_member_type<Reflection, F>())
+    if constexpr (detail::is_member_type<Reflection, F::Class>())
     {
-        return typename Reflection::template reflect_member_type<F>{};
+        return typename Reflection::template reflect_member_type<F::Class>{};
     }
     else if constexpr (detail::is_member_function<Reflection>())
     {

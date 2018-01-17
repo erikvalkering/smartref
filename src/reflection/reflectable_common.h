@@ -55,17 +55,17 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
-    template<typename F>                                                                \
+    template<typename Class>                                                            \
     class ReflectorClassName                                                            \
         : public reflection::reflect_base<reflection::reflected_kind::member_type>      \
     {                                                                                   \
     public:                                                                             \
-        using member = typename F::Class::member;                                       \
+        using member = typename Class::member;                                          \
     };                                                                                  \
                                                                                         \
-    template<typename F>                                                                \
+    template<typename Class>                                                            \
     using detect_is_member_type = decltype(                                             \
-        std::declval<typename F::Class::member>())                                      \
+        std::declval<typename Class::member>())                                         \
 
 // TODO:  Get rid of code duplication!!!
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
