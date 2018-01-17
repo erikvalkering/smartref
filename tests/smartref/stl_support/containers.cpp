@@ -7,7 +7,7 @@
 namespace tests_containers {
 
 template<typename T>
-struct Ref : smartref::reflect_member_function<smartref::Forwarder<T, Ref<T>>, Ref<T>>
+struct Ref : smartref::reflect_member_function<Ref<T>>
 // struct Ref : smartref::using_<T>
 {
   T ref;
@@ -26,7 +26,7 @@ struct Ref : smartref::reflect_member_function<smartref::Forwarder<T, Ref<T>>, R
 
   Ref(T arg) : ref{arg} {}
 
-  using Base = smartref::reflect_member_function<smartref::Forwarder<T, Ref<T>>, Ref>;
+  using Base = smartref::reflect_member_function<Ref>;
   using Base::operator=;
 
   Ref() = default;
@@ -36,6 +36,20 @@ struct Ref : smartref::reflect_member_function<smartref::Forwarder<T, Ref<T>>, R
   Ref(Ref &&) = default;
   Ref &operator=(Ref &&) = default;
 };
+
+template<typename Delegate, typename Self>
+decltype(auto) delegate(Self &self)
+{
+  //! Invoke the conversion operator
+  return static_cast<Delegate &>(self);
+}
+
+template<typename Reflection, typename T, typename Args>
+auto on_call(Reflection reflection, Ref<T> &self, Args args)
+  -> decltype(call(reflection, delegate<T>(self), std::forward<Args>(args)))
+{
+  return call(reflection, delegate<T>(self), std::forward<Args>(args));
+}
 
 template<typename T, typename Delegate>
 auto test = []{

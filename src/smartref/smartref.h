@@ -27,25 +27,21 @@ struct using_base<int, void>
     virtual operator int &() = 0;
 };
 
-    template<typename Forwarder, typename Derived>
+    template<typename Derived, typename Base>
+    decltype(auto) derived(Base &base)
+    {
+        return static_cast<Derived &>(base);
+    }
+
+    template<typename Derived>
     class reflect_member_function
     {
     private:
-        struct F2
+        template<typename Obj, typename Arg>
+        friend auto call(reflect_member_function, Obj &obj, Arg arg)
+            -> decltype(obj = arg)
         {
-            template<typename Obj, typename Arg>
-            auto operator()(Obj &obj, Arg arg)
-                -> decltype(obj = arg)
-            {
-                return obj = arg;
-            };
-        };
-
-        template<typename Arg>
-        auto indirect(Arg &&arg)
-            -> decltype(Forwarder{}(*this, F2{}, arg))
-        {
-            return Forwarder{}(*this, F2{}, arg);
+            return obj = arg;
         }
 
     public:
@@ -57,9 +53,9 @@ struct using_base<int, void>
 
         template<typename Arg>
         auto operator=(Arg &&arg)
-            -> decltype(indirect(arg))
+            -> decltype(on_call(*this, derived<utils::Delayed<Derived, Arg>>(*this), arg))
         {
-            return indirect(arg);
+            return on_call(*this, derived<utils::Delayed<Derived, Arg>>(*this), arg);
         }
     };
 
