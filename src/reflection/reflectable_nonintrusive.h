@@ -38,7 +38,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
         using type = struct                                                                                             \
         {                                                                                                               \
             MEMBER_TYPE_REFLECTOR(                                                                                      \
-                reflect_member_type,                                                                                    \
+                reflect_member_type, /* TODO: Rename this to 'reflector' */                                             \
                 member);                                                                                                \
                                                                                                                         \
             MEMBER_FUNCTION_REFLECTOR(                                                                                  \

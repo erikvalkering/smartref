@@ -36,6 +36,7 @@ enum class reflected_kind
 
 struct access
 {
+    // TODO: Isn't this only necessary for testing, i.e. accessing the internals to determine the type?
     template<typename T>
     constexpr static auto reflected_kind_v =
         decltype(reify(T{}, nullptr))::reflected_kind;
@@ -69,68 +70,58 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 // TODO:  Get rid of code duplication!!!
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
-    template<typename Forwarder>                                                                        \
+    template<typename Class>                                                                            \
     class ReflectorClassName                                                                            \
         : public reflection::reflect_base<reflection::reflected_kind::member_function>                  \
     {                                                                                                   \
     private:                                                                                            \
-        decltype(auto) indirect()                                                                       \
+        template<typename Obj>                                                                          \
+        friend auto call(reflected_member, Obj &obj)                                                    \
+            -> decltype(obj.member())                                                                   \
         {                                                                                               \
-            auto f = [](auto &obj)                                                                      \
-            {                                                                                           \
-                /* TODO: What if *this was an rvalue, then it should be auto &&obj */                   \
-                return obj.member();                                                                    \
-            };                                                                                          \
-                                                                                                        \
-            return Forwarder{}(*this, f);                                                               \
+            return obj.member();                                                                        \
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
-        auto member() -> decltype(indirect())                                                           \
+        auto member()                                         // TODO: Delay this member-function       \
+            -> decltype(on_call(*this, derived<utils::Delayed<Derived, ???Arg???>>(*this)))             \
         {                                                                                               \
-            return indirect();                                                                          \
+            return on_call(*this, derived<utils::Delayed<Derived, Arg>>(*this));                        \
         }                                                                                               \
     }                                                                                                   \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
-    template<typename Forwarder>                                                                        \
+    template<typename Class>                                                                            \
     class ReflectorClassName                                                                            \
         : public reflection::reflect_base<reflection::reflected_kind::member_function>                  \
     {                                                                                                   \
     private:                                                                                            \
-        template<typename... ExplicitArgs>                                                              \
-        struct Indirect;                                                                                \
-                                                                                                        \
-        template<>                                                                                      \
-        struct Indirect<>                                                                               \
+        template<typename Obj, typename... Args>                                                        \
+        friend auto call(reflected_member, Obj &obj, Args &&... args)                                   \
+            -> decltype(obj.member(std::forward<Args>(args)...))                                        \
         {                                                                                               \
-            /* TODO: What if *this was an rvalue, then it should be auto &&obj */                       \
-            template<typename Obj, typename... Args>                                                    \
-            auto operator()(Obj &obj, Args &&... args)                                                  \
-                -> decltype(obj.member(std::forward<Args>(args)...))                                    \
-            {                                                                                           \
-                return obj.member(std::forward<Args>(args)...);                                         \
-            };                                                                                          \
-        };                                                                                              \
+            return obj.member(std::forward<Args>(args)...);                                             \
+        }                                                                                               \
                                                                                                         \
-        template<typename... ExplicitArgs>                                                              \
-        struct Indirect<typename... ExplicitArgs>                                                       \
+        /* TODO: What if *this was an rvalue, then it should be auto &&obj */                           \
+        template<typename ExplicitArgs..., typename Obj, typename... Args>                              \
+        friend auto call(reflected_member, Obj &obj, Args &&... args)                                   \
+            -> decltype(obj.template member<ExplicitArgs...>(std::forward<Args>(args)...))              \
         {                                                                                               \
-            template<typename Obj, typename... Args>                                                    \
-            auto operator()(Obj &obj, Args &&... args)                                                  \
-                -> decltype(obj.template member<ExplicitArgs...>(                                       \
-                        std::forward<Args>(args)...))                                                   \
-            {                                                                                           \
-                return obj.template member<ExplicitArgs...>(                                            \
-                    std::forward<Args>(args)...);                                                       \
-            };                                                                                          \
-        };                                                                                              \
+            return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);                   \
+        }                                                                                               \
                                                                                                         \
     public:                                                                                             \
         template<typename... ExplicitArgs, typename... Args>                                            \
         auto member(Args &&... args)                                                                    \
-            -> decltype(Forwarder{}(*this, Indirect<ExplicitArgs...>{}, std::forward<Args>(args)...))   \
+            -> decltype(                                                                                \
+                on_call<ExplicitArgs...>(*this,                                                         \
+                                         derived<utils::Delayed<Derived, Args...>>(*this),              \
+                                         std::forward<Args>(args)...)                                   \
+            )                                                                                           \
         {                                                                                               \
-            return Forwarder{}(*this, Indirect<ExplicitArgs...>{}, std::forward<Args>(args)...);        \
+            return on_call<ExplicitArgs...>(*this,                                                      \
+                                            derived<utils::Delayed<Derived, Args...>>(*this),           \
+                                            std::forward<Args>(args)...);                               \
         }                                                                                               \
     }                                                                                                   \
