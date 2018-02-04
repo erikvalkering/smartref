@@ -76,6 +76,8 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     {                                                                                                   \
     private:                                                                                            \
         template<typename Obj>                                                                          \
+        /* TODO: Don't implicitly depend on the outer context (i.e. reflected_member) */                \
+        /*       Instead, somehow pass this on from the outer context to the inner    */                \
         friend auto call(reflected_member, Obj &obj)                                                    \
             -> decltype(obj.member())                                                                   \
         {                                                                                               \

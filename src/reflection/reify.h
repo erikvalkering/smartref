@@ -37,6 +37,7 @@ constexpr static auto reify(Reflection<T>) -> T;
 template<class Reflection, typename Derived>
 constexpr static auto reify(Reflection refl, Derived)
 {
+    // TODO: Shouldn't we be passing the class instead of Derived?
     if constexpr (detail::is_member_type<Reflection, Derived>())
     {
         return typename Reflection::template reflect_member_type<Derived>{};

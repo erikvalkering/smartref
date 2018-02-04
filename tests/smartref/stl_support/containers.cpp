@@ -44,6 +44,7 @@ decltype(auto) delegate(Self &self)
   return static_cast<Delegate &>(self);
 }
 
+// TODO: on_call() and call() are too similar. Come up with a different naming.
 template<typename Reflection, typename T, typename Args>
 auto on_call(Reflection reflection, Ref<T> &self, Args args)
   -> decltype(call(reflection, delegate<T>(self), std::forward<Args>(args)))
