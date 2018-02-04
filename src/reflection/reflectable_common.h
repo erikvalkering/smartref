@@ -74,7 +74,7 @@ decltype(auto) derived(Base &base)
     using detect_is_member_type = decltype(                                             \
         std::declval<typename Class::member>())                                         \
 
-// TODO:  Get rid of code duplication!!!
+// TODO: Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
     template<typename Class>                                                                            \
     class ReflectorClassName                                                                            \
