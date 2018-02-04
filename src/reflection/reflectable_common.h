@@ -83,10 +83,10 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
-        auto member()                                         // TODO: Delay this member-function       \
-            -> decltype(on_call(*this, derived<utils::Delayed<Derived, ???Arg???>>(*this)))             \
+        auto member()                                                                                   \
+            -> decltype(on_call(*this, derived<Derived>(*this)))                                        \
         {                                                                                               \
-            return on_call(*this, derived<utils::Delayed<Derived, Arg>>(*this));                        \
+            return on_call(*this, derived<Derived>(*this));                                             \
         }                                                                                               \
     }                                                                                                   \
 
