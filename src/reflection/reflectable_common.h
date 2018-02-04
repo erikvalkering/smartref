@@ -42,12 +42,18 @@ struct access
         decltype(reify(T{}, nullptr))::reflected_kind;
 };
 
-template<auto reflected_kind_>
+template<class Derived, auto reflected_kind_>
 class reflector_base
 {
 private:
     friend class reflection::access;
     constexpr static auto reflected_kind = reflected_kind_;
+
+protected:
+    decltype(auto) derived()
+    {
+        return static_cast<Derived &>(*this);
+    }
 };
 
 template<typename T>
@@ -55,29 +61,29 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 } // namespace reflection
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
-    template<typename Class>                                                            \
-    class ReflectorClassName                                                            \
-        : public reflection::reflector_base<reflection::reflected_kind::member_type>    \
-    {                                                                                   \
-    public:                                                                             \
-        using member = typename Class::member;                                          \
-    };                                                                                  \
-                                                                                        \
-    template<typename Class>                                                            \
-    using detect_is_member_type = decltype(                                             \
-        std::declval<typename Class::member>())                                         \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)            \
+    template<typename Class>                                                                    \
+    class ReflectorClassName                                                                    \
+        : public reflection::reflector_base<Derived, reflection::reflected_kind::member_type>   \
+    {                                                                                           \
+    public:                                                                                     \
+        using member = typename Class::member;                                                  \
+    };                                                                                          \
+                                                                                                \
+    template<typename Class>                                                                    \
+    using detect_is_member_type = decltype(                                                     \
+        std::declval<typename Class::member>())                                                 \
 
 // TODO: Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
     template<typename Class>                                                                            \
     class ReflectorClassName                                                                            \
-        : public reflection::reflector_base<reflection::reflected_kind::member_function>                \
+        : public reflection::reflector_base<Derived, reflection::reflected_kind::member_function>       \
     {                                                                                                   \
     private:                                                                                            \
         template<typename Obj>                                                                          \
-        /* TODO: Don't implicitly depend on the outer context (i.e. reflected_member) */                \
-        /*       Instead, somehow pass this on from the outer context to the inner    */                \
+        /* TODO: Don't implicitly depend on the outer context (i.e. reflected_member and Derived) */    \
+        /*       Instead, explicitly pass this on from the outer context to the inner    */             \
         friend auto call(reflected_member, Obj &obj)                                                    \
             -> decltype(obj.member())                                                                   \
         {                                                                                               \
@@ -86,16 +92,16 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
                                                                                                         \
     public:                                                                                             \
         auto member()                                                                                   \
-            -> decltype(on_call(*this, static_cast<Derived>(*this)))                                    \
+            -> decltype(on_call(*this, derived()))                                                      \
         {                                                                                               \
-            return on_call(*this, static_cast<Derived>(*this));                                         \
+            return on_call(*this, derived());                                                           \
         }                                                                                               \
     }                                                                                                   \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
     template<typename Class>                                                                            \
     class ReflectorClassName                                                                            \
-        : public reflection::reflector_base<reflection::reflected_kind::member_function>                \
+        : public reflection::reflector_base<Derived, reflection::reflected_kind::member_function>       \
     {                                                                                                   \
     private:                                                                                            \
         template<typename Obj, typename... Args>                                                        \
@@ -118,12 +124,12 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         auto member(Args &&... args)                                                                    \
             -> decltype(                                                                                \
                 on_call<ExplicitArgs...>(*this,                                                         \
-                                         static_cast<utils::Delayed<Derived, Args...>>(*this),          \
+                                         derived(),                                                     \
                                          std::forward<Args>(args)...)                                   \
             )                                                                                           \
         {                                                                                               \
             return on_call<ExplicitArgs...>(*this,                                                      \
-                                            static_cast<utils::Delayed<Derived, Args...>>(*this),       \
+                                            derived(),                                                  \
                                             std::forward<Args>(args)...);                               \
         }                                                                                               \
     }                                                                                                   \
