@@ -27,12 +27,6 @@ struct using_base<int, void>
     virtual operator int &() = 0;
 };
 
-    template<typename Derived, typename Base>
-    decltype(auto) derived(Base &base)
-    {
-        return static_cast<Derived &>(base);
-    }
-
     template<typename Derived>
     class reflect_member_function
     {
@@ -53,9 +47,9 @@ struct using_base<int, void>
 
         template<typename Arg>
         auto operator=(Arg &&arg)
-            -> decltype(on_call(*this, derived<utils::Delayed<Derived, Arg>>(*this), arg))
+            -> decltype(on_call(*this, reflection::derived<utils::Delayed<Derived, Arg>>(*this), arg))
         {
-            return on_call(*this, derived<utils::Delayed<Derived, Arg>>(*this), arg);
+            return on_call(*this, reflection::derived<utils::Delayed<Derived, Arg>>(*this), arg);
         }
     };
 
