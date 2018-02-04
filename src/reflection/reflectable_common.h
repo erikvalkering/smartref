@@ -53,12 +53,6 @@ private:
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
-template<typename Derived, typename Base>
-decltype(auto) derived(Base &base)
-{
-    return static_cast<Derived &>(base);
-}
-
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
@@ -92,9 +86,9 @@ decltype(auto) derived(Base &base)
                                                                                                         \
     public:                                                                                             \
         auto member()                                                                                   \
-            -> decltype(on_call(*this, derived<Derived>(*this)))                                        \
+            -> decltype(on_call(*this, static_cast<Derived>(*this)))                                    \
         {                                                                                               \
-            return on_call(*this, derived<Derived>(*this));                                             \
+            return on_call(*this, static_cast<Derived>(*this));                                         \
         }                                                                                               \
     }                                                                                                   \
 
@@ -124,12 +118,12 @@ decltype(auto) derived(Base &base)
         auto member(Args &&... args)                                                                    \
             -> decltype(                                                                                \
                 on_call<ExplicitArgs...>(*this,                                                         \
-                                         derived<utils::Delayed<Derived, Args...>>(*this),              \
+                                         static_cast<utils::Delayed<Derived, Args...>>(*this),          \
                                          std::forward<Args>(args)...)                                   \
             )                                                                                           \
         {                                                                                               \
             return on_call<ExplicitArgs...>(*this,                                                      \
-                                            derived<utils::Delayed<Derived, Args...>>(*this),           \
+                                            static_cast<utils::Delayed<Derived, Args...>>(*this),       \
                                             std::forward<Args>(args)...);                               \
         }                                                                                               \
     }                                                                                                   \
