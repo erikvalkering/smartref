@@ -43,7 +43,7 @@ struct access
 };
 
 template<auto reflected_kind_>
-class reflect_base
+class reflector_base
 {
 private:
     friend class reflection::access;
@@ -58,7 +58,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
     template<typename Class>                                                            \
     class ReflectorClassName                                                            \
-        : public reflection::reflect_base<reflection::reflected_kind::member_type>      \
+        : public reflection::reflector_base<reflection::reflected_kind::member_type>    \
     {                                                                                   \
     public:                                                                             \
         using member = typename Class::member;                                          \
@@ -72,7 +72,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
     template<typename Class>                                                                            \
     class ReflectorClassName                                                                            \
-        : public reflection::reflect_base<reflection::reflected_kind::member_function>                  \
+        : public reflection::reflector_base<reflection::reflected_kind::member_function>                \
     {                                                                                                   \
     private:                                                                                            \
         template<typename Obj>                                                                          \
@@ -95,7 +95,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
     template<typename Class>                                                                            \
     class ReflectorClassName                                                                            \
-        : public reflection::reflect_base<reflection::reflected_kind::member_function>                  \
+        : public reflection::reflector_base<reflection::reflected_kind::member_function>                \
     {                                                                                                   \
     private:                                                                                            \
         template<typename Obj, typename... Args>                                                        \
