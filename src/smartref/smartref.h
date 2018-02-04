@@ -53,39 +53,14 @@ struct using_base<int, void>
         }
     };
 
-// template<class Derived>
-// using MemberForInt = using_member_t<
-//     int,
-//     Derived,
-//     // reflection::reflected_member_t<int, 0>
-//     ASDF
-// >;
-
-template<class Derived>
-using MemberForInt = reflect_member_function<Derived>;
-// using MemberForInt = reflect_member_function<Forwarder<int, Derived>>;
-// using MemberForInt = decltype(
-//     typename Reflection::template reflect_member_function<F>{}
-//     // reflection::reify(
-//     //     ASDF{},
-//     //     Forwarder<int, Derived>{}
-//     // )
-// );
-
-// static_assert(reflection::reflect<reflection::reflected_member_t<int, 0>> != reflection::reflect<void>);
-
 // TODO: Unify the non-generic and generic ReflectedMembers - how they are registered is kind of an 'implementation detail'
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
              // , public Members<Delegate, using_<Delegate, Derived>>
-             , public MemberForInt<using_<Delegate, Derived>>
              // , public ReflectedMembers<Delegate, using_<Delegate, Derived>>
              // , public ReflectedMembers<Delegate, using_<Delegate, Derived>, utils::Delayed<reflection::auto_, Delegate>>
 {
 public:
-    using MemberForInt<using_<Delegate, Derived>>::MemberForInt;
-    using MemberForInt<using_<Delegate, Derived>>::operator=;
-
     using_() = default;
     using_(const using_ &) = default;
     using_ &operator=(const using_ &) = default;
