@@ -48,12 +48,10 @@ struct using_base<int, void>
 
         template<typename Arg>
         auto operator=(Arg &&arg)
-            -> decltype(on_call(*this, reflection::derived<utils::Delayed<Derived, Arg>>(*this), arg))
-            // -> decltype(on_call(*this, static_cast<utils::Delayed<Derived, Arg> &>(*this), arg))
+            -> decltype(on_call(*this, static_cast<utils::Delayed<Derived, Arg> &>(*this), arg))
             // -> decltype(on_call(*this, derived(), arg))
         {
-            return on_call(*this, reflection::derived<utils::Delayed<Derived, Arg>>(*this), arg);
-            // return on_call(*this, static_cast<utils::Delayed<Derived, Arg> &>(*this), arg);
+            return on_call(*this, static_cast<utils::Delayed<Derived, Arg> &>(*this), arg);
             // return on_call(*this, derived(), arg);
         }
     };
