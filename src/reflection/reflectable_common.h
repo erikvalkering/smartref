@@ -59,6 +59,12 @@ protected:
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
+template<typename Derived, typename Base>
+decltype(auto) derived(Base &base)
+{
+    return static_cast<Derived &>(base);
+}
+
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)            \
