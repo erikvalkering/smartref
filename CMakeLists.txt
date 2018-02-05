@@ -43,19 +43,20 @@ target_compile_features(libreflection INTERFACE cxx_constexpr cxx_decltype_auto)
 target_link_libraries(libreflection INTERFACE libutils)
 
 # Unit tests
-add_executable(test_reflection ${PROJECT_SOURCE_DIR}/tests/main.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_auto.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_members.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_operators.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_common.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_intrusive.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_nonintrusive.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflection.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reify.cpp)
-target_compile_features(test_reflection INTERFACE cxx_constexpr cxx_decltype_auto)
-target_link_libraries(test_reflection PRIVATE libreflection)
-add_test(reflection test_reflection)
+# TODO: Re-enable unit-tests
+# add_executable(test_reflection ${PROJECT_SOURCE_DIR}/tests/main.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_auto.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_members.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_operators.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_common.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_intrusive.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_nonintrusive.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflection.cpp)
+# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reify.cpp)
+# target_compile_features(test_reflection INTERFACE cxx_constexpr cxx_decltype_auto)
+# target_link_libraries(test_reflection PRIVATE libreflection)
+# add_test(reflection test_reflection)
 ################################################################################
 
 
@@ -85,9 +86,10 @@ target_link_libraries(test_smartref PRIVATE libsmartref)
 add_test(smartref test_smartref)
 
 # Examples
-add_executable(sandbox examples/sandbox.cpp)
-target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
-target_link_libraries(sandbox PRIVATE libreflection)
-target_link_libraries(sandbox PRIVATE libsmartref)
-add_test(examples sandbox)
+# TODO: Re-enable
+# add_executable(sandbox examples/sandbox.cpp)
+# target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
+# target_link_libraries(sandbox PRIVATE libreflection)
+# target_link_libraries(sandbox PRIVATE libsmartref)
+# add_test(examples sandbox)
 ################################################################################
