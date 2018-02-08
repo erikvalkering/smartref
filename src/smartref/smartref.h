@@ -9,14 +9,14 @@
 namespace smartref {
 
 template<typename Delegate, class Derived>
-struct using_base;
-// {
-//     operator Delegate &()
-//     {
-//         auto &derived = static_cast<Derived &>(*this);
-//         return static_cast<Delegate &>(derived);
-//     }
-// };
+struct using_base
+{
+    operator Delegate &()
+    {
+        auto &derived = static_cast<Derived &>(*this);
+        return static_cast<Delegate &>(derived);
+    }
+};
 
 // template<typename Delegate>
 template<>
@@ -62,13 +62,18 @@ class using_ : public using_base<Delegate, Derived>
              // , public Members<Delegate, using_<Delegate, Derived>>
              // , public ReflectedMembers<Delegate, using_<Delegate, Derived>>
              // , public ReflectedMembers<Delegate, using_<Delegate, Derived>, utils::Delayed<reflection::auto_, Delegate>>
+             , public reflect_member_function<Derived>
 {
 public:
+    using reflect_member_function<Derived>::operator=;
+
     using_() = default;
+
     using_(const using_ &) = default;
     using_ &operator=(const using_ &) = default;
-    // using_(using_ &&) = default;
-    // using_ &operator=(using_ &&) = default;
+
+    using_(using_ &&) = default;
+    using_ &operator=(using_ &&) = default;
 
     // using ReflectedMembers<Delegate, using_<Delegate, Derived>>::operator=...;
     // using ReflectedMembers<Delegate, using_<Delegate, Derived>, utils::Delayed<reflection::auto_, Delegate>>::operator=...;
