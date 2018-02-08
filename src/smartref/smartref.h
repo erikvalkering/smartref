@@ -39,6 +39,11 @@ struct using_base<int, void>
             return obj = arg;
         }
 
+        decltype(auto) derived()
+        {
+            return static_cast<Derived &>(*this);
+        }
+
     public:
         reflect_member_function() = default;
         reflect_member_function(const reflect_member_function &) = default;
@@ -47,12 +52,9 @@ struct using_base<int, void>
         reflect_member_function &operator=(reflect_member_function &&) = default;
 
         template<typename Arg>
-        auto operator=(Arg &&arg)
-            -> decltype(on_call(*this, static_cast<utils::Delayed<Derived, Arg> &>(*this), arg))
-            // -> decltype(on_call(*this, derived(), arg))
+        decltype(auto) operator=(Arg &&arg)
         {
-            return on_call(*this, static_cast<utils::Delayed<Derived, Arg> &>(*this), arg);
-            // return on_call(*this, derived(), arg);
+            return on_call(*this, derived(), arg);
         }
     };
 
