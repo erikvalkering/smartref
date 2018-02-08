@@ -7,7 +7,7 @@
 namespace tests_containers {
 
 template<typename T>
-struct Ref : smartref::using_<T, Ref<T>>
+struct Ref : smartref::using_<T>
 {
   T ref;
 
@@ -25,7 +25,7 @@ struct Ref : smartref::using_<T, Ref<T>>
 
   Ref(T arg) : ref{arg} {}
 
-  using smartref::using_<T, Ref>::operator=;
+  using smartref::using_<T>::operator=;
 
   Ref() = default;
 

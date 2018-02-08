@@ -55,16 +55,31 @@ struct using_base<Delegate, void>
         }
     };
 
+template<typename Derived, typename Fallback>
+struct non_void
+{
+    using type = Derived;
+};
+
+template<typename Fallback>
+struct non_void<void, Fallback>
+{
+    using type = Fallback;
+};
+
+template<typename Derived, typename Fallback>
+using non_void_t = typename non_void<Derived, Fallback>::type;
+
 // TODO: Unify the non-generic and generic ReflectedMembers - how they are registered is kind of an 'implementation detail'
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
              // , public Members<Delegate, using_<Delegate, Derived>>
              // , public ReflectedMembers<Delegate, using_<Delegate, Derived>>
              // , public ReflectedMembers<Delegate, using_<Delegate, Derived>, utils::Delayed<reflection::auto_, Delegate>>
-             , public reflect_member_function<Derived>
+             , public reflect_member_function<non_void_t<Derived, using_<Delegate, Derived>>>
 {
 public:
-    using reflect_member_function<Derived>::operator=;
+    using reflect_member_function<non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
 
     using_() = default;
 
