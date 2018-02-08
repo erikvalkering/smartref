@@ -94,6 +94,8 @@ public:
 };
 
 // TODO: on_call() and call() are too similar. Come up with a different naming.
+// TODO: this hook cannot be overridden if the using_<T> syntax is used,
+//       which requires a runtime double dispatch mechanism.
 template<typename Reflection, typename Delegate, typename Derived, typename Args>
 auto on_call(Reflection reflection, using_<Delegate, Derived> &self, Args args)
   -> decltype(call(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)))
