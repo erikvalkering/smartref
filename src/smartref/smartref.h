@@ -29,7 +29,7 @@ struct using_base<int, void>
 
     template<typename Derived>
     class reflect_member_function
-        // : public reflection::reflector_base<Derived, reflection::reflected_kind::member_function>
+        : public reflection::reflector_base<Derived, reflection::reflected_kind::member_function>
     {
     private:
         template<typename Obj, typename Arg>
@@ -37,11 +37,6 @@ struct using_base<int, void>
             -> decltype(obj = arg)
         {
             return obj = arg;
-        }
-
-        decltype(auto) derived()
-        {
-            return static_cast<Derived &>(*this);
         }
 
     public:
@@ -54,7 +49,10 @@ struct using_base<int, void>
         template<typename Arg>
         decltype(auto) operator=(Arg &&arg)
         {
-            return on_call(*this, derived(), arg);
+            // TODO: For some unknown reason, *not* prefixing the call to derived
+            //       with 'this->', will result in the member-function, which is
+            //       declared in the base-class, to be hidden.
+            return on_call(*this, this->derived(), arg);
         }
     };
 
