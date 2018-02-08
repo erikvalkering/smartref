@@ -18,13 +18,12 @@ struct using_base
     }
 };
 
-// template<typename Delegate>
-template<>
-struct using_base<int, void>
+template<typename Delegate>
+struct using_base<Delegate, void>
 {
     // TODO: Add some checks to see whether this doesn't add too much overhead
     //       for this specific Delegate type.
-    virtual operator int &() = 0;
+    virtual operator Delegate &() = 0;
 };
 
     template<typename Derived>
