@@ -79,4 +79,12 @@ public:
     // using ReflectedMembers<Delegate, using_<Delegate, Derived>, utils::Delayed<reflection::auto_, Delegate>>::operator=...;
 };
 
+// TODO: on_call() and call() are too similar. Come up with a different naming.
+template<typename Reflection, typename Delegate, typename Derived, typename Args>
+auto on_call(Reflection reflection, using_<Delegate, Derived> &self, Args args)
+  -> decltype(call(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)))
+{
+  return call(reflection, static_cast<Delegate &>(self), std::forward<Args>(args));
+}
+
 } // namespace smartref

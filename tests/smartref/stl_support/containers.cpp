@@ -35,14 +35,6 @@ struct Ref : smartref::using_<T, Ref<T>>
   Ref &operator=(Ref &&) = default;
 };
 
-// TODO: on_call() and call() are too similar. Come up with a different naming.
-template<typename Reflection, typename T, typename Args>
-auto on_call(Reflection reflection, Ref<T> &self, Args args)
-  -> decltype(call(reflection, static_cast<T &>(self), std::forward<Args>(args)))
-{
-  return call(reflection, static_cast<T &>(self), std::forward<Args>(args));
-}
-
 template<typename T, typename Delegate>
 auto test = []{
   //! Uninitialized construction
