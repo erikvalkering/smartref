@@ -67,6 +67,14 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
         REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE           \
     )                                                                               \
 
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_ASSIGNMENT_OPERATOR(Class, member, unused)  \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                                        \
+        Class,                                                                          \
+        member,                                                                         \
+        REFLECTION_REFLECTABLE_NULL_REFLECTOR,                                          \
+        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR        \
+    )                                                                                   \
+
 #define REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER(Class, member)   \
     REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                    \
         Class,                                                      \
