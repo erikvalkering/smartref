@@ -96,6 +96,36 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         }                                                                                               \
     }                                                                                                   \
 
+// TODO: Get rid of code duplication
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR(ReflectorClassName, member)    \
+    template<typename Derived>                                                                                  \
+    class ReflectorClassName                                                                                    \
+        : public reflection::reflector_base<Derived, reflection::reflected_kind::member_function>               \
+    {                                                                                                           \
+    private:                                                                                                    \
+        template<typename Obj, typename Arg>                                                                    \
+        friend decltype(auto) call(ReflectorClassName, Obj &obj, Arg arg)                                       \
+        {                                                                                                       \
+            return obj = arg;                                                                                   \
+        }                                                                                                       \
+                                                                                                                \
+    public:                                                                                                     \
+        ReflectorClassName() = default;                                                                         \
+        ReflectorClassName(const ReflectorClassName &) = default;                                               \
+        ReflectorClassName(ReflectorClassName &&) = default;                                                    \
+        ReflectorClassName &operator=(const ReflectorClassName &) = default;                                    \
+        ReflectorClassName &operator=(ReflectorClassName &&) = default;                                         \
+                                                                                                                \
+        template<typename Arg>                                                                                  \
+        decltype(auto) member(Arg &&arg)                                                                        \
+        {                                                                                                       \
+            /* TODO: For some unknown reason, *not* prefixing the call to derived */                            \
+            /*       with 'this->', will result in the member-function, which is  */                            \
+            /*       declared in the base-class, to be hidden.                    */                            \
+            return on_call(*this, this->derived(), arg);                                                        \
+        }                                                                                                       \
+    }                                                                                                           \
+
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
     template<typename Class>                                                                            \
     class ReflectorClassName                                                                            \

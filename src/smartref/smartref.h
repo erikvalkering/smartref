@@ -26,33 +26,7 @@ struct using_base<Delegate, void>
     virtual operator Delegate &() = 0;
 };
 
-    template<typename Derived>
-    class reflect_member_function
-        : public reflection::reflector_base<Derived, reflection::reflected_kind::member_function>
-    {
-    private:
-        template<typename Obj, typename Arg>
-        friend decltype(auto) call(reflect_member_function, Obj &obj, Arg arg)
-        {
-            return obj = arg;
-        }
-
-    public:
-        reflect_member_function() = default;
-        reflect_member_function(const reflect_member_function &) = default;
-        reflect_member_function(reflect_member_function &&) = default;
-        reflect_member_function &operator=(const reflect_member_function &) = default;
-        reflect_member_function &operator=(reflect_member_function &&) = default;
-
-        template<typename Arg>
-        decltype(auto) operator=(Arg &&arg)
-        {
-            // TODO: For some unknown reason, *not* prefixing the call to derived
-            //       with 'this->', will result in the member-function, which is
-            //       declared in the base-class, to be hidden.
-            return on_call(*this, this->derived(), arg);
-        }
-    };
+REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR(reflect_member_function, operator=);
 
 template<typename Derived, typename Fallback>
 struct non_void
