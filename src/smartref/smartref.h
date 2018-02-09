@@ -32,8 +32,7 @@ struct using_base<Delegate, void>
     {
     private:
         template<typename Obj, typename Arg>
-        friend auto call(reflect_member_function, Obj &obj, Arg arg)
-            -> decltype(obj = arg)
+        friend decltype(auto) call(reflect_member_function, Obj &obj, Arg arg)
         {
             return obj = arg;
         }
