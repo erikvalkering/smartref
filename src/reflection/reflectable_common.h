@@ -84,17 +84,15 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         template<typename Obj>                                                                          \
         /* TODO: Don't implicitly depend on the outer context (i.e. reflected_member and Derived) */    \
         /*       Instead, explicitly pass this on from the outer context to the inner    */             \
-        friend auto call(reflected_member, Obj &obj)                                                    \
-            -> decltype(obj.member())                                                                   \
+        friend decltype(auto) call(reflected_member, Obj &obj)                                          \
         {                                                                                               \
             return obj.member();                                                                        \
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
-        auto member()                                                                                   \
-            -> decltype(on_call(*this, derived()))                                                      \
+        decltype(auto) member()                                                                         \
         {                                                                                               \
-            return on_call(*this, derived());                                                           \
+            return on_call(*this, this->derived());                                                     \
         }                                                                                               \
     }                                                                                                   \
 
@@ -105,31 +103,24 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     {                                                                                                   \
     private:                                                                                            \
         template<typename Obj, typename... Args>                                                        \
-        friend auto call(reflected_member, Obj &obj, Args &&... args)                                   \
-            -> decltype(obj.member(std::forward<Args>(args)...))                                        \
+        friend decltype(auto) call(reflected_member, Obj &obj, Args &&... args)                         \
         {                                                                                               \
             return obj.member(std::forward<Args>(args)...);                                             \
         }                                                                                               \
                                                                                                         \
         /* TODO: What if *this was an rvalue, then it should be auto &&obj */                           \
         template<typename ExplicitArgs..., typename Obj, typename... Args>                              \
-        friend auto call(reflected_member, Obj &obj, Args &&... args)                                   \
-            -> decltype(obj.template member<ExplicitArgs...>(std::forward<Args>(args)...))              \
+        friend decltype(auto) call(reflected_member, Obj &obj, Args &&... args)                         \
         {                                                                                               \
             return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);                   \
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
         template<typename... ExplicitArgs, typename... Args>                                            \
-        auto member(Args &&... args)                                                                    \
-            -> decltype(                                                                                \
-                on_call<ExplicitArgs...>(*this,                                                         \
-                                         derived(),                                                     \
-                                         std::forward<Args>(args)...)                                   \
-            )                                                                                           \
+        decltype(auto) member(Args &&... args)                                                          \
         {                                                                                               \
             return on_call<ExplicitArgs...>(*this,                                                      \
-                                            derived(),                                                  \
+                                            this->derived(),                                            \
                                             std::forward<Args>(args)...);                               \
         }                                                                                               \
     }                                                                                                   \
