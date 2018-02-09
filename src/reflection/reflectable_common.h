@@ -76,7 +76,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
 // TODO: Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
-    template<typename Class>                                                                            \
+    template<typename Derived>                                                                          \
     class ReflectorClassName                                                                            \
         : public reflection::reflector_base<Derived, reflection::reflected_kind::member_function>       \
     {                                                                                                   \
@@ -127,7 +127,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     }                                                                                                           \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
-    template<typename Class>                                                                            \
+    template<typename Derived>                                                                          \
     class ReflectorClassName                                                                            \
         : public reflection::reflector_base<Derived, reflection::reflected_kind::member_function>       \
     {                                                                                                   \
