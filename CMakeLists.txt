@@ -44,19 +44,19 @@ target_link_libraries(libreflection INTERFACE libutils)
 
 # Unit tests
 # TODO: Re-enable unit-tests
-# add_executable(test_reflection ${PROJECT_SOURCE_DIR}/tests/main.cpp)
+add_executable(test_reflection ${PROJECT_SOURCE_DIR}/tests/main.cpp)
 # target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect.cpp)
 # target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_auto.cpp)
 # target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_members.cpp)
-# target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_operators.cpp)
+target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_operators.cpp)
 # target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_common.cpp)
 # target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_intrusive.cpp)
 # target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_nonintrusive.cpp)
 # target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflection.cpp)
 # target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reify.cpp)
-# target_compile_features(test_reflection INTERFACE cxx_constexpr cxx_decltype_auto)
-# target_link_libraries(test_reflection PRIVATE libreflection)
-# add_test(reflection test_reflection)
+target_compile_features(test_reflection INTERFACE cxx_constexpr cxx_decltype_auto)
+target_link_libraries(test_reflection PRIVATE libreflection)
+add_test(reflection test_reflection)
 ################################################################################
 
 
