@@ -1,5 +1,15 @@
 #include <reflection/reflection.h>
 
+// TODO:
+// - REFLECTABLE
+// - REFLECTABLE_MEMBER_TYPE
+// - REFLECTABLE_MEMBER_FUNCTION
+// - REFLECTABLE_OPERATOR
+// - REFLECTABLE_OPERATOR_UNARY
+// - REFLECTABLE_OPERATOR_ASSIGNMENT
+// TODO:
+// - free function operators (see cppreference.com)
+
 // TODO: Re-enable tests
 // REFLECTABLE(auto, operator!=,   member_function);
 // REFLECTABLE(auto, operator%,    member_function);
