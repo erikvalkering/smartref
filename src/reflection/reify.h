@@ -33,9 +33,8 @@ constexpr static auto is_member_function()
 template<typename T>
 constexpr static auto reify(Reflection<T>) -> T;
 
-// TODO: Passing Derived as an argument will probably not work because of non-default constructibility
-template<class Reflection, typename Derived>
-constexpr static auto reify(Reflection refl, Derived)
+template<typename Derived, class Reflection>
+constexpr static auto reify(Reflection refl)
 {
     // TODO: Shouldn't we be passing the class instead of Derived?
     if constexpr (detail::is_member_type<Reflection, Derived>())
