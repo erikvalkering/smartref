@@ -111,6 +111,7 @@ auto test_int = test<int, int>();
 auto test_ref = []{
   Ref<int>::counter() = 0;
   test<Ref<int>, int>();
+  printf("counter: %d\n", Ref<int>::counter());
   assert(Ref<int>::counter() == 34);
 
   Ref<float>::counter() = 0;
