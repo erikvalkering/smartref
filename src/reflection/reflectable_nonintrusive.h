@@ -79,7 +79,8 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                    \
         Class,                                                      \
         member,                                                     \
-        REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR,           \
+        REFLECTION_REFLECTABLE_NULL_REFLECTOR,                                          \
+        /*REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR,*/           \
         REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR        \
     )                                                               \
 
