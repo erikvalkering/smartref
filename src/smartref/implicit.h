@@ -30,6 +30,7 @@ template<typename tag, typename Delegate, class Derived, typename... Reflections
 struct ReflectedMembersImpl<tag, Delegate, Derived, std::tuple<Reflections...>>
     : using_member_t<Delegate, Derived, Reflections>...
 {
+    using using_member_t<Delegate, Derived, Reflections>::operator=...;
 };
 
 template<

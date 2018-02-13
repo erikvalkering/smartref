@@ -26,8 +26,6 @@ struct using_base<Delegate, void>
     virtual operator Delegate &() = 0;
 };
 
-REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR(reflect_member_function, operator=);
-
 template<typename Derived, typename Fallback>
 struct non_void
 {
@@ -46,13 +44,12 @@ using non_void_t = typename non_void<Derived, Fallback>::type;
 // TODO: Unify the non-generic and generic ReflectedMembers - how they are registered is kind of an 'implementation detail'
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
-             // , public Members<Delegate, using_<Delegate, Derived>>
-             // , public ReflectedMembers<Delegate, using_<Delegate, Derived>>
-             // , public ReflectedMembers<Delegate, using_<Delegate, Derived>, utils::Delayed<reflection::auto_, Delegate>>
-             , public reflect_member_function<non_void_t<Derived, using_<Delegate, Derived>>>
+             // , public Members<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
+             , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
+             , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>, utils::Delayed<reflection::auto_, Delegate>>
 {
 public:
-    using reflect_member_function<non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
+    using ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>, utils::Delayed<reflection::auto_, Delegate>>::operator=;
 
     using_() = default;
 
@@ -61,9 +58,6 @@ public:
 
     using_(using_ &&) = default;
     using_ &operator=(using_ &&) = default;
-
-    // using ReflectedMembers<Delegate, using_<Delegate, Derived>>::operator=...;
-    // using ReflectedMembers<Delegate, using_<Delegate, Derived>, utils::Delayed<reflection::auto_, Delegate>>::operator=...;
 };
 
 // TODO: on_call() and call() are too similar. Come up with a different naming.
