@@ -72,7 +72,7 @@ public:
 // TODO: Fix ExplicitArgs
 // TODO: Reflection is not the actual member reflection, but the reflector
 //       (i.e. the class from which we inherit the member-function)
-template<typename Reflection, typename Delegate, typename Derived, typename Args>
+template<typename Reflection, typename Delegate, typename Derived, typename... Args>
 auto on_call(Reflection reflection, using_<Delegate, Derived> &self, Args... args)
   -> decltype(call(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...))
 {
