@@ -127,6 +127,11 @@ auto test_ref = []{
   test<Ref<std::string>, std::string>();
   assert(Ref<std::string>::counter() == 34);
 
+  struct Foo {};
+  Ref<Foo>::counter() = 0;
+  test<Ref<Foo>, Foo>();
+  assert(Ref<Foo>::counter() == 34);
+
   return 0;
 }();
 
