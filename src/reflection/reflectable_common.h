@@ -82,9 +82,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     {                                                                                                   \
     private:                                                                                            \
         template<typename Obj>                                                                          \
-        /* TODO: Don't implicitly depend on the outer context (i.e. reflected_member) */                \
-        /*       Instead, explicitly pass this on from the outer context to the inner. */               \
-        friend decltype(auto) call(reflected_member, Obj &obj)                                          \
+        friend decltype(auto) call(ReflectorClassName, Obj &obj)                                        \
         {                                                                                               \
             return obj.member();                                                                        \
         }                                                                                               \
@@ -133,14 +131,14 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     {                                                                                               \
     private:                                                                                        \
         template<typename Obj, typename... Args>                                                    \
-        friend decltype(auto) call(reflected_member, Obj &obj, Args &&... args)                     \
+        friend decltype(auto) call(ReflectorClassName, Obj &obj, Args &&... args)                   \
         {                                                                                           \
             return obj.member(std::forward<Args>(args)...);                                         \
         }                                                                                           \
                                                                                                     \
         /* TODO: What if *this was an rvalue, then it should be auto &&obj */                       \
         template<typename ExplicitArgs..., typename Obj, typename... Args>                          \
-        friend decltype(auto) call(reflected_member, Obj &obj, Args &&... args)                     \
+        friend decltype(auto) call(ReflectorClassName, Obj &obj, Args &&... args)                   \
         {                                                                                           \
             return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);               \
         }                                                                                           \
