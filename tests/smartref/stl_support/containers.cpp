@@ -3,6 +3,7 @@
 
 // #include <vector>
 #include <cassert>
+#include <string>
 
 namespace tests_containers {
 
@@ -121,6 +122,10 @@ auto test_ref = []{
   Ref<bool>::counter() = 0;
   test<Ref<bool>, bool>();
   assert(Ref<bool>::counter() == 34);
+
+  Ref<std::string>::counter() = 0;
+  test<Ref<std::string>, std::string>();
+  assert(Ref<std::string>::counter() == 34);
 
   return 0;
 }();
