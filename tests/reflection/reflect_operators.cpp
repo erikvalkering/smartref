@@ -10,7 +10,6 @@
 // TODO:
 // - free function operators (see cppreference.com)
 
-// TODO: Re-enable tests
 REFLECTABLE(auto, operator!=,   member_function);
 REFLECTABLE(auto, operator%,    member_function);
 REFLECTABLE(auto, operator%=,   member_function);
