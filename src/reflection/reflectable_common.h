@@ -144,10 +144,10 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         }                                                                                           \
                                                                                                     \
     public:                                                                                         \
-        template<typename... ExplicitArgs, typename... Args>                                        \
+        template</*typename... ExplicitArgs, */typename... Args>                                        \
         decltype(auto) member(Args &&... args)                                                      \
         {                                                                                           \
-            return on_call<ExplicitArgs...>(*this,                                                  \
+            return on_call/*<ExplicitArgs...>*/(*this,                                                  \
                                             this->derived(),                                        \
                                             std::forward<Args>(args)...);                           \
         }                                                                                           \
