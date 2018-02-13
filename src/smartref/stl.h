@@ -2,6 +2,8 @@
 
 #include <reflection/reflection.h>
 
+// TODO: Move reflection stuff not specific to STL out of this unit (e.g. operator=)
+
 #if 0
 // TODO: remove
 //! This block contains the old-style STL-support, and has been superseeded by
