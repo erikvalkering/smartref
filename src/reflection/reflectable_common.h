@@ -137,7 +137,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         }                                                                                           \
                                                                                                     \
         /* TODO: What if *this was an rvalue, then it should be auto &&obj */                       \
-        template<typename ExplicitArgs..., typename Obj, typename... Args>                          \
+        template<typename... ExplicitArgs, typename Obj, typename... Args>                          \
         friend decltype(auto) call(ReflectorClassName, Obj &obj, Args &&... args)                   \
         {                                                                                           \
             return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);               \
