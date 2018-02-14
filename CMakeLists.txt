@@ -80,6 +80,7 @@ target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/implic
 # target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/member_types.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/smartref.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/stl.cpp)
+target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/fundamental/assignment_operator.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/stl_support/containers.cpp)
 target_link_libraries(test_smartref PRIVATE libsmartref)
 add_test(smartref test_smartref)
