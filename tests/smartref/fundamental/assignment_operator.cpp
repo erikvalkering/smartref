@@ -108,28 +108,23 @@ auto test = []{
 
 auto test_int = test<int, int>();
 
-auto test_ref = []{
-  Ref<int>::counter() = 0;
-  test<Ref<int>, int>();
-  printf("counter: %d\n", Ref<int>::counter());
-  assert(Ref<int>::counter() == 34);
+template<typename T>
+void test_ref()
+{
+  Ref<T>::counter() = 0;
+  test<Ref<T>, T>();
+  printf("counter: %d\n", Ref<T>::counter());
+  assert(Ref<T>::counter() == 34);
+}
 
-  Ref<float>::counter() = 0;
-  test<Ref<float>, float>();
-  assert(Ref<float>::counter() == 34);
-
-  Ref<bool>::counter() = 0;
-  test<Ref<bool>, bool>();
-  assert(Ref<bool>::counter() == 34);
-
-  Ref<std::string>::counter() = 0;
-  test<Ref<std::string>, std::string>();
-  assert(Ref<std::string>::counter() == 34);
+auto tests = []{
+  test_ref<int>();
+  test_ref<float>();
+  test_ref<bool>();
+  test_ref<std::string>();
 
   struct Foo {};
-  Ref<Foo>::counter() = 0;
-  test<Ref<Foo>, Foo>();
-  assert(Ref<Foo>::counter() == 34);
+  test_ref<Foo>();
 
   return 0;
 }();
