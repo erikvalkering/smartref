@@ -1,26 +1,35 @@
 #include <reflection/reflection.h>
 #include <smartref/smartref.h>
 
-// #include <vector>
+#include <vector>
 
 namespace tests_containers {
 
-// using T = int;
-// using T = std::vector<int>;
+using T = std::vector<int>;
 
-// using reflection::reflect;
+template<typename T>
+struct Ref : smartref::using_<T>
+{
+  T ref;
 
-// //! Member-types
-// constexpr auto is_valid = [](auto expression)
-// {
-//   // auto expected = reflect<decltype(expression(std::declval<    T >(), std::declval<    T >()))>;
-//   auto actual   = reflect<decltype(expression(std::declval<Ref<T>>(), std::declval<    T >()))>;
+  operator T &()
+  {
+    return ref;
+  }
+};
 
-//   return true;
-//   // return actual == expected;
-// };
+using reflection::reflect;
 
-// #define IS_VALID(expression) is_valid([](auto &&_, auto &&__) {return expression;})
+//! Member-types
+constexpr auto is_valid = [](auto expression)
+{
+  auto expected = reflect<decltype(expression(std::declval<    T >(), std::declval<    T >()))>;
+  auto actual   = reflect<decltype(expression(std::declval<Ref<T>>(), std::declval<    T >()))>;
+
+  return actual == expected;
+};
+
+#define IS_VALID(expression) is_valid([](auto &&_, auto &&__) {return expression;})
 
 // TODO:
 // - constructing a smartref (e.g. Ref<int> x;)
@@ -38,12 +47,12 @@ namespace tests_containers {
 // static_assert(reflect<Ref<T>::reverse_iterator>       == reflect<T::reverse_iterator>);
 // static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_reverse_iterator>);
 
-// //! Member functions
-// // TODO: Test all overloads
-// // TODO: (constructor)
-// // TODO: Why does operator= work? What does it do?
-// // static_assert(IS_VALID(_.operator=(_)));
-// // static_assert(IS_VALID(_.operator=(__)));
+//! Member functions
+// TODO: Test all overloads
+// TODO: (constructor)
+// TODO: Why does operator= work? What does it do?
+// static_assert(IS_VALID(_.operator=(_)));
+// static_assert(IS_VALID(_.operator=(__)));
 // static_assert(IS_VALID(_ = __));
 // static_assert(IS_VALID(_.assign(0, 0)));
 // static_assert(IS_VALID(_.assign(begin(_), end(_))));
