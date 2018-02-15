@@ -16,6 +16,15 @@ struct Ref : smartref::using_<T>
   {
     return ref;
   }
+
+  Ref() = default;
+
+  Ref(const Ref &) = default;
+  Ref &operator=(const Ref &) = default;
+  Ref(Ref &&) = default;
+  Ref &operator=(Ref &&) = default;
+
+  using smartref::using_<T>::operator=;
 };
 
 using reflection::reflect;
@@ -50,10 +59,9 @@ constexpr auto is_valid = [](auto expression)
 //! Member functions
 // TODO: Test all overloads
 // TODO: (constructor)
-// TODO: Why does operator= work? What does it do?
-// static_assert(IS_VALID(_.operator=(_)));
-// static_assert(IS_VALID(_.operator=(__)));
-// static_assert(IS_VALID(_ = __));
+static_assert(IS_VALID(_.operator=(_)));
+static_assert(IS_VALID(_.operator=(__)));
+static_assert(IS_VALID(_ = __));
 static_assert(IS_VALID(_.assign(0, 0)));
 static_assert(IS_VALID(_.assign(begin(_), end(_))));
 static_assert(IS_VALID(_.get_allocator()));
