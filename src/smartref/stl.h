@@ -48,35 +48,35 @@ struct STL : USING_MEMBER_TYPE(Delegate, value_type)
 
 //! member-functions
 // TODO: (constructor?)
-// REFLECTABLE(auto, assign);
-// REFLECTABLE(auto, get_allocator);
-// REFLECTABLE(auto, at);
-// REFLECTABLE(auto, front);
-// REFLECTABLE(auto, back);
-// REFLECTABLE(auto, data);
-// REFLECTABLE(auto, begin);
-// REFLECTABLE(auto, cbegin);
-// REFLECTABLE(auto, end);
-// REFLECTABLE(auto, cend);
-// REFLECTABLE(auto, rbegin);
-// REFLECTABLE(auto, crbegin);
-// REFLECTABLE(auto, rend);
-// REFLECTABLE(auto, crend);
-// REFLECTABLE(auto, empty);
-// REFLECTABLE(auto, size);
-// REFLECTABLE(auto, max_size);
-// REFLECTABLE(auto, reserve);
-// REFLECTABLE(auto, capacity);
-// REFLECTABLE(auto, shrink_to_fit);
-// REFLECTABLE(auto, clear);
-// REFLECTABLE(auto, insert);
-// REFLECTABLE(auto, emplace);
-// REFLECTABLE(auto, erase);
-// REFLECTABLE(auto, push_back);
-// REFLECTABLE(auto, emplace_back);
-// REFLECTABLE(auto, pop_back);
-// REFLECTABLE(auto, resize);
-// REFLECTABLE(auto, swap);
+REFLECTABLE(auto, assign);
+REFLECTABLE(auto, get_allocator);
+REFLECTABLE(auto, at);
+REFLECTABLE(auto, front);
+REFLECTABLE(auto, back);
+REFLECTABLE(auto, data);
+REFLECTABLE(auto, begin);
+REFLECTABLE(auto, cbegin);
+REFLECTABLE(auto, end);
+REFLECTABLE(auto, cend);
+REFLECTABLE(auto, rbegin);
+REFLECTABLE(auto, crbegin);
+REFLECTABLE(auto, rend);
+REFLECTABLE(auto, crend);
+REFLECTABLE(auto, empty);
+REFLECTABLE(auto, size);
+REFLECTABLE(auto, max_size);
+REFLECTABLE(auto, reserve);
+REFLECTABLE(auto, capacity);
+REFLECTABLE(auto, shrink_to_fit);
+REFLECTABLE(auto, clear);
+REFLECTABLE(auto, insert);
+REFLECTABLE(auto, emplace);
+REFLECTABLE(auto, erase);
+REFLECTABLE(auto, push_back);
+REFLECTABLE(auto, emplace_back);
+REFLECTABLE(auto, pop_back);
+REFLECTABLE(auto, resize);
+REFLECTABLE(auto, swap);
 
 //! operators
 // REFLECTABLE(auto, operator[], member_function);

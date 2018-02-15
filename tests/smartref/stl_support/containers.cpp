@@ -54,47 +54,48 @@ constexpr auto is_valid = [](auto expression)
 // static_assert(IS_VALID(_.operator=(_)));
 // static_assert(IS_VALID(_.operator=(__)));
 // static_assert(IS_VALID(_ = __));
-// static_assert(IS_VALID(_.assign(0, 0)));
-// static_assert(IS_VALID(_.assign(begin(_), end(_))));
-// static_assert(IS_VALID(_.get_allocator()));
-// //! Element access
-// static_assert(IS_VALID(_.at(T::size_type{})));
+static_assert(IS_VALID(_.assign(0, 0)));
+static_assert(IS_VALID(_.assign(begin(_), end(_))));
+static_assert(IS_VALID(_.get_allocator()));
+
+//! Element access
+static_assert(IS_VALID(_.at(T::size_type{})));
 // static_assert(IS_VALID(_.operator[](0)));
 // static_assert(IS_VALID(_[0]));
-// static_assert(IS_VALID(_.front()));
-// static_assert(IS_VALID(_.back()));
-// static_assert(IS_VALID(_.data()));
+static_assert(IS_VALID(_.front()));
+static_assert(IS_VALID(_.back()));
+static_assert(IS_VALID(_.data()));
 
-// //! Iterators
-// static_assert(IS_VALID(_.begin()));
-// static_assert(IS_VALID(_.cbegin()));
-// static_assert(IS_VALID(_.end()));
-// static_assert(IS_VALID(_.cend()));
-// static_assert(IS_VALID(_.rbegin()));
-// static_assert(IS_VALID(_.crbegin()));
-// static_assert(IS_VALID(_.rend()));
-// static_assert(IS_VALID(_.crend()));
+//! Iterators
+static_assert(IS_VALID(_.begin()));
+static_assert(IS_VALID(_.cbegin()));
+static_assert(IS_VALID(_.end()));
+static_assert(IS_VALID(_.cend()));
+static_assert(IS_VALID(_.rbegin()));
+static_assert(IS_VALID(_.crbegin()));
+static_assert(IS_VALID(_.rend()));
+static_assert(IS_VALID(_.crend()));
 
-// //! Capacity
-// static_assert(IS_VALID(_.empty()));
-// static_assert(IS_VALID(_.size()));
-// static_assert(IS_VALID(_.max_size()));
-// static_assert(IS_VALID(_.reserve(T::size_type{})));
-// static_assert(IS_VALID(_.capacity()));
-// static_assert(IS_VALID(_.shrink_to_fit()));
+//! Capacity
+static_assert(IS_VALID(_.empty()));
+static_assert(IS_VALID(_.size()));
+static_assert(IS_VALID(_.max_size()));
+static_assert(IS_VALID(_.reserve(T::size_type{})));
+static_assert(IS_VALID(_.capacity()));
+static_assert(IS_VALID(_.shrink_to_fit()));
 
 // //! Modifiers
-// static_assert(IS_VALID(_.clear()));
-// static_assert(IS_VALID(_.insert(begin(_), 0)));
-// static_assert(IS_VALID(_.emplace(begin(_), 0)));
+static_assert(IS_VALID(_.clear()));
+static_assert(IS_VALID(_.insert(begin(_), 0)));
+static_assert(IS_VALID(_.emplace(begin(_), 0)));
 // static_assert(IS_VALID(_.template emplace<int>(begin(_), 0)));
-// static_assert(IS_VALID(_.erase(begin(_))));
-// static_assert(IS_VALID(_.push_back(0)));
-// static_assert(IS_VALID(_.emplace_back(0)));
+static_assert(IS_VALID(_.erase(begin(_))));
+static_assert(IS_VALID(_.push_back(0)));
+static_assert(IS_VALID(_.emplace_back(0)));
 // static_assert(IS_VALID(_.template emplace_back<int>(0)));
-// static_assert(IS_VALID(_.pop_back()));
-// static_assert(IS_VALID(_.resize(T::size_type{})));
-// static_assert(IS_VALID(_.swap(_)));
+static_assert(IS_VALID(_.pop_back()));
+static_assert(IS_VALID(_.resize(T::size_type{})));
+static_assert(IS_VALID(_.swap(_)));
 
 // //! Non-member functions
 // // static_assert(IS_VALID(_ == _);
