@@ -50,9 +50,10 @@ private:
     constexpr static auto reflected_kind = reflected_kind_;
 
 protected:
-    decltype(auto) derived()
+    template<typename Self>
+    friend decltype(auto) derived(Self &self)
     {
-        return static_cast<Derived &>(*this);
+        return static_cast<Derived &>(self);
     }
 };
 
@@ -90,7 +91,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
     public:                                                                                             \
         decltype(auto) member()                                                                         \
         {                                                                                               \
-            return on_call(*this, this->derived());                                                     \
+            return on_call(*this, derived(*this));                                                      \
         }                                                                                               \
     }                                                                                                   \
 
@@ -120,7 +121,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
             /* TODO: For some unknown reason, *not* prefixing the call to derived */                            \
             /*       with 'this->', will result in the member-function, which is  */                            \
             /*       declared in the base-class, to be hidden.                    */                            \
-            return on_call(*this, this->derived(), arg);                                                        \
+            return on_call(*this, derived(*this), arg);                                                         \
         }                                                                                                       \
     }                                                                                                           \
 
@@ -148,7 +149,7 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         decltype(auto) member(Args &&... args)                                                      \
         {                                                                                           \
             return on_call/*<ExplicitArgs...>*/(*this,                                                  \
-                                            this->derived(),                                        \
+                                            derived(*this),                                         \
                                             std::forward<Args>(args)...);                           \
         }                                                                                           \
     }                                                                                               \
