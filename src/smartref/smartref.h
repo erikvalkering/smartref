@@ -45,7 +45,7 @@ using non_void_t = typename non_void<Derived, Fallback>::type;
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
              , public Members<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
-             , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
+             // , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
              , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>, utils::Delayed<reflection::auto_, Delegate>>
 {
 public:
@@ -66,11 +66,11 @@ public:
 // TODO: Fix ExplicitArgs
 // TODO: Reflection is not the actual member reflection, but the reflector
 //       (i.e. the class from which we inherit the member-function)
-template<typename Reflection, typename Delegate, typename Derived, typename... Args>
+template</*typename... ExplicitArgs,*/ typename Reflection, typename Delegate, typename Derived, typename... Args>
 auto on_call(Reflection reflection, using_<Delegate, Derived> &self, Args... args)
-  -> decltype(call(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...))
+  -> decltype(call/*<ExplicitArgs...>*/(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...))
 {
-  return call(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...);
+  return call/*<ExplicitArgs...>*/(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...);
 }
 
 } // namespace smartref
