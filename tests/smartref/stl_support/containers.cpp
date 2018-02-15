@@ -60,8 +60,8 @@ static_assert(IS_VALID(_.get_allocator()));
 
 //! Element access
 static_assert(IS_VALID(_.at(T::size_type{})));
-// static_assert(IS_VALID(_.operator[](0)));
-// static_assert(IS_VALID(_[0]));
+static_assert(IS_VALID(_.operator[](0)));
+static_assert(IS_VALID(_[0]));
 static_assert(IS_VALID(_.front()));
 static_assert(IS_VALID(_.back()));
 static_assert(IS_VALID(_.data()));
