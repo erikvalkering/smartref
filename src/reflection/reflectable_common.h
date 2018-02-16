@@ -60,6 +60,14 @@ protected:
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
+//! This function template is needed to silence
+//! a compiler error while the member reflectors
+//! are being parsed. At that time, it doesn't
+//! know where to find the on_call function,
+//! or they might not even be available.
+template<typename...>
+void on_call(...) {}
+
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)            \
@@ -138,17 +146,21 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
         }                                                                                           \
                                                                                                     \
         /* TODO: What if *this was an rvalue, then it should be auto &&obj */                       \
-        /*template<typename... ExplicitArgs, typename Obj, typename... Args>                          */\
-        /*friend decltype(auto) call(ReflectorClassName, Obj &obj, Args &&... args)                   */\
-        /*{                                                                                           */\
-            /*return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);               */\
-        /*}                                                                                           */\
-/*                                                                                                    */\
+        template<typename... ExplicitArgs, typename Obj, typename... Args>                          \
+        friend auto call(ReflectorClassName, Obj &obj, Args &&... args)                             \
+          -> std::enable_if_t<                                                                      \
+               sizeof...(ExplicitArgs) != 0,                                                        \
+               decltype(obj.template member<ExplicitArgs...>(std::forward<Args>(args)...))          \
+             >                                                                                      \
+        {                                                                                           \
+            return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);               \
+        }                                                                                           \
+                                                                                                    \
     public:                                                                                         \
-        template</*typename... ExplicitArgs, */typename... Args>                                        \
+        template<typename... ExplicitArgs, typename... Args>                                        \
         decltype(auto) member(Args &&... args)                                                      \
         {                                                                                           \
-            return on_call/*<ExplicitArgs...>*/(*this,                                                  \
+            return on_call<ExplicitArgs...>(*this,                                                  \
                                             derived(*this),                                         \
                                             std::forward<Args>(args)...);                           \
         }                                                                                           \

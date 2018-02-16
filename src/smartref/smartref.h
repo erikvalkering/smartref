@@ -66,11 +66,19 @@ public:
 // TODO: Fix ExplicitArgs
 // TODO: Reflection is not the actual member reflection, but the reflector
 //       (i.e. the class from which we inherit the member-function)
-template</*typename... ExplicitArgs,*/ typename Reflection, typename Delegate, typename Derived, typename... Args>
-auto on_call(Reflection reflection, using_<Delegate, Derived> &self, Args... args)
-  -> decltype(call/*<ExplicitArgs...>*/(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...))
+
+//! This function template is needed to silence
+//! a compiler error while the on_call function
+//! template below is being parsed. At that time,
+//! it doesn't know where to find the call function,
+//! or it might not be available at all.
+template<typename...>
+void call(...) {}
+
+template<typename... ExplicitArgs, typename Reflection, typename Delegate, typename Derived, typename... Args>
+decltype(auto) on_call(Reflection reflection, using_<Delegate, Derived> &self, Args... args)
 {
-  return call/*<ExplicitArgs...>*/(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...);
+  return call<ExplicitArgs...>(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...);
 }
 
 } // namespace smartref
