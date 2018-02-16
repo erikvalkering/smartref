@@ -97,6 +97,9 @@ void on_call(...) {}
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
+        /* TODO: Maybe add a defaulted dummy template argument that you cannot set explicitly   */      \
+        /*       to the default, and for which any other value is invalid. This allows delaying */      \
+        /*       the instantiation of the template, such that we can have a perfect pimpl.      */      \
         decltype(auto) member()                                                                         \
         {                                                                                               \
             return on_call(*this, derived(*this));                                                      \
@@ -126,9 +129,6 @@ void on_call(...) {}
         template<typename Arg>                                                                                  \
         decltype(auto) member(Arg &&arg)                                                                        \
         {                                                                                                       \
-            /* TODO: For some unknown reason, *not* prefixing the call to derived */                            \
-            /*       with 'this->', will result in the member-function, which is  */                            \
-            /*       declared in the base-class, to be hidden.                    */                            \
             return on_call(*this, derived(*this), arg);                                                         \
         }                                                                                                       \
     }                                                                                                           \
