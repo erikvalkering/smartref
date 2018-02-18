@@ -31,7 +31,6 @@ struct Ref : smartref::using_<T>
 
 using reflection::reflect;
 
-//! Member-types
 constexpr auto is_valid = [](auto expression)
 {
   auto expected = reflect<decltype(expression(std::declval<    T >(), std::declval<    T >()))>;
@@ -45,6 +44,7 @@ constexpr auto is_valid = [](auto expression)
 // TODO:
 // - constructing a smartref (e.g. Ref<int> x;)
 
+//! Member-types
 static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
 static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
 static_assert(reflect<Ref<T>::size_type>              == reflect<T::size_type>);
