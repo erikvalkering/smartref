@@ -38,7 +38,7 @@ constexpr static auto reify(Reflection refl)
 {
     if constexpr (detail::is_member_type<Reflection, Delegate>())
     {
-        return typename Reflection::template reflect_member_type<Delegate>{};
+        return typename Reflection::template reflect_member_type<Delegate, Derived>{};
     }
     else if constexpr (detail::is_member_function<Reflection>())
     {

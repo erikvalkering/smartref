@@ -71,7 +71,7 @@ void on_call(...) {}
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)            \
-    template<typename Class>                                                                    \
+    template<typename Class, class Derived>                                                     \
     class ReflectorClassName                                                                    \
         : public reflection::reflector_base<Derived, reflection::reflected_kind::member_type>   \
     {                                                                                           \
