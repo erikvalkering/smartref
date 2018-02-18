@@ -18,7 +18,7 @@ namespace smartref {
 //       argument (or even a reflection value), and return the inheritable class.
 template<typename Delegate, class Derived, typename Reflection>
 using using_member_t = decltype(
-    reflection::reify<Derived>(
+    reflection::reify<Delegate, Derived>(
         Reflection{}
     )
 );

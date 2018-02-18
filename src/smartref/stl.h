@@ -33,18 +33,18 @@ struct STL : USING_MEMBER_TYPE(Delegate, value_type)
 ////////////////////////////////////////////////////////////////////////////////
 
 //! member-types
-// REFLECTABLE(auto, value_type);
-// REFLECTABLE(auto, allocator_type);
-// REFLECTABLE(auto, size_type);
-// REFLECTABLE(auto, difference_type);
-// REFLECTABLE(auto, reference);
-// REFLECTABLE(auto, const_reference);
-// REFLECTABLE(auto, pointer);
-// REFLECTABLE(auto, const_pointer);
-// REFLECTABLE(auto, iterator);
-// REFLECTABLE(auto, const_iterator);
-// REFLECTABLE(auto, reverse_iterator);
-// REFLECTABLE(auto, const_reverse_iterator);
+REFLECTABLE(auto, value_type);
+REFLECTABLE(auto, allocator_type);
+REFLECTABLE(auto, size_type);
+REFLECTABLE(auto, difference_type);
+REFLECTABLE(auto, reference);
+REFLECTABLE(auto, const_reference);
+REFLECTABLE(auto, pointer);
+REFLECTABLE(auto, const_pointer);
+REFLECTABLE(auto, iterator);
+REFLECTABLE(auto, const_iterator);
+REFLECTABLE(auto, reverse_iterator);
+REFLECTABLE(auto, const_reverse_iterator);
 
 //! member-functions
 // TODO: (constructor?)

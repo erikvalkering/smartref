@@ -33,13 +33,12 @@ constexpr static auto is_member_function()
 template<typename T>
 constexpr static auto reify(Reflection<T>) -> T;
 
-template<typename Derived, class Reflection>
+template<typename Delegate, class Derived, class Reflection>
 constexpr static auto reify(Reflection refl)
 {
-    // TODO: Shouldn't we be passing the class instead of Derived?
-    if constexpr (detail::is_member_type<Reflection, Derived>())
+    if constexpr (detail::is_member_type<Reflection, Delegate>())
     {
-        return typename Reflection::template reflect_member_type<Derived>{};
+        return typename Reflection::template reflect_member_type<Delegate>{};
     }
     else if constexpr (detail::is_member_function<Reflection>())
     {

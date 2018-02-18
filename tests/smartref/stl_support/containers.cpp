@@ -45,18 +45,18 @@ constexpr auto is_valid = [](auto expression)
 // TODO:
 // - constructing a smartref (e.g. Ref<int> x;)
 
-// static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
-// static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
-// static_assert(reflect<Ref<T>::size_type>              == reflect<T::size_type>);
-// static_assert(reflect<Ref<T>::difference_type>        == reflect<T::difference_type>);
-// static_assert(reflect<Ref<T>::reference>              == reflect<T::reference>);
-// static_assert(reflect<Ref<T>::const_reference>        == reflect<T::const_reference>);
-// static_assert(reflect<Ref<T>::pointer>                == reflect<T::pointer>);
-// static_assert(reflect<Ref<T>::const_pointer>          == reflect<T::const_pointer>);
-// static_assert(reflect<Ref<T>::iterator>               == reflect<T::iterator>);
-// static_assert(reflect<Ref<T>::const_iterator>         == reflect<T::const_iterator>);
-// static_assert(reflect<Ref<T>::reverse_iterator>       == reflect<T::reverse_iterator>);
-// static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_reverse_iterator>);
+static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
+static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
+static_assert(reflect<Ref<T>::size_type>              == reflect<T::size_type>);
+static_assert(reflect<Ref<T>::difference_type>        == reflect<T::difference_type>);
+static_assert(reflect<Ref<T>::reference>              == reflect<T::reference>);
+static_assert(reflect<Ref<T>::const_reference>        == reflect<T::const_reference>);
+static_assert(reflect<Ref<T>::pointer>                == reflect<T::pointer>);
+static_assert(reflect<Ref<T>::const_pointer>          == reflect<T::const_pointer>);
+static_assert(reflect<Ref<T>::iterator>               == reflect<T::iterator>);
+static_assert(reflect<Ref<T>::const_iterator>         == reflect<T::const_iterator>);
+static_assert(reflect<Ref<T>::reverse_iterator>       == reflect<T::reverse_iterator>);
+static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_reverse_iterator>);
 
 //! Member functions
 // TODO: Test all overloads

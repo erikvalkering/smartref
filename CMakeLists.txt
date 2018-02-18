@@ -74,10 +74,9 @@ target_link_libraries(libsmartref INTERFACE libutils)
 
 # Unit tests
 add_executable(test_smartref ${PROJECT_SOURCE_DIR}/tests/main.cpp)
-# TODO: Re-enable unit-tests
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/explicit.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/implicit.cpp)
-# target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/member_types.cpp)
+target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/member_types.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/smartref.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/stl.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/fundamental/assignment_operator.cpp)
