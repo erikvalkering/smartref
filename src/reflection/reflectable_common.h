@@ -160,6 +160,7 @@ void on_call(...) {}
         template<typename... ExplicitArgs, typename... Args>                                        \
         decltype(auto) member(Args &&... args)                                                      \
         {                                                                                           \
+            using reflection::on_call;                                                              \
             return on_call<ExplicitArgs...>(*this,                                                  \
                                             derived(*this),                                         \
                                             std::forward<Args>(args)...);                           \
