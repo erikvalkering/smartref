@@ -85,10 +85,9 @@ target_link_libraries(test_smartref PRIVATE libsmartref)
 add_test(smartref test_smartref)
 
 # Examples
-# TODO: Re-enable
-# add_executable(sandbox examples/sandbox.cpp)
-# target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
-# target_link_libraries(sandbox PRIVATE libreflection)
-# target_link_libraries(sandbox PRIVATE libsmartref)
-# add_test(examples sandbox)
+add_executable(sandbox examples/sandbox.cpp)
+target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
+target_link_libraries(sandbox PRIVATE libreflection)
+target_link_libraries(sandbox PRIVATE libsmartref)
+add_test(examples sandbox)
 ################################################################################
