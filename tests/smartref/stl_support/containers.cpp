@@ -5,8 +5,6 @@
 
 namespace tests_containers {
 
-using T = std::vector<int>;
-
 template<typename T>
 struct Ref : smartref::using_<T>
 {
@@ -28,6 +26,8 @@ struct Ref : smartref::using_<T>
   //       What if we don't want the reflected assignment operator, but simply Ref<int> x; x = Ref<int>{};
   using smartref::using_<T>::operator=;
 };
+
+using T = std::vector<int>;
 
 using reflection::reflect;
 
@@ -94,7 +94,7 @@ static_assert(IS_VALID(_.reserve(T::size_type{})));
 static_assert(IS_VALID(_.capacity()));
 static_assert(IS_VALID(_.shrink_to_fit()));
 
-// //! Modifiers
+//! Modifiers
 static_assert(IS_VALID(_.clear()));
 static_assert(IS_VALID(_.insert(begin(_), 0)));
 static_assert(IS_VALID(_.emplace(begin(_), 0)));
@@ -107,15 +107,15 @@ static_assert(IS_VALID(_.pop_back()));
 static_assert(IS_VALID(_.resize(T::size_type{})));
 static_assert(IS_VALID(_.swap(_)));
 
-// //! Non-member functions
-// // static_assert(IS_VALID(_ == _);
-// // TODO: operator!=
-// // TODO: operator<
-// // TODO: operator<=
-// // TODO: operator>
-// // TODO: operator>=
-// // TODO: std::swap
+//! Non-member functions
+// TODO: operator==
+// TODO: operator!=
+// TODO: operator<
+// TODO: operator<=
+// TODO: operator>
+// TODO: operator>=
+// TODO: std::swap
 
-// // TODO: Deduction guides
+// TODO: Deduction guides
 
 } // namespace tests_containers
