@@ -49,7 +49,6 @@ private:
     friend class reflection::access;
     constexpr static auto reflected_kind = reflected_kind_;
 
-protected:
     template<typename Self>
     friend decltype(auto) derived(Self &self)
     {
