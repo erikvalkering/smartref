@@ -97,9 +97,6 @@ void on_call(...) {}
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
-        /* TODO: Maybe add a defaulted dummy template argument that you cannot set explicitly   */      \
-        /*       to the default, and for which any other value is invalid. This allows delaying */      \
-        /*       the instantiation of the template, such that we can have a perfect pimpl.      */      \
         decltype(auto) member()                                                                         \
         {                                                                                               \
             return on_call(*this, derived(*this));                                                      \
