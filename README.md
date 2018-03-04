@@ -123,14 +123,20 @@ The following features are planned to be implemented:
         - [x] Explicit definition of member-types
         - [x] Non-intrusive discovery of member-types using the `REFLECTABLE` macro
         - [ ] Intrusive discovery of member-types using the `REFLECTABLE` macro
+        - [ ] Alias templates / nested class templates
 - [ ] Member-functions
     - [ ] Core
         - [x] Non-const member-functions
         - [ ] const member-functions
-        - [x] Operators
+        - [x] Operators (member, binary)
+        - [x] Operators (member, unary)
+        - [x] Operators (member, assignment)
+        - [ ] Operators (non-members)
         - [x] Overloads
         - [x] Templates (deducible)
         - [x] Templates (non-deducible)
+        - [ ] Non-type templates
+        - [ ] Mixed type and non-type templates
     - [ ] STL
         - [x] All of `std::vector`
         - [ ] Full support of the STL
@@ -153,12 +159,17 @@ The following features are planned to be implemented:
 - [ ] Conflict-resolution
 - [ ] Reference-leaking control (e.g. operator=() currently returns int & for int-wrappers), and maybe a more general control mechanism
 - [ ] More test coverage
-  - [ ] Implicit conversions while passing to function
-  - [ ] Performance tests
-    - [ ] Compile-time overhead
-    - [ ] Runtime overhead
-    - [ ] Memory overhead
+    - [ ] Implicit conversions while passing to function
+    - [ ] Performance tests
+        - [ ] Compile-time overhead
+        - [ ] Runtime overhead
+        - [ ] Memory overhead
 - [ ] More examples
+    - [ ] Proxy
+    - [ ] Poly (value-based ClonablePtr)
+    - [ ] Strong typedef
+    - [ ] Perfect pimpl
+    - [ ] Observable
 - [ ] Documentation
     - [ ] User
     - [ ] Source code
