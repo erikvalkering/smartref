@@ -22,8 +22,6 @@ struct Ref : smartref::using_<T>
   Ref(Ref &&) = default;
   Ref &operator=(Ref &&) = default;
 
-  // TODO: It seems the following is mandatory in order to support the assignment from the wrapper class itself.
-  //       What if we don't want the reflected assignment operator, but simply Ref<int> x; x = Ref<int>{};
   using smartref::using_<T>::operator=;
 };
 
@@ -40,9 +38,6 @@ constexpr auto is_valid = [](auto expression)
 };
 
 #define IS_VALID(expression) is_valid([](auto &&_, auto &&__) {return expression;})
-
-// TODO:
-// - constructing a smartref (e.g. Ref<int> x;)
 
 //! Member-types
 static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
