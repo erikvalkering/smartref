@@ -3,6 +3,7 @@
 #include <reflection/reflection.h>
 
 #if 0
+// TODO: remove
 //! This block contains the old-style STL-support, and has been superseeded by
 //! the generic reflection support.
 
@@ -44,7 +45,7 @@ REFLECTABLE(auto, reverse_iterator);
 REFLECTABLE(auto, const_reverse_iterator);
 
 //! member-functions
-// TODO: operator=
+// TODO: (constructor?)
 REFLECTABLE(auto, assign);
 REFLECTABLE(auto, get_allocator);
 REFLECTABLE(auto, at);
@@ -77,3 +78,5 @@ REFLECTABLE(auto, swap);
 
 //! operators
 REFLECTABLE(auto, operator[], member_function);
+REFLECTION_REFLECTABLE_NONINTRUSIVE_ASSIGNMENT_OPERATOR(auto, operator=, member_function);
+// REFLECTABLE(auto, operator=,  member_function);

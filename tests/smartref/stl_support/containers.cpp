@@ -14,13 +14,21 @@ struct Ref : smartref::using_<T>
   {
     return ref;
   }
+
+  Ref() = default;
+
+  Ref(const Ref &) = default;
+  Ref &operator=(const Ref &) = default;
+  Ref(Ref &&) = default;
+  Ref &operator=(Ref &&) = default;
+
+  using smartref::using_<T>::operator=;
 };
 
 using T = std::vector<int>;
 
 using reflection::reflect;
 
-//! Member-types
 constexpr auto is_valid = [](auto expression)
 {
   auto expected = reflect<decltype(expression(std::declval<    T >(), std::declval<    T >()))>;
@@ -29,8 +37,9 @@ constexpr auto is_valid = [](auto expression)
   return actual == expected;
 };
 
-#define IS_VALID(expression) is_valid([](auto &&_, auto &&__) {expression;})
+#define IS_VALID(expression) is_valid([](auto &&_, auto &&__) {return expression;})
 
+//! Member-types
 static_assert(reflect<Ref<T>::value_type>             == reflect<T::value_type>);
 static_assert(reflect<Ref<T>::allocator_type>         == reflect<T::allocator_type>);
 static_assert(reflect<Ref<T>::size_type>              == reflect<T::size_type>);
@@ -47,9 +56,9 @@ static_assert(reflect<Ref<T>::const_reverse_iterator> == reflect<T::const_revers
 //! Member functions
 // TODO: Test all overloads
 // TODO: (constructor)
-// TODO: Why does operator= work? What does it do?
 static_assert(IS_VALID(_.operator=(_)));
-static_assert(IS_VALID(_ = _));
+static_assert(IS_VALID(_.operator=(__)));
+static_assert(IS_VALID(_ = __));
 static_assert(IS_VALID(_.assign(0, 0)));
 static_assert(IS_VALID(_.assign(begin(_), end(_))));
 static_assert(IS_VALID(_.get_allocator()));
