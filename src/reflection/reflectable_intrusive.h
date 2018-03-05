@@ -40,7 +40,7 @@ constexpr auto reflected_member_intrusive_count_v = reflected_member_count<refle
     struct __type##member : Counter                                     \
     {                                                                   \
         template<typename F>                                            \
-        using reflect_member_function = __reflect__##member<F>;         \
+        using reflector_member_function = __reflect__##member<F>;       \
     };                                                                  \
                                                                         \
     auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)   \
