@@ -79,4 +79,3 @@ REFLECTABLE(auto, swap);
 //! operators
 REFLECTABLE(auto, operator[], member_function);
 REFLECTION_REFLECTABLE_NONINTRUSIVE_ASSIGNMENT_OPERATOR(auto, operator=, member_function);
-// REFLECTABLE(auto, operator=,  member_function);
