@@ -26,6 +26,12 @@ struct using_base<Delegate, void>
     virtual operator Delegate &() = 0;
 };
 
+template<typename Delegate, typename Derived>
+decltype(auto) delegate(using_base<Delegate, Derived> &base)
+{
+    return static_cast<Delegate &>(base);
+}
+
 template<typename Derived, typename Fallback>
 struct non_void
 {
@@ -78,7 +84,7 @@ void call(...) {}
 template<typename... ExplicitArgs, typename Reflection, typename Delegate, typename Derived, typename... Args>
 decltype(auto) on_call(Reflection reflection, using_<Delegate, Derived> &self, Args... args)
 {
-  return call<ExplicitArgs...>(reflection, static_cast<Delegate &>(self), std::forward<Args>(args)...);
+  return call<ExplicitArgs...>(reflection, delegate(self), std::forward<Args>(args)...);
 }
 
 } // namespace smartref
