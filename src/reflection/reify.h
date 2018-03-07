@@ -8,13 +8,13 @@ namespace reflection {
 
 namespace detail {
 
-template<typename Reflection, typename Class>
-using detect_is_member_type = typename Reflection::template detect_is_member_type<Class>;
+template<typename Reflection, typename Derived>
+using detect_is_member_type = typename Reflection::template detect_is_member_type<Derived>;
 
-template<class Reflection, typename Class>
+template<class Reflection, typename Derived>
 constexpr static auto is_member_type()
 {
-    return utils::is_detected_v<detect_is_member_type, Reflection, Class>;
+    return utils::is_detected_v<detect_is_member_type, Reflection, Derived>;
 }
 
 template<class Reflection>
@@ -36,9 +36,9 @@ constexpr static auto reify(Reflection<T>) -> T;
 template<typename Delegate, class Derived, class Reflection>
 constexpr static auto reify(Reflection refl)
 {
-    if constexpr (detail::is_member_type<Reflection, Delegate>())
+    if constexpr (detail::is_member_type<Reflection, Derived>())
     {
-        return typename Reflection::template reflector_member_type<Delegate, Derived>{};
+        return typename Reflection::template reflector_member_type<Derived>{};
     }
     else if constexpr (detail::is_member_function<Reflection>())
     {

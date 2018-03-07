@@ -70,17 +70,31 @@ void on_call(...) {}
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)            \
-    template<typename Class, class Derived>                                                     \
+    template<class Derived>                                                                     \
     class ReflectorClassName                                                                    \
         : public reflection::reflector_base<Derived, reflection::reflected_kind::member_type>   \
     {                                                                                           \
+    private:                                                                                    \
+        template<typename Obj>                                                                  \
+        friend auto call2(ReflectorClassName *, Obj &&obj)                                      \
+            -> typename Obj::member;                                                            \
+                                                                                                \
     public:                                                                                     \
-        using member = typename Class::member;                                                  \
+        using member = decltype(                                                                \
+            on_call2(                                                                           \
+                std::declval<ReflectorClassName *>(),                                           \
+                std::declval<Derived *>()                                                       \
+            )                                                                                   \
+        );                                                                                      \
     };                                                                                          \
                                                                                                 \
-    template<typename Class>                                                                    \
+    template<class Derived>                                                                  \
     using detect_is_member_type = decltype(                                                     \
-        std::declval<typename Class::member>())                                                 \
+            on_call2(                                                                           \
+                std::declval<ReflectorClassName<Derived> *>(),                                  \
+                std::declval<Derived *>()                                                       \
+            )                                                                                   \
+        );                                                                                   \
 
 // TODO: Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \

@@ -87,4 +87,8 @@ decltype(auto) on_call(Reflection reflection, using_<Delegate, Derived> &self, A
   return call<ExplicitArgs...>(reflection, delegate(self), std::forward<Args>(args)...);
 }
 
+template<typename Reflection, typename Delegate, typename Derived>
+auto on_call2(Reflection reflection, using_<Delegate, Derived> *)
+  -> decltype(call2(reflection, std::declval<Delegate>()));
+
 } // namespace smartref
