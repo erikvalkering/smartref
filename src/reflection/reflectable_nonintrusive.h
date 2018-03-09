@@ -49,7 +49,9 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
                                                                                                                         \
     INC_COUNTER(CONCAT(CLASS, __LINE__))                                                                                \
 
-#define REFLECTION_REFLECTABLE_NULL_REFLECTOR(...)
+#define REFLECTION_REFLECTABLE_NULL_REFLECTOR(ReflectorClassName, ...)  \
+    template<class>                                                     \
+    struct ReflectorClassName {};                                       \
 
 #define REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER_FUNCTION(Class, member, unused)  \
     REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                                    \
