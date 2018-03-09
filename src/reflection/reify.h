@@ -1,6 +1,7 @@
 #pragma once
 
 #include "reflect.h"
+#include "reflectable_common.h"
 
 #include <utils/utils.h>
 
@@ -8,13 +9,14 @@ namespace reflection {
 
 namespace detail {
 
-template<typename Reflection, typename Derived>
-using detect_is_member_type = typename Reflection::template detect_is_member_type<Derived>;
-
 template<class Reflection, typename Derived>
 constexpr static auto is_member_type()
 {
-    return utils::is_detected_v<detect_is_member_type, Reflection, Derived>;
+    return utils::is_detected_v<
+        reflection::detect_is_member_type,
+        typename Reflection::template reflector_member_type<Derived>,
+        Derived
+    >;
 }
 
 template<class Reflection>

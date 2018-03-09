@@ -67,6 +67,14 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 template<typename...>
 void on_call(...) {}
 
+template<class R, class Derived>
+using detect_is_member_type = decltype(
+    on_call2(
+        std::declval<R *>(),
+        std::declval<Derived *>()
+    )
+);
+
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)            \
@@ -80,21 +88,8 @@ void on_call(...) {}
             -> typename Obj::member;                                                            \
                                                                                                 \
     public:                                                                                     \
-        using member = decltype(                                                                \
-            on_call2(                                                                           \
-                std::declval<ReflectorClassName *>(),                                           \
-                std::declval<Derived *>()                                                       \
-            )                                                                                   \
-        );                                                                                      \
+        using member = utils::detected_or_t<void, detect_is_member_type, ReflectorClassName, Derived>;              \
     };                                                                                          \
-                                                                                                \
-    template<class Derived>                                                                  \
-    using detect_is_member_type = decltype(                                                     \
-            on_call2(                                                                           \
-                std::declval<ReflectorClassName<Derived> *>(),                                  \
-                std::declval<Derived *>()                                                       \
-            )                                                                                   \
-        );                                                                                   \
 
 // TODO: Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
