@@ -77,6 +77,10 @@ using detect_is_member_type = decltype(
 
 } // namespace reflection
 
+#define REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR(ReflectorClassName, ...) \
+    template<class>                                                         \
+    struct ReflectorClassName {}                                            \
+
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)            \
     template<class Derived>                                                                     \
     class ReflectorClassName                                                                    \
@@ -88,8 +92,12 @@ using detect_is_member_type = decltype(
             -> typename Obj::member;                                                            \
                                                                                                 \
     public:                                                                                     \
-        using member = utils::detected_or_t<void, detect_is_member_type, ReflectorClassName, Derived>;              \
-    };                                                                                          \
+        using member = utils::detected_or_t<                                                    \
+            void,                                                                               \
+            detect_is_member_type,                                                              \
+            ReflectorClassName,                                                                 \
+            Derived>;                                                                           \
+    }                                                                                           \
 
 // TODO: Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \

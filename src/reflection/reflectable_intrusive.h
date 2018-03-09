@@ -39,8 +39,11 @@ constexpr auto reflected_member_intrusive_count_v = reflected_member_count<refle
     template<typename Counter, class Class>                             \
     struct __type##member : Counter                                     \
     {                                                                   \
-        template<typename F>                                            \
-        using reflector_member_function = __reflect__##member<F>;       \
+        REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR(                     \
+            reflector_member_type);                                     \
+                                                                        \
+        template<typename Derived>                                      \
+        using reflector_member_function = __reflect__##member<Derived>; \
     };                                                                  \
                                                                         \
     auto __reflect(counter::Counter<CURRENT_CLASS_COUNTER()> counter)   \
