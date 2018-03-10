@@ -69,7 +69,6 @@ public:
 // TODO: on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
-// TODO: Fix ExplicitArgs
 // TODO: Reflection is not the actual member reflection, but the reflector
 //       (i.e. the class from which we inherit the member-function)
 
