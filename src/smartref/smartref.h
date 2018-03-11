@@ -81,13 +81,13 @@ template<typename...>
 void call(...) {}
 
 template<typename... ExplicitArgs, typename Reflection, typename Delegate, typename Derived, typename... Args>
-decltype(auto) on_call(Reflection reflection, using_<Delegate, Derived> &self, Args... args)
+decltype(auto) on_call(Reflection &reflection, using_<Delegate, Derived> &self, Args... args)
 {
   return call<ExplicitArgs...>(reflection, delegate(self), std::forward<Args>(args)...);
 }
 
 template<typename Reflection, typename Delegate, typename Derived, typename... Args>
-auto on_call2(Reflection reflection, using_<Delegate, Derived> *, Args... args)
+auto on_call2(Reflection &reflection, using_<Delegate, Derived> &, Args... args)
   -> decltype(call2(reflection, std::declval<Delegate>(), std::forward<Args>(args)...));
 
 } // namespace smartref
