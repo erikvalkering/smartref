@@ -27,12 +27,6 @@ struct using_base<Delegate, void>
     virtual operator Delegate &() = 0;
 };
 
-template<typename Delegate, typename Derived>
-decltype(auto) delegate(using_base<Delegate, Derived> &base)
-{
-    return static_cast<Delegate &>(base);
-}
-
 // TODO: -cmaster rename the non_void stuff. And maybe it can go to utils?
 template<typename Derived, typename Fallback>
 struct non_void
@@ -89,6 +83,12 @@ template<typename... ExplicitArgs, typename Reflection, typename Delegate, typen
 decltype(auto) on_call(Reflection &reflection, using_<Delegate, Derived> &self, Args... args)
 {
   return call<ExplicitArgs...>(reflection, delegate(self), std::forward<Args>(args)...);
+}
+
+template<typename Delegate, typename Derived>
+decltype(auto) delegate(using_<Delegate, Derived> &base)
+{
+    return static_cast<Delegate &>(base);
 }
 
 template<typename Delegate, typename Derived>
