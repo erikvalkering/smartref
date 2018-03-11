@@ -27,6 +27,7 @@ struct reflected_member_count<reflected_member_slot_t, T, count, void>
     static constexpr auto value = count;
 };
 
+// TODO: -cmaster Do we actually need / use this enum class?
 enum class reflected_kind
 {
     unknown,
@@ -59,6 +60,7 @@ private:
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
+// TODO: -cmaster Can we get rid of these functions?
 //! This function template is needed to silence
 //! a compiler error while the member reflectors
 //! are being parsed. At that time, it doesn't
@@ -99,7 +101,7 @@ using detect_is_member_type = decltype(
             Derived>;                                                                           \
     }                                                                                           \
 
-// TODO: Get rid of code duplication
+// TODO: -cmaster Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
     template<typename Derived>                                                                          \
     class ReflectorClassName                                                                            \

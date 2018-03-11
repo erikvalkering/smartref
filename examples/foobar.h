@@ -140,6 +140,8 @@ struct ClassTemplate
 
 } // namespace foobar
 
+// TODO: -cmaster Get rid of *all* syntaxes that will never be used
+
 template<typename Derived>
 struct smartref::Members<foobar::Foo, Derived>
 {

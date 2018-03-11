@@ -1,6 +1,6 @@
 #include <reflection/reflection.h>
 
-// TODO:
+// TODO: -cmaster Proper names for REFLECTABLE macros
 // - REFLECTABLE_OPERATOR
 // - REFLECTABLE_OPERATOR_UNARY
 // - REFLECTABLE_OPERATOR_ASSIGNMENT

@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO: -cmaster remove explicit.h
 #include "explicit.h"
 #include "implicit.h"
 #include "stl.h"
@@ -32,6 +33,7 @@ decltype(auto) delegate(using_base<Delegate, Derived> &base)
     return static_cast<Delegate &>(base);
 }
 
+// TODO: -cmaster rename the non_void stuff. And maybe it can go to utils?
 template<typename Derived, typename Fallback>
 struct non_void
 {
@@ -66,7 +68,7 @@ public:
     using_ &operator=(using_ &&) = default;
 };
 
-// TODO: on_call() and call() are too similar. Come up with a different naming.
+// TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
 // TODO: Reflection is not the actual member reflection, but the reflector
@@ -80,12 +82,17 @@ public:
 template<typename...>
 void call(...) {}
 
+// TODO: -cmaster Reflection should be named Reflector (better: rename everything)
+// TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
+// TODO: -cmaster args should use forwarding references (unit test this!)
 template<typename... ExplicitArgs, typename Reflection, typename Delegate, typename Derived, typename... Args>
 decltype(auto) on_call(Reflection &reflection, using_<Delegate, Derived> &self, Args... args)
 {
   return call<ExplicitArgs...>(reflection, delegate(self), std::forward<Args>(args)...);
 }
 
+// TODO: -cmaster Maybe it's better to make Reflection *only* a template parameter
+// TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 template<typename Reflection, typename Delegate, typename Derived, typename... Args>
 auto on_call2(Reflection &reflection, using_<Delegate, Derived> &, Args... args)
   -> decltype(call2(reflection, std::declval<Delegate>(), std::forward<Args>(args)...));

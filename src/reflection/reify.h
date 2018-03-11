@@ -1,7 +1,7 @@
 #pragma once
 
 #include "reflect.h"
-#include "reflectable_common.h"
+#include "reflectable_common.h" // TODO: -cmaster Find a better place to put the detect_is_member_type metafunction, such that we don't depend on this header
 
 #include <utils/utils.h>
 
@@ -27,6 +27,10 @@ constexpr static auto is_member_function()
     //! in case the reflected entity wasn't a member-function.
     // TODO: It might still be an annoyance for IDEs, though, where it could show
     //       the candidate member-functions, even though none exists.
+    // TODO: -cmaster Come up with a mechanism to reject member functions before calling them,
+    //       by checking for existence of a member that is not a member type (nor a data member).
+    //       struct Detector : T, BAR
+    //       but will not work for final classes
     return utils::always_true<Reflection>;
 }
 
@@ -35,6 +39,7 @@ constexpr static auto is_member_function()
 template<typename T>
 constexpr static auto reify(Reflection<T>) -> T;
 
+// TODO: -cmaster Suddenly we leak the Delegate type, which is part of the smartref library.
 template<typename Delegate, class Derived, class Reflection>
 constexpr static auto reify(Reflection refl)
 {
