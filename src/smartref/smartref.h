@@ -91,10 +91,14 @@ decltype(auto) on_call(Reflection &reflection, using_<Delegate, Derived> &self, 
   return call<ExplicitArgs...>(reflection, delegate(self), std::forward<Args>(args)...);
 }
 
+template<typename Delegate, typename Derived>
+auto delegate2(using_<Delegate, Derived> &base)
+  -> decltype(std::declval<Delegate>());
+
 // TODO: -cmaster Maybe it's better to make Reflection *only* a template parameter
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 template<typename Reflection, typename Delegate, typename Derived, typename... Args>
-auto on_call2(Reflection &reflection, using_<Delegate, Derived> &, Args... args)
-  -> decltype(call2(reflection, std::declval<Delegate>(), std::forward<Args>(args)...));
+auto on_call2(Reflection &reflection, using_<Delegate, Derived> &self, Args... args)
+  -> decltype(call2(reflection, delegate2(self), std::forward<Args>(args)...));
 
 } // namespace smartref
