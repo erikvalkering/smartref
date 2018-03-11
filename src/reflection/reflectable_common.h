@@ -87,8 +87,8 @@ using detect_is_member_type = decltype(
         : public reflection::reflector_base<Derived, reflection::reflected_kind::member_type>   \
     {                                                                                           \
     private:                                                                                    \
-        template<typename Obj>                                                                  \
-        friend auto call2(ReflectorClassName *, Obj &&obj)                                      \
+        template<typename Obj, typename... Args>                                                                  \
+        friend auto call2(ReflectorClassName *, Obj &&obj, Args... args)                                      \
             -> typename Obj::member;                                                            \
                                                                                                 \
     public:                                                                                     \
