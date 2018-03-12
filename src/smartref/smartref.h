@@ -93,7 +93,7 @@ decltype(auto) delegate(using_<Delegate, Derived> &base)
 
 template<typename Delegate, typename Derived>
 auto delegate3(using_<Delegate, Derived> &base)
-  -> decltype(std::declval<Delegate>());
+  -> Delegate &;
 
 // TODO: -cmaster Maybe it's better to make Reflection *only* a template parameter
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)

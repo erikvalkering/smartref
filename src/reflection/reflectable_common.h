@@ -90,7 +90,7 @@ using detect_is_member_type = decltype(
     {                                                                                           \
     private:                                                                                    \
         template<typename Obj, typename... Args>                                                \
-        friend auto call2(ReflectorClassName &, Obj &&obj, Args... args)                        \
+        friend auto call2(ReflectorClassName &, Obj &obj, Args... args)                         \
             -> typename Obj::member;                                                            \
                                                                                                 \
     public:                                                                                     \
