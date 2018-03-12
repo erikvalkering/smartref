@@ -80,7 +80,8 @@ void call(...) {}
 // TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
 // TODO: -cmaster args should use forwarding references (unit test this!)
 template<typename... ExplicitArgs, typename Reflection, typename Delegate, typename Derived, typename... Args>
-decltype(auto) on_call(Reflection &reflection, using_<Delegate, Derived> &self, Args... args)
+auto on_call(Reflection &reflection, using_<Delegate, Derived> &self, Args... args)
+  -> decltype(call<ExplicitArgs...>(reflection, delegate(self), std::forward<Args>(args)...))
 {
   return call<ExplicitArgs...>(reflection, delegate(self), std::forward<Args>(args)...);
 }
@@ -96,6 +97,9 @@ auto delegate(using_<Delegate, Derived> &base)
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 template<typename Reflection, typename Delegate, typename Derived, typename... Args>
 auto on_call2(Reflection &reflection, using_<Delegate, Derived> &self, Args... args)
-  -> decltype(call2(reflection, delegate(self), std::forward<Args>(args)...));
+  -> decltype(call2(reflection, delegate(self), std::forward<Args>(args)...))
+{
+  return call2(reflection, delegate(self), std::forward<Args>(args)...);
+}
 
 } // namespace smartref
