@@ -86,13 +86,13 @@ decltype(auto) on_call(Reflection &reflection, using_<Delegate, Derived> &self, 
 }
 
 template<typename Delegate, typename Derived>
-decltype(auto) delegate(using_<Delegate, Derived> &base)
+decltype(auto) delegate(using_base<Delegate, Derived> &base)
 {
     return static_cast<Delegate &>(base);
 }
 
 template<typename Delegate, typename Derived>
-auto delegate3(using_<Delegate, Derived> &base)
+auto delegate3(using_base<Delegate, Derived> &base)
   -> Delegate &;
 
 // TODO: -cmaster Maybe it's better to make Reflection *only* a template parameter
