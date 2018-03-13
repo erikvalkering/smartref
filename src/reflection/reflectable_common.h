@@ -69,6 +69,9 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 template<typename...>
 void on_call(...) {}
 
+template<typename...>
+struct type_list {};
+
 template<class R, class Derived>
 using detect_is_member_type = decltype(
     on_call2(
@@ -90,7 +93,7 @@ using detect_is_member_type = decltype(
     {                                                                                           \
     private:                                                                                    \
         template<typename Obj, typename... Args>                                                \
-        friend auto call2(ReflectorClassName &, Obj &obj, Args... args)                         \
+        friend auto call2(ReflectorClassName &, Obj &obj, type_list<>)                          \
             -> typename Obj::member;                                                            \
                                                                                                 \
     public:                                                                                     \
