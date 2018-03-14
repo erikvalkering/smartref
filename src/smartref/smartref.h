@@ -79,7 +79,7 @@ void call(...) {}
 // TODO: -cmaster Reflection should be named Reflector (better: rename everything)
 // TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
 // TODO: -cmaster args should use forwarding references (unit test this!)
-template<typename... ExplicitArgs, typename Reflection, typename Delegate, typename Derived, typename... Args>
+template<typename Reflection, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
 auto on_call(Reflection &reflection, using_<Delegate, Derived> &self, reflection::type_list<ExplicitArgs...> explicitArgs, Args... args)
   -> decltype(call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...))
 {
