@@ -76,7 +76,8 @@ template<class R, class Derived>
 using detect_is_member_type = decltype(
     on_call2(
         std::declval<R &>(),
-        std::declval<Derived &>()
+        std::declval<Derived &>(),
+        type_list<>{}
     )
 );
 
@@ -93,7 +94,7 @@ using detect_is_member_type = decltype(
     {                                                                                           \
     private:                                                                                    \
         template<typename Obj, typename... Args>                                                \
-        friend auto call2(ReflectorClassName &, Obj &obj, type_list<>)                          \
+        friend auto call2(ReflectorClassName &, Obj &obj, reflection::type_list<>)              \
             -> typename Obj::member;                                                            \
                                                                                                 \
     public:                                                                                     \
