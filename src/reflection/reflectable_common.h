@@ -192,10 +192,16 @@ using detect_is_member_type = decltype(
                                                                                                                 \
     public:                                                                                                     \
         template<typename... ExplicitArgs, typename... Args>                                                    \
-        decltype(auto) member(Args &&... args)                                                                  \
+        auto member(Args &&... args)                                                                            \
+          -> decltype(                                                                                          \
+            on_call(*this,                                                                                      \
+                    derived(utils::delayed(*this, reflection::type_list<ExplicitArgs...>{})),                   \
+                    reflection::type_list<ExplicitArgs...>{},                                                   \
+                    std::forward<Args>(args)...)                                                                \
+          )                                                                                                     \
         {                                                                                                       \
             return on_call(*this,                                                                               \
-                           derived(*this),                                                                      \
+                           derived(utils::delayed(*this, reflection::type_list<ExplicitArgs...>{})),            \
                            reflection::type_list<ExplicitArgs...>{},                                            \
                            std::forward<Args>(args)...);                                                        \
         }                                                                                                       \
