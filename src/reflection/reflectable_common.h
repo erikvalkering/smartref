@@ -121,7 +121,8 @@ using detect_is_member_type = decltype(
         }                                                                                               \
                                                                                                         \
     public:                                                                                             \
-        decltype(auto) member()                                                                         \
+        auto member()                                                                                   \
+          -> decltype(on_call(*this, derived(*this), reflection::type_list<>{}))                        \
         {                                                                                               \
             return on_call(*this, derived(*this), reflection::type_list<>{});                           \
         }                                                                                               \
