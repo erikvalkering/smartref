@@ -61,21 +61,12 @@ private:
 template<typename T>
 constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 
-// TODO: -cmaster Can we get rid of these functions?
-//! This function template is needed to silence
-//! a compiler error while the member reflectors
-//! are being parsed. At that time, it doesn't
-//! know where to find the on_call function,
-//! or they might not even be available.
-template<typename...>
-void on_call(...) {}
-
 template<typename...>
 struct type_list {};
 
 template<class R, class Derived>
 using detect_is_member_type = decltype(
-    on_call2(
+    on_call(
         std::declval<R &>(),
         std::declval<Derived &>(),
         type_list<>{}

@@ -71,6 +71,8 @@ public:
 // TODO: -cmaster Reflection should be named Reflector (better: rename everything)
 // TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
 // TODO: -cmaster args should use forwarding references (unit test this!)
+// TODO: -cmaster Maybe it's better to make Reflection *only* a template parameter
+// TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 template<typename Reflection, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
 auto on_call(Reflection &reflection, using_<Delegate, Derived> &self, reflection::type_list<ExplicitArgs...> explicitArgs, Args... args)
   -> decltype(call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...))
@@ -83,15 +85,6 @@ auto delegate(using_<Delegate, Derived> &base)
   -> Delegate &
 {
     return static_cast<Delegate &>(base);
-}
-
-// TODO: -cmaster Maybe it's better to make Reflection *only* a template parameter
-// TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
-template<typename Reflection, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
-auto on_call2(Reflection &reflection, using_<Delegate, Derived> &self, reflection::type_list<ExplicitArgs...> explicitArgs, Args... args)
-  -> decltype(call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...))
-{
-  return call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...);
 }
 
 } // namespace smartref
