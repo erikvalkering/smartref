@@ -182,7 +182,6 @@ using detect_is_member_type = decltype(
         template<typename... ExplicitArgs, typename... Args>                                                    \
         decltype(auto) member(Args &&... args)                                                                  \
         {                                                                                                       \
-            using reflection::on_call;                                                                          \
             return on_call(*this,                                                                               \
                            derived(*this),                                                                      \
                            reflection::type_list<ExplicitArgs...>{},                                            \
