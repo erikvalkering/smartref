@@ -51,7 +51,8 @@ private:
     constexpr static auto reflected_kind = reflected_kind_;
 
     template<typename Self>
-    friend decltype(auto) derived(Self &self)
+    friend auto derived(Self &self)
+      -> utils::Delayed<Derived, Self> &
     {
         return static_cast<Derived &>(self);
     }
@@ -148,9 +149,20 @@ using detect_is_member_type = decltype(
         ReflectorClassName &operator=(ReflectorClassName &&) = default;                                         \
                                                                                                                 \
         template<typename Arg>                                                                                  \
-        decltype(auto) member(Arg &&arg)                                                                        \
+        auto member(Arg &&arg)                                                                                  \
+          -> decltype(                                                                                          \
+            on_call(                                                                                            \
+                *this,                                                                                          \
+                derived(utils::delayed(*this, reflection::type_list<Arg>{})),                                   \
+                reflection::type_list<>{}, arg                                                                  \
+            )                                                                                                   \
+          )                                                                                                     \
         {                                                                                                       \
-            return on_call(*this, derived(*this), reflection::type_list<>{}, arg);                              \
+            return on_call(                                                                                     \
+                *this,                                                                                          \
+                derived(utils::delayed(*this, reflection::type_list<Arg>{})),                                   \
+                reflection::type_list<>{}, arg                                                                  \
+            );                                                                                                  \
         }                                                                                                       \
     }                                                                                                           \
 
