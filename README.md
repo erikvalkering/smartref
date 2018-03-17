@@ -114,7 +114,6 @@ baz.foobar(42);
 The implementation has been tested using the following compilers:
 - Clang 4.0.1
 
-// TODO: -cmaster Rework Features list (a lot is not even part of Features list)
 The following features are planned to be implemented:
 - [ ] Member-types
     - [ ] STL
