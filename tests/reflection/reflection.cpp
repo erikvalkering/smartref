@@ -52,17 +52,3 @@ REFLECTABLE(member_types::Foo, baz);
 
 using reflected_bar = reflection::reflected_member_t<member_types::Foo, 0>;
 using reflected_baz = reflection::reflected_member_t<member_types::Foo, 1>;
-
-// TODO: Implementation detail. See if we can move this out of the macro
-// static_assert(!utils::is_detected_v<reflected_bar::template detect_is_member_type, void>);
-// static_assert( utils::is_detected_v<reflected_baz::template detect_is_member_type, void>);
-
-// TODO: member_types cannot be detected any longer, because the underlying machinery now depends on
-//       the class being passed, which is unavailable here. Of course we could pass 'Foo' as the class,
-//       but the Reflection should capture this by itself.
-//       Better would be not to rely on this low-level construct, which is never used anyway, and instead
-//       test the high-level reflection facilities.
-// static_assert(reflection::reflected_kind_v<reflected_bar> == reflection::reflected_kind::member_function);
-// static_assert(reflection::reflected_kind_v<reflected_baz> != reflection::reflected_kind::unknown);
-// static_assert(reflection::reflected_kind_v<reflected_baz> == reflection::reflected_kind::member_function);
-// static_assert(reflection::reflected_kind_v<reflected_baz> == reflection::reflected_kind::member_type);
