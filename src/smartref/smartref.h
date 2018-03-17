@@ -62,6 +62,13 @@ public:
     using_ &operator=(using_ &&) = default;
 };
 
+template<typename Delegate, typename Derived>
+auto delegate(using_<Delegate, Derived> &base)
+  -> Delegate &
+{
+    return static_cast<Delegate &>(base);
+}
+
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
@@ -78,13 +85,6 @@ auto on_call(Reflection &reflection, using_<Delegate, Derived> &self, reflection
   -> decltype(call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...))
 {
   return call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...);
-}
-
-template<typename Delegate, typename Derived>
-auto delegate(using_<Delegate, Derived> &base)
-  -> Delegate &
-{
-    return static_cast<Delegate &>(base);
 }
 
 } // namespace smartref
