@@ -23,6 +23,8 @@ constexpr auto has_value_type(...) {return false;}
 //!    (which is the case if value_type refers to an invalid type)
 static_assert(!has_value_type<using_<int>>(0),
               "TEST FAILED: value_type should not be defined for using_<int>!");
+static_assert(!has_value_type<using_<std::vector<int> *>>(0),
+              "TEST FAILED: value_type should not be defined for std::vector<int> *!");
 
 } // namespace test_absence
 
