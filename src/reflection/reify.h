@@ -1,7 +1,7 @@
 #pragma once
 
 #include "reflect.h"
-#include "reflectable_common.h" // TODO: -cmaster Find a better place to put the detect_is_member_type metafunction, such that we don't depend on this header
+#include "reflectable_common.h"
 
 #include <utils/utils.h>
 
