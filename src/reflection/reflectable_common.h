@@ -64,10 +64,10 @@ constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
 template<typename...>
 struct type_list {};
 
-template<class R, class Derived>
+template<class Reflection, class Derived>
 using detect_is_member_type = decltype(
     on_call(
-        std::declval<R &>(),
+        std::declval<Reflection &>(),
         std::declval<Derived &>(),
         type_list<>{}
     )
