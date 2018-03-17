@@ -114,6 +114,7 @@ baz.foobar(42);
 The implementation has been tested using the following compilers:
 - Clang 4.0.1
 
+// TODO: -cmaster Rework Features list (a lot is not even part of Features list)
 The following features are planned to be implemented:
 - [ ] Member-types
     - [ ] STL
@@ -128,6 +129,8 @@ The following features are planned to be implemented:
     - [ ] Core
         - [x] Non-const member-functions
         - [ ] const member-functions
+        - [ ] rvalue member-functions
+        - [ ] const rvalue member-functions
         - [x] Operators (member, binary)
         - [x] Operators (member, unary)
         - [x] Operators (member, assignment)

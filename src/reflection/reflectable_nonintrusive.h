@@ -22,6 +22,8 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 
 } // namespace reflection
 
+// TODO: -cmaster Have a quick look whether we can simplify these macros.
+// TODO: -cmaster We can replace the using type = ... with a simple boolean, such that we can inline the reflectors
 #define REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(Class, member, MEMBER_TYPE_REFLECTOR, MEMBER_FUNCTION_REFLECTOR)    \
     constexpr auto CONCAT(reflection, __LINE__) =                                                                       \
         REFLECTION_REFLECT_AUTO(Class);                                                                                 \
@@ -49,13 +51,11 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
                                                                                                                         \
     INC_COUNTER(CONCAT(CLASS, __LINE__))                                                                                \
 
-#define REFLECTION_REFLECTABLE_NULL_REFLECTOR(...)
-
 #define REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER_FUNCTION(Class, member, unused)  \
     REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                                    \
         Class,                                                                      \
         member,                                                                     \
-        REFLECTION_REFLECTABLE_NULL_REFLECTOR,                                      \
+        REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                                 \
         REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR                        \
     )                                                                               \
 
@@ -63,7 +63,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                                    \
         Class,                                                                      \
         member,                                                                     \
-        REFLECTION_REFLECTABLE_NULL_REFLECTOR,                                      \
+        REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                                 \
         REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE           \
     )                                                                               \
 
@@ -71,7 +71,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                                        \
         Class,                                                                          \
         member,                                                                         \
-        REFLECTION_REFLECTABLE_NULL_REFLECTOR,                                          \
+        REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                                     \
         REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR        \
     )                                                                                   \
 
