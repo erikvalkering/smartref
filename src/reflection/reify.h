@@ -39,8 +39,7 @@ constexpr static auto is_member_function()
 template<typename T>
 constexpr static auto reify(Reflection<T>) -> T;
 
-// TODO: -cmaster Suddenly we leak the Delegate type, which is part of the smartref library.
-template<typename Delegate, class Derived, class Reflection>
+template<class Derived, class Reflection>
 constexpr static auto reify(Reflection refl)
 {
     if constexpr (detail::is_member_type<Reflection, Derived>())

@@ -26,21 +26,21 @@ namespace smartref {
 //       template<auto reflection>
 //       using unreflect = decltype(unreflect_impl(reflection));
 
-template<typename Delegate, class Derived, typename Reflection>
+template<class Derived, typename Reflection>
 using using_member_t = decltype(
-    reflection::reify<Delegate, Derived>(
+    reflection::reify<Derived>(
         Reflection{}
     )
 );
 
-template<typename tag, typename Delegate, class Derived, typename Members>
+template<typename tag, class Derived, typename Members>
 struct ReflectedMembersImpl;
 
-template<typename tag, typename Delegate, class Derived, typename... Reflections>
-struct ReflectedMembersImpl<tag, Delegate, Derived, std::tuple<Reflections...>>
-    : using_member_t<Delegate, Derived, Reflections>...
+template<typename tag, class Derived, typename... Reflections>
+struct ReflectedMembersImpl<tag, Derived, std::tuple<Reflections...>>
+    : using_member_t<Derived, Reflections>...
 {
-    using using_member_t<Delegate, Derived, Reflections>::operator=...;
+    using using_member_t<Derived, Reflections>::operator=...;
 };
 
 template<
@@ -49,7 +49,6 @@ template<
     class ReflectionClass = Delegate>
 using ReflectedMembers = ReflectedMembersImpl<
     ReflectionClass,
-    Delegate,
     Derived,
     decltype(members(reflection::reflect<ReflectionClass>))
 >;
