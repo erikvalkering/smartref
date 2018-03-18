@@ -51,6 +51,7 @@ class using_ : public using_base<Delegate, Derived>
              , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>, utils::Delayed<reflection::auto_, Delegate>>
 {
 public:
+    using ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
     using ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>, utils::Delayed<reflection::auto_, Delegate>>::operator=;
 
     using_() = default;
