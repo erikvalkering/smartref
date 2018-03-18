@@ -49,7 +49,7 @@ template<
 using ReflectedMembers = ReflectedMembersImpl<
     ReflectionClass,
     Derived,
-    decltype(members(reflection::reflect<ReflectionClass>))
+    decltype(members(reflection::reflect<utils::Delayed<ReflectionClass, Derived>>))
 >;
 
 } // namespace smartref
