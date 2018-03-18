@@ -7,6 +7,9 @@
 
 namespace utils {
 
+template<typename...>
+struct type_list {};
+
 template<typename L1, typename L2>
 struct Combiner : L1, L2
 {

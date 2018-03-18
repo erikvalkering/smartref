@@ -2,6 +2,8 @@
 
 #include <reflection/reflection.h>
 
+#include <utils/utils.h>
+
 #include <type_traits>
 
 namespace smartref {
@@ -37,7 +39,7 @@ template<class Derived, typename Members>
 struct ReflectedMembersImpl;
 
 template<class Derived, typename... Reflections>
-struct ReflectedMembersImpl<Derived, std::tuple<Reflections...>>
+struct ReflectedMembersImpl<Derived, utils::type_list<Reflections...>>
     : using_member_t<Derived, Reflections>...
 {
     using using_member_t<Derived, Reflections>::operator=...;

@@ -7,8 +7,6 @@
 
 #include "utils/utils.h"
 
-#include <tuple>
-
 namespace reflection {
 
 namespace detail {
@@ -21,7 +19,7 @@ struct Members<Class, std::index_sequence<indices_intrusive...>, std::index_sequ
 {
     constexpr static auto _()
     {
-        return std::tuple<
+        return utils::type_list<
             reflected_member_intrusive_t<Class, indices_intrusive>...,
             reflected_member_t<Class, indices_non_intrusive>...,
             reflected_member_t<utils::Delayed<auto_, Class>, indices_nonintrusive_auto>...

@@ -79,7 +79,7 @@ auto delegate(using_<Delegate, Derived> &base)
 // TODO: -cmaster Maybe it's better to make Reflection *only* a template parameter
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 template<typename Reflection, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
-auto on_call(Reflection &reflection, using_<Delegate, Derived> &self, reflection::type_list<ExplicitArgs...> explicitArgs, Args... args)
+auto on_call(Reflection &reflection, using_<Delegate, Derived> &self, utils::type_list<ExplicitArgs...> explicitArgs, Args... args)
   -> decltype(call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...))
 {
   return call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...);

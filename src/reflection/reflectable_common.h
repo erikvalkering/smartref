@@ -39,15 +39,12 @@ private:
     }
 };
 
-template<typename...>
-struct type_list {};
-
 template<class Reflection, class Derived>
 using detect_is_member_type = decltype(
     on_call(
         std::declval<Reflection &>(),
         std::declval<Derived &>(),
-        type_list<>{}
+        utils::type_list<>{}
     )
 );
 
@@ -64,7 +61,7 @@ using detect_is_member_type = decltype(
     {                                                                                   \
     private:                                                                            \
         template<typename Obj, typename... Args>                                        \
-        friend auto call(ReflectorClassName &, Obj &obj, reflection::type_list<>)       \
+        friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>)       \
             -> typename Obj::member;                                                    \
                                                                                         \
     public:                                                                             \
@@ -83,7 +80,7 @@ using detect_is_member_type = decltype(
     {                                                                                                   \
     private:                                                                                            \
         template<typename Obj>                                                                          \
-        friend auto call(ReflectorClassName &, Obj &obj, reflection::type_list<>)                       \
+        friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>)                       \
           -> decltype(obj.member())                                                                     \
         {                                                                                               \
             return obj.member();                                                                        \
@@ -91,9 +88,9 @@ using detect_is_member_type = decltype(
                                                                                                         \
     public:                                                                                             \
         auto member()                                                                                   \
-          -> decltype(on_call(*this, derived(*this), reflection::type_list<>{}))                        \
+          -> decltype(on_call(*this, derived(*this), utils::type_list<>{}))                        \
         {                                                                                               \
-            return on_call(*this, derived(*this), reflection::type_list<>{});                           \
+            return on_call(*this, derived(*this), utils::type_list<>{});                           \
         }                                                                                               \
     }                                                                                                   \
 
@@ -105,7 +102,7 @@ using detect_is_member_type = decltype(
     {                                                                                                           \
     private:                                                                                                    \
         template<typename Obj, typename Arg>                                                                    \
-        friend auto call(ReflectorClassName &, Obj &obj, reflection::type_list<>, Arg arg)                      \
+        friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>, Arg arg)                      \
           -> decltype(obj = arg)                                                                                \
         {                                                                                                       \
             return obj = arg;                                                                                   \
@@ -123,15 +120,15 @@ using detect_is_member_type = decltype(
           -> decltype(                                                                                          \
             on_call(                                                                                            \
                 *this,                                                                                          \
-                derived(utils::delayed(*this, reflection::type_list<Arg>{})),                                   \
-                reflection::type_list<>{}, arg                                                                  \
+                derived(utils::delayed(*this, utils::type_list<Arg>{})),                                   \
+                utils::type_list<>{}, arg                                                                  \
             )                                                                                                   \
           )                                                                                                     \
         {                                                                                                       \
             return on_call(                                                                                     \
                 *this,                                                                                          \
-                derived(utils::delayed(*this, reflection::type_list<Arg>{})),                                   \
-                reflection::type_list<>{}, arg                                                                  \
+                derived(utils::delayed(*this, utils::type_list<Arg>{})),                                   \
+                utils::type_list<>{}, arg                                                                  \
             );                                                                                                  \
         }                                                                                                       \
     }                                                                                                           \
@@ -143,7 +140,7 @@ using detect_is_member_type = decltype(
     {                                                                                                           \
     private:                                                                                                    \
         template<typename Obj, typename... Args>                                                                \
-        friend auto call(ReflectorClassName &, Obj &obj, reflection::type_list<>, Args &&... args)              \
+        friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>, Args &&... args)              \
           -> decltype(obj.member(std::forward<Args>(args)...))                                                  \
         {                                                                                                       \
             return obj.member(std::forward<Args>(args)...);                                                     \
@@ -151,7 +148,7 @@ using detect_is_member_type = decltype(
                                                                                                                 \
         /* TODO: What if *this was an rvalue, then it should be auto &&obj */                                   \
         template<typename... ExplicitArgs, typename Obj, typename... Args>                                      \
-        friend auto call(ReflectorClassName, Obj &obj, reflection::type_list<ExplicitArgs...>, Args &&... args) \
+        friend auto call(ReflectorClassName, Obj &obj, utils::type_list<ExplicitArgs...>, Args &&... args) \
           -> std::enable_if_t<                                                                                  \
                sizeof...(ExplicitArgs) != 0,                                                                    \
                decltype(obj.template member<ExplicitArgs...>(std::forward<Args>(args)...))                      \
@@ -165,14 +162,14 @@ using detect_is_member_type = decltype(
         auto member(Args &&... args)                                                                            \
           -> decltype(                                                                                          \
             on_call(*this,                                                                                      \
-                    derived(utils::delayed(*this, reflection::type_list<ExplicitArgs...>{})),                   \
-                    reflection::type_list<ExplicitArgs...>{},                                                   \
+                    derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                   \
+                    utils::type_list<ExplicitArgs...>{},                                                   \
                     std::forward<Args>(args)...)                                                                \
           )                                                                                                     \
         {                                                                                                       \
             return on_call(*this,                                                                               \
-                           derived(utils::delayed(*this, reflection::type_list<ExplicitArgs...>{})),            \
-                           reflection::type_list<ExplicitArgs...>{},                                            \
+                           derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),            \
+                           utils::type_list<ExplicitArgs...>{},                                            \
                            std::forward<Args>(args)...);                                                        \
         }                                                                                                       \
     }                                                                                                           \
