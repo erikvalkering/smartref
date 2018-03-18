@@ -43,16 +43,13 @@ struct non_void<void, Fallback>
 template<typename Derived, typename Fallback>
 using non_void_t = typename non_void<Derived, Fallback>::type;
 
-// TODO: Unify the non-generic and generic ReflectedMembers - how they are registered is kind of an 'implementation detail'
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
              , public Members<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
-             , public ReflectedMembers<Delegate,          non_void_t<Derived, using_<Delegate, Derived>>>
-             , public ReflectedMembers<reflection::auto_, non_void_t<Derived, using_<Delegate, Derived>>>
+             , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
 {
 public:
-    using ReflectedMembers<Delegate,          non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
-    using ReflectedMembers<reflection::auto_, non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
+    using ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
 
     using_() = default;
 
