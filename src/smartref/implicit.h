@@ -44,9 +44,8 @@ struct ReflectedMembersImpl<tag, Derived, std::tuple<Reflections...>>
 };
 
 template<
-    typename Delegate,
-    class Derived,
-    class ReflectionClass = Delegate>
+    class ReflectionClass,
+    class Derived>
 using ReflectedMembers = ReflectedMembersImpl<
     ReflectionClass,
     Derived,
