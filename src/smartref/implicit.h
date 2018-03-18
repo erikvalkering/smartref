@@ -33,11 +33,11 @@ using using_member_t = decltype(
     )
 );
 
-template<typename tag, class Derived, typename Members>
+template<class Derived, typename Members>
 struct ReflectedMembersImpl;
 
-template<typename tag, class Derived, typename... Reflections>
-struct ReflectedMembersImpl<tag, Derived, std::tuple<Reflections...>>
+template<class Derived, typename... Reflections>
+struct ReflectedMembersImpl<Derived, std::tuple<Reflections...>>
     : using_member_t<Derived, Reflections>...
 {
     using using_member_t<Derived, Reflections>::operator=...;
@@ -47,7 +47,6 @@ template<
     class ReflectionClass,
     class Derived>
 using ReflectedMembers = ReflectedMembersImpl<
-    ReflectionClass,
     Derived,
     decltype(members(reflection::reflect<utils::Delayed<ReflectionClass, Derived>>))
 >;
