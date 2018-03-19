@@ -27,73 +27,149 @@ struct reflected_member_count<reflected_member_slot_t, T, count, void>
     static constexpr auto value = count;
 };
 
-enum class reflected_kind
-{
-    unknown,
-    member_type,
-    member_function,
-};
-
-struct access
-{
-    template<typename T>
-    constexpr static auto reflected_kind_v =
-        decltype(reify(T{}, nullptr))::reflected_kind;
-};
-
-template<auto reflected_kind_>
-class reflect_base
+template<class Derived>
+class reflector_base
 {
 private:
-    friend class reflection::access;
-    constexpr static auto reflected_kind = reflected_kind_;
+    template<typename Self>
+    friend auto derived(Self &self)
+      -> utils::Delayed<Derived, Self> &
+    {
+        return static_cast<Derived &>(self);
+    }
 };
 
-template<typename T>
-constexpr auto reflected_kind_v = access::reflected_kind_v<T>;
+template<class Reflection, class Derived>
+using detect_is_member_type = decltype(
+    on_call(
+        std::declval<Reflection &>(),
+        std::declval<Derived &>(),
+        utils::type_list<>{}
+    )
+);
 
 } // namespace reflection
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
-    template<typename F>                                                                \
-    class ReflectorClassName                                                            \
-        : public reflection::reflect_base<reflection::reflected_kind::member_type>      \
-    {                                                                                   \
-    public:                                                                             \
-        using member = typename F::Class::member;                                       \
-    };                                                                                  \
-                                                                                        \
-    template<typename F>                                                                \
-    using detect_is_member_type = decltype(                                             \
-        std::declval<typename F::Class::member>())                                      \
+#define REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR(ReflectorClassName, ...) \
+    template<class>                                                         \
+    struct ReflectorClassName {}                                            \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)    \
-    template<typename F>                                                                    \
-    class ReflectorClassName                                                                \
-        : public reflection::reflect_base<reflection::reflected_kind::member_function>      \
-    {                                                                                       \
-    private:                                                                                \
-        template<typename... ExplicitArgs, typename... Args>                                \
-        decltype(auto) indirect(Args &&... args)                                            \
-        {                                                                                   \
-            auto f = [](auto &obj, auto &&... args)                                         \
-            {                                                                               \
-                /* TODO: What if *this was an rvalue, then it should be auto &&obj */       \
-                if constexpr (sizeof...(ExplicitArgs) == 0)                                 \
-                    return obj.member(std::forward<Args>(args)...);                         \
-                else if constexpr (utils::always_true<Args...>)                             \
-                    return obj.template member<ExplicitArgs...>(                            \
-                        std::forward<Args>(args)...);                                       \
-            };                                                                              \
-                                                                                            \
-            return F{}(*this, f, std::forward<Args>(args)...);                              \
-        }                                                                                   \
-                                                                                            \
-    public:                                                                                 \
-        template<typename... ExplicitArgs, typename... Args>                                \
-        auto member(Args &&... args)                                                        \
-            -> decltype(indirect<ExplicitArgs...>(std::forward<Args>(args)...))             \
-        {                                                                                   \
-            return indirect<ExplicitArgs...>(std::forward<Args>(args)...);                  \
-        }                                                                                   \
-    }                                                                                       \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR(ReflectorClassName, member)    \
+    template<class Derived>                                                             \
+    class ReflectorClassName                                                            \
+        : public reflection::reflector_base<Derived>                                    \
+    {                                                                                   \
+    private:                                                                            \
+        template<typename Obj, typename... Args>                                        \
+        friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>)       \
+            -> typename Obj::member;                                                    \
+                                                                                        \
+    public:                                                                             \
+        using member = utils::detected_or_t<                                            \
+            void,                                                                       \
+            detect_is_member_type,                                                      \
+            ReflectorClassName,                                                         \
+            Derived>;                                                                   \
+    }                                                                                   \
+
+// TODO: -cmaster Get rid of code duplication
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member)   \
+    template<typename Derived>                                                                          \
+    class ReflectorClassName                                                                            \
+        : public reflection::reflector_base<Derived>                                                    \
+    {                                                                                                   \
+    private:                                                                                            \
+        template<typename Obj>                                                                          \
+        friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>)                       \
+          -> decltype(obj.member())                                                                     \
+        {                                                                                               \
+            return obj.member();                                                                        \
+        }                                                                                               \
+                                                                                                        \
+    public:                                                                                             \
+        auto member()                                                                                   \
+          -> decltype(on_call(*this, derived(*this), utils::type_list<>{}))                        \
+        {                                                                                               \
+            return on_call(*this, derived(*this), utils::type_list<>{});                           \
+        }                                                                                               \
+    }                                                                                                   \
+
+// TODO: Get rid of code duplication
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR(ReflectorClassName, member)    \
+    template<typename Derived>                                                                                  \
+    class ReflectorClassName                                                                                    \
+        : public reflection::reflector_base<Derived>                                                            \
+    {                                                                                                           \
+    private:                                                                                                    \
+        template<typename Obj, typename Arg>                                                                    \
+        friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>, Arg arg)                      \
+          -> decltype(obj = arg)                                                                                \
+        {                                                                                                       \
+            return obj = arg;                                                                                   \
+        }                                                                                                       \
+                                                                                                                \
+    public:                                                                                                     \
+        ReflectorClassName() = default;                                                                         \
+        ReflectorClassName(const ReflectorClassName &) = default;                                               \
+        ReflectorClassName(ReflectorClassName &&) = default;                                                    \
+        ReflectorClassName &operator=(const ReflectorClassName &) = default;                                    \
+        ReflectorClassName &operator=(ReflectorClassName &&) = default;                                         \
+                                                                                                                \
+        template<typename Arg>                                                                                  \
+        auto member(Arg &&arg)                                                                                  \
+          -> decltype(                                                                                          \
+            on_call(                                                                                            \
+                *this,                                                                                          \
+                derived(utils::delayed(*this, utils::type_list<Arg>{})),                                   \
+                utils::type_list<>{}, arg                                                                  \
+            )                                                                                                   \
+          )                                                                                                     \
+        {                                                                                                       \
+            return on_call(                                                                                     \
+                *this,                                                                                          \
+                derived(utils::delayed(*this, utils::type_list<Arg>{})),                                   \
+                utils::type_list<>{}, arg                                                                  \
+            );                                                                                                  \
+        }                                                                                                       \
+    }                                                                                                           \
+
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                        \
+    template<typename Derived>                                                                                  \
+    class ReflectorClassName                                                                                    \
+        : public reflection::reflector_base<Derived>                                                            \
+    {                                                                                                           \
+    private:                                                                                                    \
+        template<typename Obj, typename... Args>                                                                \
+        friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>, Args &&... args)              \
+          -> decltype(obj.member(std::forward<Args>(args)...))                                                  \
+        {                                                                                                       \
+            return obj.member(std::forward<Args>(args)...);                                                     \
+        }                                                                                                       \
+                                                                                                                \
+        /* TODO: What if *this was an rvalue, then it should be auto &&obj */                                   \
+        template<typename... ExplicitArgs, typename Obj, typename... Args>                                      \
+        friend auto call(ReflectorClassName, Obj &obj, utils::type_list<ExplicitArgs...>, Args &&... args) \
+          -> std::enable_if_t<                                                                                  \
+               sizeof...(ExplicitArgs) != 0,                                                                    \
+               decltype(obj.template member<ExplicitArgs...>(std::forward<Args>(args)...))                      \
+             >                                                                                                  \
+        {                                                                                                       \
+            return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);                           \
+        }                                                                                                       \
+                                                                                                                \
+    public:                                                                                                     \
+        template<typename... ExplicitArgs, typename... Args>                                                    \
+        auto member(Args &&... args)                                                                            \
+          -> decltype(                                                                                          \
+            on_call(*this,                                                                                      \
+                    derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                   \
+                    utils::type_list<ExplicitArgs...>{},                                                   \
+                    std::forward<Args>(args)...)                                                                \
+          )                                                                                                     \
+        {                                                                                                       \
+            return on_call(*this,                                                                               \
+                           derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),            \
+                           utils::type_list<ExplicitArgs...>{},                                            \
+                           std::forward<Args>(args)...);                                                        \
+        }                                                                                                       \
+    }                                                                                                           \

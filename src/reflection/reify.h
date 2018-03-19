@@ -1,6 +1,7 @@
 #pragma once
 
 #include "reflect.h"
+#include "reflectable_common.h"
 
 #include <utils/utils.h>
 
@@ -8,13 +9,14 @@ namespace reflection {
 
 namespace detail {
 
-template<typename Reflection, typename F>
-using detect_is_member_type = typename Reflection::template detect_is_member_type<F>;
-
-template<class Reflection, typename F>
+template<class Reflection, typename Derived>
 constexpr static auto is_member_type()
 {
-    return utils::is_detected_v<detect_is_member_type, Reflection, F>;
+    return utils::is_detected_v<
+        reflection::detect_is_member_type,
+        typename Reflection::template reflector_member_type<Derived>,
+        Derived
+    >;
 }
 
 template<class Reflection>
@@ -25,6 +27,10 @@ constexpr static auto is_member_function()
     //! in case the reflected entity wasn't a member-function.
     // TODO: It might still be an annoyance for IDEs, though, where it could show
     //       the candidate member-functions, even though none exists.
+    // TODO: -cmaster Come up with a mechanism to reject member functions before calling them,
+    //       by checking for existence of a member that is not a member type (nor a data member).
+    //       struct Detector : T, BAR
+    //       but will not work for final classes
     return utils::always_true<Reflection>;
 }
 
@@ -33,17 +39,16 @@ constexpr static auto is_member_function()
 template<typename T>
 constexpr static auto reify(Reflection<T>) -> T;
 
-template<class Reflection, typename F>
-constexpr static auto reify(Reflection refl, F)
+template<class Derived, class Reflection>
+constexpr static auto reify(Reflection refl)
 {
-    // TODO: Shouldn't we be passing the class instead of F?
-    if constexpr (detail::is_member_type<Reflection, F>())
+    if constexpr (detail::is_member_type<Reflection, Derived>())
     {
-        return typename Reflection::template reflect_member_type<F>{};
+        return typename Reflection::template reflector_member_type<Derived>{};
     }
     else if constexpr (detail::is_member_function<Reflection>())
     {
-        return typename Reflection::template reflect_member_function<F>{};
+        return typename Reflection::template reflector_member_function<Derived>{};
     }
 }
 

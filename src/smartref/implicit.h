@@ -2,58 +2,55 @@
 
 #include <reflection/reflection.h>
 
+#include <utils/utils.h>
+
 #include <type_traits>
 
 namespace smartref {
 
-template<typename Delegate, class Derived>
-struct Forwarder
-{
-    // TODO: Maybe not access this directly,
-    //       but using a helper function.
-    using Class = Delegate;
+// TODO: -cmaster
+//       The semantics of the reify function are completely lost:
+//       We should somehow specify that we want to instantiate a class
+//       that implements the member (function), from which we inherit.
+//       Maybe a better api would be to transform the reflection into another
+//       reflection (of the inheritable class), and simply do a reify on that.
+//       That basically requires only a single reify overload.
+//       This might also raise the question whether we actually need this function,
+//       because it looks very similar to decltype. Maybe we could even make
+//       it an alias template, by passing the reflection (type) as the first
+//       argument (or even a reflection value), and return the inheritable class.
+// TODO: -cmaster What about:
+//
+//       using vector_emplace_back = Reflection<...>;
+//       auto emplace_back_forwarder = make_forwarder(vector_emplace_back{});
+//       using emplace_back_forwarder_class = unreflect<emplace_back_forwarder>;
+//
+//       template<auto reflection>
+//       using unreflect = decltype(unreflect_impl(reflection));
 
-    template<typename Self, typename F, typename... Args>
-    auto operator()(Self &self, F f, Args &&... args)
-    {
-        static_assert(std::is_base_of<Self, Derived>::value);
-
-        //! Downcast to the derived class
-        auto &derived = static_cast<Derived &>(self);
-
-        //! Now invoke the conversion operator
-        auto &delegate = static_cast<Delegate &>(derived);
-
-        return f(delegate, std::forward<decltype(args)>(args)...);
-    }
-};
-
-template<typename Delegate, class Derived, typename Reflection>
+template<class Derived, typename Reflection>
 using using_member_t = decltype(
-    reflection::reify(
-        Reflection{},
-        Forwarder<Delegate, Derived>{}
+    reflection::reify<Derived>(
+        Reflection{}
     )
 );
 
-template<typename tag, typename Delegate, class Derived, typename Members>
+template<class Derived, typename Members>
 struct ReflectedMembersImpl;
 
-template<typename tag, typename Delegate, class Derived, typename... Reflections>
-struct ReflectedMembersImpl<tag, Delegate, Derived, std::tuple<Reflections...>>
-    : using_member_t<Delegate, Derived, Reflections>...
+template<class Derived, typename... Reflections>
+struct ReflectedMembersImpl<Derived, utils::type_list<Reflections...>>
+    : using_member_t<Derived, Reflections>...
 {
+    using using_member_t<Derived, Reflections>::operator=...;
 };
 
 template<
-    typename Delegate,
-    class Derived,
-    class ReflectionClass = Delegate>
+    class ReflectionClass,
+    class Derived>
 using ReflectedMembers = ReflectedMembersImpl<
-    ReflectionClass,
-    Delegate,
     Derived,
-    decltype(members(reflection::reflect<ReflectionClass>))
+    decltype(members(reflection::reflect<utils::Delayed<ReflectionClass, Derived>>))
 >;
 
 } // namespace smartref

@@ -13,7 +13,7 @@ template<template<typename, typename> class Class, typename Delegate, class Deri
 auto DelegateType(Class<Delegate, Derived> &) -> Delegate;
 
 template<class Base>
-auto &delegate(Base &base)
+auto &delegate2(Base &base)
 {
     using Derived = decltype(DerivedType(base));
     static_assert(std::is_base_of<Base, Derived>::value);
@@ -31,7 +31,7 @@ auto &delegate(Base &base)
     template<typename... T>                                                                                                                     \
     auto member(T &&... args) -> decltype(DelegateType(std::declval<utils::Delayed<decltype(*this), T...>>()).member(std::forward<T>(args)...)) \
     {                                                                                                                                           \
-        return delegate(*this).member(std::forward<T>(args)...);                                                                                \
+        return delegate2(*this).member(std::forward<T>(args)...);                                                                                \
     }                                                                                                                                           \
 
 template<typename MemberTypeTag, typename Delegate, typename = void>

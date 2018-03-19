@@ -7,6 +7,9 @@
 
 namespace utils {
 
+template<typename...>
+struct type_list {};
+
 template<typename L1, typename L2>
 struct Combiner : L1, L2
 {
@@ -32,10 +35,10 @@ struct DelayedImpl
 template<class Class, typename... T>
 using Delayed = typename DelayedImpl<Class, T...>::type;
 
-template<typename... T, typename Arg>
-decltype(auto) delayed(Arg &&arg)
+template<typename... T, typename Obj>
+decltype(auto) delayed(Obj &&obj, ...)
 {
-    return std::forward<Arg>(arg);
+    return std::forward<Obj>(obj);
 }
 
 template<typename... Ts>
