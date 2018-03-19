@@ -1,6 +1,6 @@
 #include <smartref/smartref.h>
 
-REFLECTABLE(auto, foo);
+REFLECTABLE(foo);
 
 namespace tests {
 
