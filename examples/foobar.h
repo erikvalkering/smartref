@@ -37,12 +37,12 @@ struct Bar
 
 struct Baz
 {
-    void REFLECTABLE(baz)()
+    void baz()
     {
         std::cout << "Baz::baz" << std::endl;
     }
 
-    void REFLECTABLE(baz2)()
+    void baz2()
     {
         std::cout << "Baz::baz2" << std::endl;
     }
@@ -50,12 +50,12 @@ struct Baz
 
 struct Bat
 {
-    void REFLECTABLE(bat)()
+    void bat()
     {
         std::cout << "Bat::bat" << std::endl;
     }
 
-    void REFLECTABLE(bat2)()
+    void bat2()
     {
         std::cout << "Bat::bat2" << std::endl;
     }
@@ -68,7 +68,7 @@ struct Bla
         std::cout << "Bla::foo" << std::endl;
     }
 
-    void REFLECTABLE(bar)()
+    void bar()
     {
         std::cout << "Bla::bar" << std::endl;
     }
@@ -143,13 +143,20 @@ struct ClassTemplate
 // TODO: -cmaster Get rid of *all* syntaxes that will never be used
 
 REFLECTABLE(foobar::Foo, foo);
-REFLECTABLE(foobar::Bla, baz);
 
 REFLECTABLE(foobar::Bar, bar);
 REFLECTABLE(foobar::Bar, bar2);
 REFLECTABLE(foobar::Bar, bar3);
 
+REFLECTABLE(foobar::Baz, baz)
+REFLECTABLE(foobar::Baz, baz2)
+
+REFLECTABLE(foobar::Bat, bat)
+REFLECTABLE(foobar::Bat, bat2)
+
 REFLECTABLE(foobar::Bla, foo); // Member-function
+REFLECTABLE(foobar::Bla, bar)
+REFLECTABLE(foobar::Bla, baz);
 REFLECTABLE(foobar::Bla, bla); // Member-type
 
 REFLECTABLE(foobar::Overloads, foo);

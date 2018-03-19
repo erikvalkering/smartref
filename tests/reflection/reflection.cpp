@@ -26,17 +26,6 @@ static_assert(!std::is_same<void, reflection::reflected_member_t<Baz, 1>>::value
 static_assert( std::is_same<void, reflection::reflected_member_t<Baz, 2>>::value);
 static_assert(reflection::reflected_member_count_v<Baz> == 2);
 
-struct Bat
-{
-    void REFLECTABLE(bat)();
-    void REFLECTABLE(bat2)();
-};
-
-static_assert(!std::is_same<void, reflection::reflected_member_intrusive_t<Bat, 0>>::value);
-static_assert(!std::is_same<void, reflection::reflected_member_intrusive_t<Bat, 1>>::value);
-static_assert( std::is_same<void, reflection::reflected_member_intrusive_t<Bat, 2>>::value);
-static_assert(reflection::reflected_member_intrusive_count_v<Bat> == 2);
-
 namespace member_types {
 
 struct Foo
