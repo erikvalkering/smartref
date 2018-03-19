@@ -63,7 +63,6 @@ add_test(reflection test_reflection)
 # Smartref library                                                             #
 ################################################################################
 add_library(libsmartref INTERFACE)
-target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/explicit.h)
 target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/implicit.h)
 target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/smartref.h)
 target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/stl.h)
@@ -74,7 +73,6 @@ target_link_libraries(libsmartref INTERFACE libutils)
 
 # Unit tests
 add_executable(test_smartref ${PROJECT_SOURCE_DIR}/tests/main.cpp)
-target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/explicit.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/implicit.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/member_types.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/member_functions.cpp)

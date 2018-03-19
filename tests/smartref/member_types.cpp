@@ -83,42 +83,9 @@ static_assert(
 
 } // namespace test_proof_of_concept
 
-namespace test_user_defined_types {
-
-struct UserDefined
-{
-  using type = int;
-};
-
-} // namespace test_user_defined_types
-
 } // namespace tests
 
-namespace smartref {
-
-// TODO: This currently needs to be declared in the smartref namespace.
-//       Figure out a way that it can be declared within an arbitrary namespace.
-DECLARE_USING_MEMBER_TYPE(type);
-
-template<typename Derived>
-struct ::smartref::Members<tests::test_user_defined_types::UserDefined, Derived>
-  : USING_MEMBER_TYPE(tests::test_user_defined_types::UserDefined, type)
-{
-};
-
-} // namespace smartref
-
 namespace tests {
-
-namespace test_user_defined_types {
-
-static_assert(
-    std::is_same<
-        using_<UserDefined>::type,
-               UserDefined ::type
-    >::value);
-
-} // namespace test_user_defined_types
 
 namespace test_nonintrusive_reflect {
 

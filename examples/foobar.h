@@ -142,23 +142,8 @@ struct ClassTemplate
 
 // TODO: -cmaster Get rid of *all* syntaxes that will never be used
 
-template<typename Derived>
-struct smartref::Members<foobar::Foo, Derived>
-{
-    USING_MEMBER(foo)
-};
-
-namespace smartref {
-
-// TODO: This currently needs to be declared in the smartref namespace.
-//       Figure out a way that it can be declared within an arbitrary namespace.
-template<typename Derived>
-struct ::smartref::Members<foobar::Bla, Derived>
-{
-    using baz = typename foobar::Bla::baz;
-};
-
-} // namespace smartref
+REFLECTABLE(foobar::Foo, foo);
+REFLECTABLE(foobar::Bla, baz);
 
 REFLECTABLE(foobar::Bar, bar);
 REFLECTABLE(foobar::Bar, bar2);
