@@ -2,7 +2,7 @@
 
 #include "reflect.h"
 #include "reflect_auto.h"
-#include "reflectable_nonintrusive.h"
+#include "reflectable.h"
 
 #include "utils/utils.h"
 
