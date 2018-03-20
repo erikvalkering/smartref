@@ -34,7 +34,6 @@ target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/refl
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/reflect_auto.h)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/reflect_members.h)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/reflectable_common.h)
-target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/reflectable_intrusive.h)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/reflectable_nonintrusive.h)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/reflection.h)
 target_sources(libreflection INTERFACE ${PROJECT_SOURCE_DIR}/src/reflection/reify.h)
@@ -49,7 +48,6 @@ target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/re
 target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_members.cpp)
 target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflect_operators.cpp)
 target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_common.cpp)
-target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_intrusive.cpp)
 target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflectable_nonintrusive.cpp)
 target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reflection.cpp)
 target_sources(test_reflection PRIVATE ${PROJECT_SOURCE_DIR}/tests/reflection/reify.cpp)
@@ -63,7 +61,6 @@ add_test(reflection test_reflection)
 # Smartref library                                                             #
 ################################################################################
 add_library(libsmartref INTERFACE)
-target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/explicit.h)
 target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/implicit.h)
 target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/smartref.h)
 target_sources(libsmartref INTERFACE ${PROJECT_SOURCE_DIR}/src/smartref/stl.h)
@@ -74,7 +71,6 @@ target_link_libraries(libsmartref INTERFACE libutils)
 
 # Unit tests
 add_executable(test_smartref ${PROJECT_SOURCE_DIR}/tests/main.cpp)
-target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/explicit.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/implicit.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/member_types.cpp)
 target_sources(test_smartref PRIVATE ${PROJECT_SOURCE_DIR}/tests/smartref/member_functions.cpp)

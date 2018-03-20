@@ -1,7 +1,5 @@
 #pragma once
 
-// TODO: -cmaster remove explicit.h
-#include "explicit.h"
 #include "implicit.h"
 #include "stl.h"
 
@@ -47,7 +45,6 @@ using non_void_t = typename non_void<Derived, Fallback>::type;
 
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
-             , public Members<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
              , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
 {
 public:

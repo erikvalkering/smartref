@@ -1,49 +1,44 @@
 #include <reflection/reflection.h>
 
-// TODO: -cmaster Proper names for REFLECTABLE macros
-// - REFLECTABLE_OPERATOR
-// - REFLECTABLE_OPERATOR_UNARY
-// - REFLECTABLE_OPERATOR_ASSIGNMENT
+REFLECTABLE_OPERATOR(operator!=);
+REFLECTABLE_OPERATOR(operator%);
+REFLECTABLE_OPERATOR(operator%=);
+REFLECTABLE_OPERATOR(operator&&);
+REFLECTABLE_OPERATOR(operator&);
+REFLECTABLE_OPERATOR(operator&=);
+REFLECTABLE_OPERATOR(operator());
+REFLECTABLE_OPERATOR(operator*);
+REFLECTABLE_OPERATOR(operator*=);
+REFLECTABLE_OPERATOR(operator++);
+REFLECTABLE_OPERATOR(operator+);
+REFLECTABLE_OPERATOR(operator+=);
+REFLECTABLE_OPERATOR(operator-);
+REFLECTABLE_OPERATOR(operator--);
+REFLECTABLE_OPERATOR(operator-=);
+REFLECTABLE_OPERATOR(operator->*);
+REFLECTABLE_OPERATOR(operator/);
+REFLECTABLE_OPERATOR(operator/=);
+REFLECTABLE_OPERATOR(operator<);
+REFLECTABLE_OPERATOR(operator<<);
+REFLECTABLE_OPERATOR(operator<<=);
+REFLECTABLE_OPERATOR(operator<=);
+REFLECTABLE_OPERATOR(operator==);
+REFLECTABLE_OPERATOR(operator>);
+REFLECTABLE_OPERATOR(operator>=);
+REFLECTABLE_OPERATOR(operator>>);
+REFLECTABLE_OPERATOR(operator>>=);
+REFLECTABLE_OPERATOR(operator[]);
+REFLECTABLE_OPERATOR(operator^);
+REFLECTABLE_OPERATOR(operator^=);
+REFLECTABLE_OPERATOR(operator|);
+REFLECTABLE_OPERATOR(operator|=);
+REFLECTABLE_OPERATOR(operator||);
 
-REFLECTABLE(auto, operator!=,   member_function);
-REFLECTABLE(auto, operator%,    member_function);
-REFLECTABLE(auto, operator%=,   member_function);
-REFLECTABLE(auto, operator&&,   member_function);
-REFLECTABLE(auto, operator&,    member_function);
-REFLECTABLE(auto, operator&=,   member_function);
-REFLECTABLE(auto, operator(),   member_function);
-REFLECTABLE(auto, operator*,    member_function);
-REFLECTABLE(auto, operator*=,   member_function);
-REFLECTABLE(auto, operator++,   member_function);
-REFLECTABLE(auto, operator+,    member_function);
-REFLECTABLE(auto, operator+=,   member_function);
-REFLECTABLE(auto, operator-,    member_function);
-REFLECTABLE(auto, operator--,   member_function);
-REFLECTABLE(auto, operator-=,   member_function);
-REFLECTABLE(auto, operator->*,  member_function);
-REFLECTABLE(auto, operator/,    member_function);
-REFLECTABLE(auto, operator/=,   member_function);
-REFLECTABLE(auto, operator<,    member_function);
-REFLECTABLE(auto, operator<<,   member_function);
-REFLECTABLE(auto, operator<<=,  member_function);
-REFLECTABLE(auto, operator<=,   member_function);
-REFLECTABLE(auto, operator==,   member_function);
-REFLECTABLE(auto, operator>,    member_function);
-REFLECTABLE(auto, operator>=,   member_function);
-REFLECTABLE(auto, operator>>,   member_function);
-REFLECTABLE(auto, operator>>=,  member_function);
-REFLECTABLE(auto, operator[],   member_function);
-REFLECTABLE(auto, operator^,    member_function);
-REFLECTABLE(auto, operator^=,   member_function);
-REFLECTABLE(auto, operator|,    member_function);
-REFLECTABLE(auto, operator|=,   member_function);
-REFLECTABLE(auto, operator||,   member_function);
+REFLECTABLE_OPERATOR_UNARY(operator!);
+REFLECTABLE_OPERATOR_UNARY(operator->);
+REFLECTABLE_OPERATOR_UNARY(operator~);
 
-REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator!,   member_function);
-REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator->,  member_function);
-REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(auto, operator~,   member_function);
-
-REFLECTION_REFLECTABLE_NONINTRUSIVE_ASSIGNMENT_OPERATOR(auto, operator=, member_function);
+REFLECTABLE_OPERATOR_ASSIGNMENT(operator=);
 
 // TODO: operator,
 // #define REFLECTION_OPERATOR_COMMA operator,

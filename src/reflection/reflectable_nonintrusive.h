@@ -51,42 +51,81 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
                                                                                                                         \
     INC_COUNTER(CONCAT(CLASS, __LINE__))                                                                                \
 
-#define REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER_FUNCTION(Class, member, unused)  \
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE2(Class, member)     \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                \
+        Class,                                                  \
+        member,                                                 \
+        REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR,       \
+        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR    \
+    )                                                           \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE1(member)    \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE2(auto, member)  \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR2(Class, member)    \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                        \
+        Class,                                                          \
+        member,                                                         \
+        REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                     \
+        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR            \
+    )                                                                   \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR1(member)    \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR2(auto, member)  \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_UNARY2(Class, member)  \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                            \
+        Class,                                                              \
+        member,                                                             \
+        REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                         \
+        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE   \
+    )                                                                       \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_UNARY1(member)    \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_UNARY2(auto, member)  \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_ASSIGNMENT2(Class, member)     \
     REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                                    \
         Class,                                                                      \
         member,                                                                     \
         REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                                 \
-        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR                        \
+        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR    \
     )                                                                               \
 
-#define REFLECTION_REFLECTABLE_NONINTRUSIVE_UNARY_OPERATOR(Class, member, unused)   \
-    REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                                    \
-        Class,                                                                      \
-        member,                                                                     \
-        REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                                 \
-        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE           \
-    )                                                                               \
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_ASSIGNMENT1(member)    \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_ASSIGNMENT2(auto, member)  \
 
-#define REFLECTION_REFLECTABLE_NONINTRUSIVE_ASSIGNMENT_OPERATOR(Class, member, unused)  \
-    REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                                        \
-        Class,                                                                          \
-        member,                                                                         \
-        REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                                     \
-        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR        \
-    )                                                                                   \
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(_1, _2, NAME, ...) NAME
 
-#define REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER(Class, member)   \
-    REFLECTION_REFLECTABLE_NONINTRUSIVE_UNIFIED(                    \
-        Class,                                                      \
-        member,                                                     \
-        REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR,           \
-        REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR        \
-    )                                                               \
+//! Define a set of overloads such that we can use REFLECT both with and without
+//! specifying a class, by dispatching on the number of arguments.
+//!
+//! REFLECTION_REFLECTABLE_NONINTRUSIVE(bar) -> REFLECTION_REFLECTABLE_NONINTRUSIVE(auto, bar)
 
-#define REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(_1, _2, _3, NAME, ...) NAME
-#define REFLECTION_REFLECTABLE_NONINTRUSIVE(...)                \
-    REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(          \
-        __VA_ARGS__,                                            \
-        REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER_FUNCTION,    \
-        REFLECTION_REFLECTABLE_NONINTRUSIVE_MEMBER              \
-    )(__VA_ARGS__)                                              \
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE(...)        \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(  \
+        __VA_ARGS__,                                    \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE2,           \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE1            \
+    )(__VA_ARGS__)                                      \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR(...)   \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(      \
+        __VA_ARGS__,                                        \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR2,      \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR1       \
+    )(__VA_ARGS__)                                          \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_UNARY(...)         \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(                  \
+        __VA_ARGS__,                                                    \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_UNARY2,            \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_UNARY1             \
+    )(__VA_ARGS__)                                                      \
+
+#define REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_ASSIGNMENT(...)    \
+    REFLECTION_REFLECTABLE_NONINTRUSIVE_MAKE_OVERLOAD(                  \
+        __VA_ARGS__,                                                    \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_ASSIGNMENT2,       \
+        REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_ASSIGNMENT1        \
+    )(__VA_ARGS__)                                                      \

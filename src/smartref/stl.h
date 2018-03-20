@@ -2,80 +2,56 @@
 
 #include <reflection/reflection.h>
 
-#if 0
-// TODO: remove
-//! This block contains the old-style STL-support, and has been superseeded by
-//! the generic reflection support.
-
-namespace smartref {
-
-DECLARE_USING_MEMBER_TYPE(value_type);
-DECLARE_USING_MEMBER_TYPE(difference_type);
-DECLARE_USING_MEMBER_TYPE(iterator);
-
-template<typename Delegate, class Derived>
-struct STL : USING_MEMBER_TYPE(Delegate, value_type)
-           , USING_MEMBER_TYPE(Delegate, difference_type)
-           , USING_MEMBER_TYPE(Delegate, iterator)
-{
-    USING_MEMBER(push_back)
-    USING_MEMBER(begin)
-    USING_MEMBER(end)
-};
-
-} // namespace smartref
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 //! std::vector                                                               //
 ////////////////////////////////////////////////////////////////////////////////
 
 //! member-types
-REFLECTABLE(auto, value_type);
-REFLECTABLE(auto, allocator_type);
-REFLECTABLE(auto, size_type);
-REFLECTABLE(auto, difference_type);
-REFLECTABLE(auto, reference);
-REFLECTABLE(auto, const_reference);
-REFLECTABLE(auto, pointer);
-REFLECTABLE(auto, const_pointer);
-REFLECTABLE(auto, iterator);
-REFLECTABLE(auto, const_iterator);
-REFLECTABLE(auto, reverse_iterator);
-REFLECTABLE(auto, const_reverse_iterator);
+REFLECTABLE(value_type);
+REFLECTABLE(allocator_type);
+REFLECTABLE(size_type);
+REFLECTABLE(difference_type);
+REFLECTABLE(reference);
+REFLECTABLE(const_reference);
+REFLECTABLE(pointer);
+REFLECTABLE(const_pointer);
+REFLECTABLE(iterator);
+REFLECTABLE(const_iterator);
+REFLECTABLE(reverse_iterator);
+REFLECTABLE(const_reverse_iterator);
 
 //! member-functions
 // TODO: (constructor?)
-REFLECTABLE(auto, assign);
-REFLECTABLE(auto, get_allocator);
-REFLECTABLE(auto, at);
-REFLECTABLE(auto, front);
-REFLECTABLE(auto, back);
-REFLECTABLE(auto, data);
-REFLECTABLE(auto, begin);
-REFLECTABLE(auto, cbegin);
-REFLECTABLE(auto, end);
-REFLECTABLE(auto, cend);
-REFLECTABLE(auto, rbegin);
-REFLECTABLE(auto, crbegin);
-REFLECTABLE(auto, rend);
-REFLECTABLE(auto, crend);
-REFLECTABLE(auto, empty);
-REFLECTABLE(auto, size);
-REFLECTABLE(auto, max_size);
-REFLECTABLE(auto, reserve);
-REFLECTABLE(auto, capacity);
-REFLECTABLE(auto, shrink_to_fit);
-REFLECTABLE(auto, clear);
-REFLECTABLE(auto, insert);
-REFLECTABLE(auto, emplace);
-REFLECTABLE(auto, erase);
-REFLECTABLE(auto, push_back);
-REFLECTABLE(auto, emplace_back);
-REFLECTABLE(auto, pop_back);
-REFLECTABLE(auto, resize);
-REFLECTABLE(auto, swap);
+REFLECTABLE(assign);
+REFLECTABLE(get_allocator);
+REFLECTABLE(at);
+REFLECTABLE(front);
+REFLECTABLE(back);
+REFLECTABLE(data);
+REFLECTABLE(begin);
+REFLECTABLE(cbegin);
+REFLECTABLE(end);
+REFLECTABLE(cend);
+REFLECTABLE(rbegin);
+REFLECTABLE(crbegin);
+REFLECTABLE(rend);
+REFLECTABLE(crend);
+REFLECTABLE(empty);
+REFLECTABLE(size);
+REFLECTABLE(max_size);
+REFLECTABLE(reserve);
+REFLECTABLE(capacity);
+REFLECTABLE(shrink_to_fit);
+REFLECTABLE(clear);
+REFLECTABLE(insert);
+REFLECTABLE(emplace);
+REFLECTABLE(erase);
+REFLECTABLE(push_back);
+REFLECTABLE(emplace_back);
+REFLECTABLE(pop_back);
+REFLECTABLE(resize);
+REFLECTABLE(swap);
 
 //! operators
-REFLECTABLE(auto, operator[], member_function);
-REFLECTION_REFLECTABLE_NONINTRUSIVE_ASSIGNMENT_OPERATOR(auto, operator=, member_function);
+REFLECTABLE_OPERATOR(operator[]);
+REFLECTABLE_OPERATOR_ASSIGNMENT(operator=);
