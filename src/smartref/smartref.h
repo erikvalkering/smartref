@@ -1,6 +1,6 @@
 #pragma once
 
-#include "implicit.h"
+#include "members.h"
 #include "stl.h"
 
 #include <utils/utils.h>
@@ -41,10 +41,10 @@ using non_void_t = typename non_void<Derived, Fallback>::type;
 
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
-       , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
+             , public Members<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
 {
 public:
-  using ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
+  using Members<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
 
   using_() = default;
 

@@ -36,21 +36,21 @@ using using_member_t = decltype(
 );
 
 template<class Derived, typename Members>
-struct ReflectedMembersImpl;
+struct MembersImpl;
 
 template<class Derived, typename... Reflections>
-struct ReflectedMembersImpl<Derived, utils::type_list<Reflections...>>
+struct MembersImpl<Derived, utils::type_list<Reflections...>>
   : using_member_t<Derived, Reflections>...
 {
   using using_member_t<Derived, Reflections>::operator=...;
 };
 
 template<
-  class ReflectionClass,
+  class Delegate,
   class Derived>
-using ReflectedMembers = ReflectedMembersImpl<
+using Members = MembersImpl<
   Derived,
-  decltype(members(reflection::reflect<utils::Delayed<ReflectionClass, Derived>>))
+  decltype(members(reflection::reflect<utils::Delayed<Delegate, Derived>>))
 >;
 
 } // namespace smartref
