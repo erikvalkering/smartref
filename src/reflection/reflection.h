@@ -1,5 +1,5 @@
 #pragma once
 
-#include "reflection/reflect.h"
-#include "reflection/reflect_members.h"
-#include "reflection/reify.h"
+#include "reflect.h"
+#include "reflect_members.h"
+#include "reify.h"
