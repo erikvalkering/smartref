@@ -23,7 +23,6 @@ struct using_base<Delegate, void>
     // TODO: Add some checks to see whether this doesn't add too much overhead
     //       for this specific Delegate type.
     // TODO: Needs to be private by default
-    // TODO: See if we can simplify all the casts, if we define a `delegate` function
     virtual operator Delegate &() = 0;
 };
 
