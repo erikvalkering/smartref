@@ -10,7 +10,7 @@ template<typename T, typename... Dependents>
 using Delayed = typename DelayedImpl<T, Dependents...>::type;
 
 template<typename Delay>
-struct extendable2
+struct uniformly_callable2
 {
     template<typename Obj, typename T>
     friend auto call(Obj &obj, T x) -> decltype(say(obj, x))
@@ -20,7 +20,7 @@ struct extendable2
 };
 
 template<typename CRTP, typename Delay = void>
-struct extendable : extendable2<Delay>
+struct uniformly_callable : uniformly_callable2<Delay>
 {
     template<typename T>
     auto say(T x) -> decltype(call(static_cast<Delayed<CRTP, T> &>(*this), x))
@@ -30,7 +30,7 @@ struct extendable : extendable2<Delay>
 };
 
 template<typename Delay = void>
-struct Person : extendable<Person<Delay>, Delay>
+struct Person : uniformly_callable<Person<Delay>, Delay>
 {
 };
 
@@ -41,7 +41,7 @@ void say(Person<> &, string x)
 
 Person() -> Person<>;
 
-struct Human : extendable<Human>
+struct Human : uniformly_callable<Human>
 {
 };
 
