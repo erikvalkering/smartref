@@ -30,9 +30,6 @@ struct extendable : extendable2<extendable<CRTP, Delay>, Delay>
 };
 
 template<typename Delay = void>
-struct Person;
-
-template<typename Delay>
 struct Person : extendable<Person<Delay>, Delay>
 {
 };
