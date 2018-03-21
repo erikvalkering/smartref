@@ -30,27 +30,27 @@ namespace smartref {
 
 template<class Derived, typename Reflection>
 using using_member_t = decltype(
-    reflection::reify<Derived>(
-        Reflection{}
-    )
+  reflection::reify<Derived>(
+    Reflection{}
+  )
 );
 
 template<class Derived, typename Members>
-struct ReflectedMembersImpl;
+struct MembersImpl;
 
 template<class Derived, typename... Reflections>
-struct ReflectedMembersImpl<Derived, utils::type_list<Reflections...>>
-    : using_member_t<Derived, Reflections>...
+struct MembersImpl<Derived, utils::type_list<Reflections...>>
+  : using_member_t<Derived, Reflections>...
 {
-    using using_member_t<Derived, Reflections>::operator=...;
+  using using_member_t<Derived, Reflections>::operator=...;
 };
 
 template<
-    class ReflectionClass,
-    class Derived>
-using ReflectedMembers = ReflectedMembersImpl<
-    Derived,
-    decltype(members(reflection::reflect<utils::Delayed<ReflectionClass, Derived>>))
+  class Delegate,
+  class Derived>
+using Members = MembersImpl<
+  Derived,
+  decltype(members(reflection::reflect<utils::Delayed<Delegate, Derived>>))
 >;
 
 } // namespace smartref

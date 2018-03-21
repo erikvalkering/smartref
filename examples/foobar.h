@@ -11,136 +11,134 @@ namespace foobar {
 
 struct Foo
 {
-    void foo()
-    {
-        std::cout << "Foo::foo" << std::endl;
-    }
+  void foo()
+  {
+    std::cout << "Foo::foo" << std::endl;
+  }
 };
 
 struct Bar
 {
-    void bar()
-    {
-        std::cout << "Bar::bar" << std::endl;
-    }
+  void bar()
+  {
+    std::cout << "Bar::bar" << std::endl;
+  }
 
-    void bar2()
-    {
-        std::cout << "Bar::bar" << std::endl;
-    }
+  void bar2()
+  {
+    std::cout << "Bar::bar" << std::endl;
+  }
 
-    void bar3()
-    {
-        std::cout << "Bar::bar" << std::endl;
-    }
+  void bar3()
+  {
+    std::cout << "Bar::bar" << std::endl;
+  }
 };
 
 struct Baz
 {
-    void baz()
-    {
-        std::cout << "Baz::baz" << std::endl;
-    }
+  void baz()
+  {
+    std::cout << "Baz::baz" << std::endl;
+  }
 
-    void baz2()
-    {
-        std::cout << "Baz::baz2" << std::endl;
-    }
+  void baz2()
+  {
+    std::cout << "Baz::baz2" << std::endl;
+  }
 };
 
 struct Bat
 {
-    void bat()
-    {
-        std::cout << "Bat::bat" << std::endl;
-    }
+  void bat()
+  {
+    std::cout << "Bat::bat" << std::endl;
+  }
 
-    void bat2()
-    {
-        std::cout << "Bat::bat2" << std::endl;
-    }
+  void bat2()
+  {
+    std::cout << "Bat::bat2" << std::endl;
+  }
 };
 
 struct Bla
 {
-    void foo()
-    {
-        std::cout << "Bla::foo" << std::endl;
-    }
+  void foo()
+  {
+    std::cout << "Bla::foo" << std::endl;
+  }
 
-    void bar()
-    {
-        std::cout << "Bla::bar" << std::endl;
-    }
+  void bar()
+  {
+    std::cout << "Bla::bar" << std::endl;
+  }
 
-    using baz = int;
-    using bla = Bla;
+  using baz = int;
+  using bla = Bla;
 };
 
 struct Overloads
 {
-    void foo()
-    {
-        std::cout << "Overloads::foo()" << std::endl;
-    }
+  void foo()
+  {
+    std::cout << "Overloads::foo()" << std::endl;
+  }
 
-    void foo(int)
-    {
-        std::cout << "Overloads::foo(int)" << std::endl;
-    }
+  void foo(int)
+  {
+    std::cout << "Overloads::foo(int)" << std::endl;
+  }
 
-    template<typename T>
-    void bar()
-    {
-        std::cout << "Overloads::bar<" << typeid(T).name() << ">()" << std::endl;
-    }
+  template<typename T>
+  void bar()
+  {
+    std::cout << "Overloads::bar<" << typeid(T).name() << ">()" << std::endl;
+  }
 };
 
 struct GenericClassA
 {
-    void foobar()
-    {
-        std::cout << "GenericClassA::foobar()" << std::endl;
-    }
+  void foobar()
+  {
+    std::cout << "GenericClassA::foobar()" << std::endl;
+  }
 
-    template<typename T>
-    void foobar(T x)
-    {
-        std::cout << "GenericClassA::foobar(" << typeid(x).name() << ")" << std::endl;
-    }
+  template<typename T>
+  void foobar(T x)
+  {
+    std::cout << "GenericClassA::foobar(" << typeid(x).name() << ")" << std::endl;
+  }
 
-    using some_type = int;
+  using some_type = int;
 };
 
 struct GenericClassB
 {
-    void foobar()
-    {
-        std::cout << "GenericClassB::foobar()" << std::endl;
-    }
+  void foobar()
+  {
+    std::cout << "GenericClassB::foobar()" << std::endl;
+  }
 
-    void foobar(int x)
-    {
-        std::cout << "GenericClassB::foobar(int)" << std::endl;
-    }
+  void foobar(int x)
+  {
+    std::cout << "GenericClassB::foobar(int)" << std::endl;
+  }
 
-    using some_type = float;
+  using some_type = float;
 };
 
 template<typename T>
 struct ClassTemplate
 {
-    void foobarbaz()
-    {
-        std::cout << "ClassTemplate<" << typeid(T).name() << ">::foobarbaz()" << std::endl;
-    }
+  void foobarbaz()
+  {
+    std::cout << "ClassTemplate<" << typeid(T).name() << ">::foobarbaz()" << std::endl;
+  }
 
-    using some_foo_type = double;
+  using some_foo_type = double;
 };
 
 } // namespace foobar
-
-// TODO: -cmaster Get rid of *all* syntaxes that will never be used
 
 REFLECTABLE(foobar::Foo, foo);
 
@@ -166,7 +164,3 @@ REFLECTABLE(auto, foobar);
 REFLECTABLE(auto, some_type);
 REFLECTABLE(auto, foobarbaz);
 REFLECTABLE(auto, some_foo_type);
-
-//! TODO: This is no longer valid, since we switched to generic reflection for the STL.
-//        Create a unit-test that tests this in isolation.
-// static_assert(utils::pack_size(members(REFLECTION_REFLECT_AUTO(auto))) == 4);

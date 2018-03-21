@@ -1,0 +1,1 @@
+#include <smartref/members.h>

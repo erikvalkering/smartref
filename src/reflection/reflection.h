@@ -1,12 +1,5 @@
 #pragma once
 
-#include "reflection/reflect.h"
-#include "reflection/reflect_members.h"
-#include "reflection/reify.h"
-
-#ifndef REFLECTION_USE_PREFIX
-#define REFLECTABLE(...) REFLECTION_REFLECTABLE_NONINTRUSIVE(__VA_ARGS__)
-#define REFLECTABLE_OPERATOR(...) REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR(__VA_ARGS__)
-#define REFLECTABLE_OPERATOR_UNARY(...) REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_UNARY(__VA_ARGS__)
-#define REFLECTABLE_OPERATOR_ASSIGNMENT(...) REFLECTION_REFLECTABLE_NONINTRUSIVE_OPERATOR_ASSIGNMENT(__VA_ARGS__)
-#endif
+#include "reflect.h"
+#include "reflect_members.h"
+#include "reify.h"
