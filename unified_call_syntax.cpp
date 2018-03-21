@@ -9,7 +9,7 @@ struct DelayedImpl {using type = T;};
 template<typename T, typename... Dependents>
 using Delayed = typename DelayedImpl<T, Dependents...>::type;
 
-template<typename CRTP, typename Delay>
+template<typename Delay>
 struct extendable2
 {
     template<typename Obj, typename T>
@@ -20,7 +20,7 @@ struct extendable2
 };
 
 template<typename CRTP, typename Delay>
-struct extendable : extendable2<extendable<CRTP, Delay>, Delay>
+struct extendable : extendable2<Delay>
 {
     template<typename T>
     auto say(T x) -> decltype(say_(static_cast<Delayed<CRTP, T> &>(*this), x))
