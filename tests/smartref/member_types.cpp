@@ -87,22 +87,22 @@ static_assert(
 
 namespace tests {
 
-namespace test_nonintrusive_reflect {
+namespace test_reflect {
 
 struct UserDefined
 {
   using type = int;
 };
 
-} // namespace test_nonintrusive_reflect
+} // namespace test_reflect
 
 } // namespace tests
 
-REFLECTABLE(tests::test_nonintrusive_reflect::UserDefined, type);
+REFLECTABLE(tests::test_reflect::UserDefined, type);
 
 namespace tests {
 
-namespace test_nonintrusive_reflect {
+namespace test_reflect {
 
 static_assert(
     std::is_same<
@@ -110,6 +110,6 @@ static_assert(
                UserDefined ::type
     >::value);
 
-} // namespace test_nonintrusive_reflect
+} // namespace test_reflect
 
 } // namespace tests
