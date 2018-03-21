@@ -13,7 +13,7 @@ template<typename Delay>
 struct extendable2
 {
     template<typename Obj, typename T>
-    friend auto say_(Obj &obj, T x) -> decltype(say(obj, x))
+    friend auto call(Obj &obj, T x) -> decltype(say(obj, x))
     {
         return say(obj, x);
     }
@@ -23,9 +23,9 @@ template<typename CRTP, typename Delay>
 struct extendable : extendable2<Delay>
 {
     template<typename T>
-    auto say(T x) -> decltype(say_(static_cast<Delayed<CRTP, T> &>(*this), x))
+    auto say(T x) -> decltype(call(static_cast<Delayed<CRTP, T> &>(*this), x))
     {
-        return say_(static_cast<Delayed<CRTP, T> &>(*this), x);
+        return call(static_cast<Delayed<CRTP, T> &>(*this), x);
     }
 };
 
