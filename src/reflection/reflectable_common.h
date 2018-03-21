@@ -164,12 +164,14 @@ using detect_is_member_type = decltype(
         on_call(*this,                                                                                  \
           derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
           utils::type_list<ExplicitArgs...>{},                                                          \
-          std::forward<Args>(args)...)                                                                  \
+          std::forward<Args>(args)...                                                                   \
+        )                                                                                               \
       )                                                                                                 \
     {                                                                                                   \
       return on_call(*this,                                                                             \
         derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                            \
         utils::type_list<ExplicitArgs...>{},                                                            \
-        std::forward<Args>(args)...);                                                                   \
+        std::forward<Args>(args)...                                                                     \
+      );                                                                                                \
     }                                                                                                   \
   }                                                                                                     \
