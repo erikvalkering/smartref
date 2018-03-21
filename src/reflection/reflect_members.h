@@ -16,13 +16,13 @@ struct Members;
 template<typename Class, size_t... indices, size_t... indices_auto>
 struct Members<Class, std::index_sequence<indices...>, std::index_sequence<indices_auto...>>
 {
-    constexpr static auto _()
-    {
-        return utils::type_list<
-            reflected_member_t<Class, indices>...,
-            reflected_member_t<utils::Delayed<auto_, Class>, indices_auto>...
-        >{};
-    }
+  constexpr static auto _()
+  {
+    return utils::type_list<
+      reflected_member_t<Class, indices>...,
+      reflected_member_t<utils::Delayed<auto_, Class>, indices_auto>...
+    >{};
+  }
 };
 
 } // namespace detail
@@ -30,11 +30,11 @@ struct Members<Class, std::index_sequence<indices...>, std::index_sequence<indic
 template<typename Class>
 constexpr auto members(Reflection<Class>)
 {
-    return detail::Members<
-        Class,
-        std::make_index_sequence<reflected_member_count_v<Class>>,
-        std::make_index_sequence<reflected_member_count_v<utils::Delayed<auto_, Class>>>
-    >::_();
+  return detail::Members<
+    Class,
+    std::make_index_sequence<reflected_member_count_v<Class>>,
+    std::make_index_sequence<reflected_member_count_v<utils::Delayed<auto_, Class>>>
+  >::_();
 }
 
 } // namespace reflection

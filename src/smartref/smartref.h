@@ -10,30 +10,30 @@ namespace smartref {
 template<typename Delegate, class Derived>
 struct using_base
 {
-    operator Delegate &()
-    {
-        auto &derived = static_cast<Derived &>(*this);
-        return static_cast<Delegate &>(derived);
-    }
+  operator Delegate &()
+  {
+    auto &derived = static_cast<Derived &>(*this);
+    return static_cast<Delegate &>(derived);
+  }
 };
 
 template<typename Delegate>
 struct using_base<Delegate, void>
 {
-    virtual operator Delegate &() = 0;
+  virtual operator Delegate &() = 0;
 };
 
 // TODO: -cmaster rename the non_void stuff. And maybe it can go to utils?
 template<typename Derived, typename Fallback>
 struct non_void
 {
-    using type = Derived;
+  using type = Derived;
 };
 
 template<typename Fallback>
 struct non_void<void, Fallback>
 {
-    using type = Fallback;
+  using type = Fallback;
 };
 
 template<typename Derived, typename Fallback>
@@ -41,25 +41,25 @@ using non_void_t = typename non_void<Derived, Fallback>::type;
 
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
-             , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
+       , public ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
 {
 public:
-    using ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
+  using ReflectedMembers<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
 
-    using_() = default;
+  using_() = default;
 
-    using_(const using_ &) = default;
-    using_ &operator=(const using_ &) = default;
+  using_(const using_ &) = default;
+  using_ &operator=(const using_ &) = default;
 
-    using_(using_ &&) = default;
-    using_ &operator=(using_ &&) = default;
+  using_(using_ &&) = default;
+  using_ &operator=(using_ &&) = default;
 };
 
 template<typename Delegate, typename Derived>
 auto delegate(using_<Delegate, Derived> &base)
   -> Delegate &
 {
-    return static_cast<Delegate &>(base);
+  return static_cast<Delegate &>(base);
 }
 
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
