@@ -20,7 +20,6 @@ struct using_base
 template<typename Delegate>
 struct using_base<Delegate, void>
 {
-    // TODO: Needs to be private by default
     virtual operator Delegate &() = 0;
 };
 
