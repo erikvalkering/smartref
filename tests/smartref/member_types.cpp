@@ -37,24 +37,24 @@ namespace test_basics {
 
 //! A basic check to test support for std::vector<int>::value_type
 static_assert(
-    std::is_same<
-        using_<std::vector<int>>::value_type,
-               std::vector<int> ::value_type
-    >::value);
+  std::is_same<
+    using_<std::vector<int>>::value_type,
+           std::vector<int> ::value_type
+  >::value);
 
 //! Check whether we are not hard-coding support for std::vector
 static_assert(
-    std::is_same<
-        using_<std::list<int>>::value_type,
-               std::list<int> ::value_type
-    >::value);
+  std::is_same<
+    using_<std::list<int>>::value_type,
+           std::list<int> ::value_type
+  >::value);
 
 //! Check whether we are not hard-coding support for std::vector<int>
 static_assert(
-    std::is_same<
-        using_<std::list<float>>::value_type,
-               std::list<float> ::value_type
-    >::value);
+  std::is_same<
+    using_<std::list<float>>::value_type,
+           std::list<float> ::value_type
+  >::value);
 
 } // namespace test_basics
 
@@ -62,24 +62,24 @@ namespace test_proof_of_concept {
 
 //! Test support for value_type
 static_assert(
-    std::is_same<
-        using_<std::vector<int>>::value_type,
-               std::vector<int> ::value_type
-    >::value);
+  std::is_same<
+    using_<std::vector<int>>::value_type,
+           std::vector<int> ::value_type
+  >::value);
 
 //! Test support for difference_type
 static_assert(
-    std::is_same<
-        using_<std::vector<int>>::difference_type,
-               std::vector<int> ::difference_type
-    >::value);
+  std::is_same<
+    using_<std::vector<int>>::difference_type,
+           std::vector<int> ::difference_type
+  >::value);
 
 //! Test support for iterator
 static_assert(
-    std::is_same<
-        using_<std::vector<int>>::iterator,
-               std::vector<int> ::iterator
-    >::value);
+  std::is_same<
+    using_<std::vector<int>>::iterator,
+           std::vector<int> ::iterator
+  >::value);
 
 } // namespace test_proof_of_concept
 
@@ -105,10 +105,10 @@ namespace tests {
 namespace test_reflect {
 
 static_assert(
-    std::is_same<
-        using_<UserDefined>::type,
-               UserDefined ::type
-    >::value);
+  std::is_same<
+    using_<UserDefined>::type,
+           UserDefined ::type
+  >::value);
 
 } // namespace test_reflect
 
