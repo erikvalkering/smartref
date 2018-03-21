@@ -140,8 +140,6 @@ struct ClassTemplate
 
 } // namespace foobar
 
-// TODO: -cmaster Get rid of *all* syntaxes that will never be used
-
 REFLECTABLE(foobar::Foo, foo);
 
 REFLECTABLE(foobar::Bar, bar);
