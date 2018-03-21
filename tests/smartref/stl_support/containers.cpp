@@ -31,8 +31,8 @@ using reflection::reflect;
 
 constexpr auto is_valid = [](auto expression)
 {
-  auto expected = reflect<decltype(expression(std::declval<    T >(), std::declval<    T >()))>;
-  auto actual   = reflect<decltype(expression(std::declval<Ref<T>>(), std::declval<    T >()))>;
+  auto expected = reflect<decltype(expression(std::declval<    T >(), std::declval<T>()))>;
+  auto actual   = reflect<decltype(expression(std::declval<Ref<T>>(), std::declval<T>()))>;
 
   return actual == expected;
 };
