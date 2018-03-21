@@ -70,3 +70,11 @@ int main()
 //       might be interesting for further study, as it might
 //       turn out we need a more general mechanism to delay
 //       lookups (i.e. outside of ': using T').
+
+// References
+// - wg21.link/n4165
+// - wg21.link/n4174
+// - wg21.link/n4474
+// - wg21.link/p0131
+// - wg21.link/P0251
+// - wg21.link/p0352
