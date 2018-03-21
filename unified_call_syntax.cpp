@@ -39,9 +39,12 @@ void say(Person<> &, string x)
     cout << x << endl;
 }
 
+template<typename = void>
+Person() -> Person<>;
+
 int main()
 {
-    auto person = Person<>{};
+    auto person = Person{};
 
     say(person, "Hi!");
 
