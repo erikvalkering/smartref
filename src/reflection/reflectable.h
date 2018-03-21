@@ -17,6 +17,27 @@ struct reflected_member
 template<typename T, size_t counter>
 using reflected_member_t = typename reflected_member<T, counter>::type;
 
+template<
+  template<typename, size_t> class reflected_member_slot_t,
+  typename T,
+  size_t count = 0,
+  typename = reflected_member_slot_t<T, count>
+>
+struct reflected_member_count
+{
+  static constexpr auto value = reflected_member_count<reflected_member_slot_t, T, count + 1>::value;
+};
+
+template<
+  template<typename, size_t> class reflected_member_slot_t,
+  typename T,
+  size_t count
+>
+struct reflected_member_count<reflected_member_slot_t, T, count, void>
+{
+  static constexpr auto value = count;
+};
+
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<reflected_member_t, T>::value;
 

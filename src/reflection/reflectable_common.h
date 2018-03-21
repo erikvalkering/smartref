@@ -6,27 +6,6 @@
 
 namespace reflection {
 
-template<
-  template<typename, size_t> class reflected_member_slot_t,
-  typename T,
-  size_t count = 0,
-  typename = reflected_member_slot_t<T, count>
->
-struct reflected_member_count
-{
-  static constexpr auto value = reflected_member_count<reflected_member_slot_t, T, count + 1>::value;
-};
-
-template<
-  template<typename, size_t> class reflected_member_slot_t,
-  typename T,
-  size_t count
->
-struct reflected_member_count<reflected_member_slot_t, T, count, void>
-{
-  static constexpr auto value = count;
-};
-
 template<class Derived>
 class reflector_base
 {
