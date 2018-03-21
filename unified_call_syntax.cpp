@@ -19,7 +19,7 @@ struct extendable2
     }
 };
 
-template<typename CRTP, typename Delay>
+template<typename CRTP, typename Delay = void>
 struct extendable : extendable2<Delay>
 {
     template<typename T>
@@ -41,11 +41,32 @@ void say(Person<> &, string x)
 
 Person() -> Person<>;
 
+struct Human : extendable<Human>
+{
+};
+
+void say(Human &, string x)
+{
+    cout << x << endl;
+}
+
 int main()
 {
     auto person = Person{};
-
     say(person, "Hi!");
-
     person.say("Hello!");
+
+    auto human = Human{};
+    say(human, "Hi!");
+    human.say("Hello!");
 }
+
+// TODO: Create a working test using the smartref library,
+//       and proof that this technique is possible without
+//       making Person a class template. This is only necessary
+//       for making it work with true reflection.
+//       Also note the delayed lookup mechanism that the
+//       "smart references through delegation" paper proposes
+//       might be interesting for further study, as it might
+//       turn out we need a more general mechanism to delay
+//       lookups (i.e. outside of ': using T').
