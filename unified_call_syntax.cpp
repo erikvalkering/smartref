@@ -39,7 +39,6 @@ void say(Person<> &, string x)
     cout << x << endl;
 }
 
-template<typename = void>
 Person() -> Person<>;
 
 int main()
