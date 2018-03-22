@@ -114,38 +114,50 @@ baz.foobar(42);
 The implementation has been tested using the following compilers:
 - Clang 4.0.1
 
-The following features are planned to be implemented:
+# Core features
+- [x] Zero-overhead
+- [x] All features are supported generically
+- [x] Member support
+  - [x] Types
+    - [x] Member-types / nested classes
+    - [ ] Alias templates / nested class templates
+  - [x] Functions
+    - [x] Non-templates
+    - [x] Overloads
+    - [x] Templates
+      - [x] Deducible
+      - [x] Non-deducible
+      - [ ] Non-type templates
+      - [ ] Mixed type and non-type templates
+    - [x] Operators
+      - [x] Unary
+      - [x] Binary
+      - [x] Assignment
+    - [ ] Constructors
+    - [x] Qualifiers
+      - [x] Non-const member-functions
+      - [ ] const member-functions
+      - [ ] rvalue member-functions
+      - [ ] const rvalue member-functions
+  - [ ] Data
+    - [ ] Basic support for data members
+    - [ ] Opt-in zero-overhead declaration
+- [ ] Free function support
+  - [ ] Operators (non-members)
+- [x] Reflection
+  - [x] Class specific reflection
+  - [x] Generic reflection
+- [ ] Various
+  - [ ] Conflict-resolution
+  - [x] Reference-leaking control (e.g. operator=() currently returns int & for int-wrappers), and maybe a more general control mechanism
+
+# The following features are planned to be implemented:
 - [ ] Member-types
     - [ ] STL
         - [x] All of `std::vector`
         - [ ] Full support of the STL
-    - [ ] User-defined types
-        - [x] Explicit definition of member-types
-        - [x] Non-intrusive discovery of member-types using the `REFLECTABLE` macro
-        - [ ] Intrusive discovery of member-types using the `REFLECTABLE` macro
-        - [ ] Alias templates / nested class templates
-- [ ] Member-functions
-    - [ ] Core
-        - [x] Non-const member-functions
-        - [ ] const member-functions
-        - [ ] rvalue member-functions
-        - [ ] const rvalue member-functions
-        - [x] Operators (member, binary)
-        - [x] Operators (member, unary)
-        - [x] Operators (member, assignment)
-        - [ ] Operators (non-members)
-        - [x] Overloads
-        - [x] Templates (deducible)
-        - [x] Templates (non-deducible)
-        - [ ] Non-type templates
-        - [ ] Mixed type and non-type templates
-    - [ ] STL
-        - [x] All of `std::vector`
-        - [ ] Full support of the STL
     - [x] User-defined types
-        - [x] Explicit definition of member-functions
         - [x] Non-intrusive discovery of member-functions using the `REFLECTABLE` macro
-        - [x] Intrusive discovery of member-functions using the `REFLECTABLE` macro
 - [ ] Member-fields
     - [ ] STL
         - [ ] Proof-of-concept member-fields: `first`, `second`
@@ -153,13 +165,6 @@ The following features are planned to be implemented:
     - [ ] User-defined types
         - [ ] Explicit definition of member-fields
         - [ ] Non-intrusive discovery of member-fields using the `REFLECTABLE` macro
-        - [ ] Intrusive discovery of member-fields using the `REFLECTABLE` macro
-    - [ ] Opt-in zero-overhead declaration
-- [ ] Support for fundamental types (e.g. `size_t`, `bool`, `double`).
-- [ ] Support for non-member functions (`std::vector`)
-- [x] Generic reflection
-- [ ] Conflict-resolution
-- [ ] Reference-leaking control (e.g. operator=() currently returns int & for int-wrappers), and maybe a more general control mechanism
 - [ ] More test coverage
     - [ ] Implicit conversions while passing to function
     - [ ] Performance tests
@@ -172,6 +177,7 @@ The following features are planned to be implemented:
     - [ ] Strong typedef
     - [ ] Perfect pimpl
     - [ ] Observable
+    - [ ] Uniform call syntax
 - [ ] Documentation
     - [ ] User
     - [ ] Source code
