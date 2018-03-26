@@ -1,5 +1,5 @@
 # smartref [![Build Status](https://travis-ci.org/erikvalkering/smartref.svg?branch=master)](https://travis-ci.org/erikvalkering/smartref)
-Emulating Smart References in C++11/14/17
+A modern header-only zero-overhead library for creating smart references
 
 ## Build instructions
 Execute the following commands:
