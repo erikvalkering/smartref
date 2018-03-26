@@ -1,60 +1,60 @@
 # smartref [![Build Status](https://travis-ci.org/erikvalkering/smartref.svg?branch=master)](https://travis-ci.org/erikvalkering/smartref)
 A modern header-only zero-overhead library for creating smart references
 
-## Build instructions
-Execute the following commands:
-```bash
-> mkdir build
-> cd build
-> cmake ..
-> cmake --build .
-```
+## Abstract
 
-this will create several test executables, which can be invoked using:
-```bash
-> ctest
-```
+`smartref` is a *pure-library* solution for creating smart reference classes using C++11/14/17, and comprises two parts: the `using_` class-template, which acts as a *reusable* base-class for smart references, and a tiny reflection facility, which is used for supporting user-defined types. Together, they provide a new building block with which powerful zero-overhead abstractions can be created, today.
 
-# Introduction
+## Introduction
 
-There exist several proposals for adding language support for _smart references_, a long-demanded feature by the C++ community. In [p0416r1](https://wg21.link/p0416r1), a design is proposed by introducing an overloadable `operator.()` to the language, whereas in [p0060r0](https://wg21.link/p0060r0), a more sophisticated design was proposed, which involves having the compiler synthesize a function object, that is passed to an overloadable `operator.()`. Finally, [p0352r1](https://wg21.link/p0352r1) proposes an entirely different approach, by using an inheritance-like mechanism combined with a conversion function.
+Smart references are a fundamental missing building block of the C++ language, and are a long-demanded feature by the C++ community [1]. They allow for creating objects that act as if they are other objects, like proxies, rebindable references, properties, strong typedefs, etc.
 
-The `smartref` library emulates the smart reference proposal as proposed in [p0352r1 - Smart References through Delegation](https://wg21.link/p0352r1), by clever use of modern C++11/14/17.
+There currently exist several proposals for adding language support for smart references, ([p0416r1](https://wg21.link/p0416r1), [p0060r0](https://wg21.link/p0060r0), [p0352r1](https://wg21.link/p0352r1)). Despite the demand for language support, it does seem there is currently no consensus yet which direction to pursue.
 
-# Background
+The `smartref` library is an attempt to provide this missing building block, but instead as a pure-library solution. Furthermore, its syntax is based on the smart reference proposal from p0352r1 - "Smart References through Delegation", which arguably leads to a very intuitive way of thinking about how to design smart references.
 
-Although there is demand for language support for _smart references_, it seems there is currently no consensus yet which direction to pursue. Even if it will eventually be adopted into the standard (C++20/23/26?), it might still take a while for the compiler vendors to catch up. And even then, it is sometimes not possible or difficult for software companies to upgrade their compiler toolchain to benefit from these new features.
+## Overview
 
-Due to this slow adoption, developers might write their own boilerplate code to support all the delegation, or simply ignore the problem, and go for an inferior solution and sacrifice generic programming.
+The core of the `smartref` library is the `using_` class-template, from which _smart reference_-classes can derive.
 
-By factoring out the "smart reference" problem into a reusable library, we can provide a building block onto which people can start developing new abstractions, like proxies, rebindable references, properties, light-weight pimpl. Furthermore, by providing it in the form of a library, we can use it today!
+##### The `using_` class-template:
+* Parameterizes over the *delegate type*.
+* Obtains the *delegate object* from the derived class.
+* Defines members, corresponding to those found in the delegate type.
+* Member-*functions* forward the call to the delegate object.
+* Member-*types* are aliases for the types defined in the delegate type.
 
-# High level overview of the library
+##### The smart reference class:
+* Defines a conversion function which returns the delegate object.
+* Derives from the `using_` class, and thereby inherits the interface from the delegate type.
 
-The core of the `smartref` library is the `using_` class-template, from which _smart reference_-classes can inherit. This template is parameterized over the _referred-to_ type, and defines a set of member-functions and member-types (unfortunately no member-variables, see the [Limitations](#limitations) section below), corresponding to those defined in that type. The member-types are simply aliases for the types defined in the referred-to type. The member-functions use the conversion function defined in the smart reference class (i.e. the class inheriting from the `using_` class), and delegate the function call to the referred-to object, which is returned by the conversion function.
+## Example: a proxy class for on-demand loading from disk
 
-For example, it becomes reasonably easy to implement a `proxy` class, for on-demand loading from disk of some wrapped container class (e.g. std::vector), while providing exactly the same interface as the wrapped class:
+For example, it becomes reasonably easy to implement a `proxy` class, for on-demand loading from disk of some wrapped container class (e.g. `std::vector`), while providing exactly the same interface as the wrapped class:
+
 ```c++
 // smartref library
 template<typename T>
 class proxy : public using_<T>
 {
+    T data_;
+
 public:
     operator T &()
     {
         // ...lazy-load data_
         return data_;
     }
-
-    // ...other members
-private:
-    T data_;
 };
 ```
+
+Now, `proxy` provides exactly the same interface as the wrapped `std::vector<double>`, while every function call is 'intercepted' by the conversion function.
 
 Now, this class can be used as follows:
 ```c++
 proxy<vector<double>> v = read_from_file(...);
+
+v.push_back(3.141592654);
 
 for (auto &x : v)
 {
@@ -83,12 +83,12 @@ using y = decltype(x)::baz;
 
 This will support the `bar` and `baz` members *generically*, which means the `using_` class can now be used for any type that has one of these member function defined.
 
-# Completion Status
+## Completion Status
 
 The implementation has been tested using the following compilers:
 - Clang 4.0.1
 
-# Core features
+## Core features
 - [x] Zero-overhead
 - [x] All features are supported generically
 - [x] Member support
@@ -122,20 +122,11 @@ The implementation has been tested using the following compilers:
   - [x] Class specific reflection
   - [x] Generic reflection
 - [ ] Various
-  - [ ] Conflict-resolution
   - [x] Reference-leaking control (e.g. operator=() currently returns int & for int-wrappers), and maybe a more general control mechanism
+  - [ ] Conflict-resolution
 
 # The following features are planned to be implemented:
-- [ ] Member-types
-    - [ ] STL
-        - [x] All of `std::vector`
-        - [ ] Full support of the STL
-    - [x] User-defined types
-        - [x] Non-intrusive discovery of member-functions using the `REFLECTABLE` macro
 - [ ] Member-fields
-    - [ ] STL
-        - [ ] Proof-of-concept member-fields: `first`, `second`
-        - [ ] Full support of STL
     - [ ] User-defined types
         - [ ] Explicit definition of member-fields
         - [ ] Non-intrusive discovery of member-fields using the `REFLECTABLE` macro
@@ -160,3 +151,17 @@ The implementation has been tested using the following compilers:
     - [ ] GCC
     - [ ] MSVC
     - [ ] Intel
+
+## Build instructions
+Execute the following commands:
+```bash
+> mkdir build
+> cd build
+> cmake ..
+> cmake --build .
+```
+
+this will create several test executables, which can be invoked using:
+```bash
+> ctest
+```
