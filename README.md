@@ -72,20 +72,29 @@ In order to support user-defined types, their members need to be explicitly regi
 For this, the `smartref` library comes with a tiny reflection facility, which provides a non-intrusive `REFLECTABLE` macro. By annotating the name of a member using this macro, this member will be picked up automatically by the using_ class-template:
 
 ```c++
-template<typename T>
-struct Foo
+class Person
 {
-    int bar(bool a, unique_ptr<T> b) {...}
-
+public:
     using baz = T;
+
+    auto first_name() {...}
+    auto last_name() {...}
 };
 
-REFLECTABLE(bar);
-REFLECTABLE(baz);
+REFLECTABLE(first_name);
+REFLECTABLE(last_name);
+```
 
-proxy<Foo<double>> foo = ...;
-auto x = foo.bar(true, make_unique<double>(3.141592654));
-using y = decltype(x)::baz;
+which could be used as follows:
+```c++
+template<typename T>
+auto full_name(const T &person) { return person.first_name() + " " + person.last_name(); }
+
+Person        real_person  = ...;
+proxy<Person> proxy_person = ...;
+
+cout << "Real person's name:  " << full_name(real_person)  << endl;
+cout << "Proxy person's name: " << full_name(proxy_person) << endl;
 ```
 
 ## Completion Status
