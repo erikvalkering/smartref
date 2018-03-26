@@ -98,6 +98,8 @@ greet(real_person);
 greet(proxy_person);
 ```
 
+Note that in the example above, the greet function generically supports both the `Person` class, as well as the `proxy<Person>` class.
+
 ## Completion Status
 
 The implementation has been tested using the following compilers:
