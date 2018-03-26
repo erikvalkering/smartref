@@ -7,7 +7,7 @@ A modern header-only zero-overhead library for creating smart references
 
 ## Introduction
 
-Smart references are a fundamental missing building block of the C++ language, and are a long-demanded feature by the C++ community [1]. They allow for creating objects that act as if they are other objects, like proxies, rebindable references, properties, strong typedefs, etc.
+Smart references are a fundamental missing building block of the C++ language, and are a long-demanded feature [by the C++ community](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/1990/WG21%201990/X3J16_90%20WG21%20Request%20for%20Consideration%20-%20Overloadable%20Unary%20operator.pdf). They allow for creating objects that act as if they are other objects, like proxies, rebindable references, properties, strong typedefs, etc.
 
 There currently exist several proposals for adding language support for smart references, ([p0416r1](https://wg21.link/p0416r1), [p0060r0](https://wg21.link/p0060r0), [p0352r1](https://wg21.link/p0352r1)). Despite the demand for language support, it does seem there is currently no consensus yet which direction to pursue.
 
@@ -33,7 +33,6 @@ The core of the `smartref` library is the `using_` class-template, from which _s
 For example, it becomes reasonably easy to implement a `proxy` class, for on-demand loading from disk of some wrapped container class (e.g. `std::vector`), while providing exactly the same interface as the wrapped class:
 
 ```c++
-// smartref library
 template<typename T>
 class proxy : public using_<T>
 {
