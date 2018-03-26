@@ -93,69 +93,28 @@ using y = decltype(x)::baz;
 The implementation has been tested using the following compilers:
 - Clang 4.0.1
 
-## Core features
+## Features
 - [x] Zero-overhead
-- [x] All features are supported generically
-- [x] Member support
-  - [x] Types
-    - [x] Member-types / nested classes
-    - [ ] Alias templates / nested class templates
-  - [x] Functions
-    - [x] Non-templates
-    - [x] Overloads
-    - [x] Templates
-      - [x] Deducible
-      - [x] Non-deducible
-      - [ ] Non-type templates
-      - [ ] Mixed type and non-type templates
-    - [x] Operators
-      - [x] Unary
-      - [x] Binary
-      - [x] Assignment
-    - [ ] Constructors
-    - [x] Qualifiers
-      - [x] Non-const member-functions
-      - [ ] const member-functions
-      - [ ] rvalue member-functions
-      - [ ] const rvalue member-functions
-  - [ ] Data
-    - [ ] Basic support for data members
-    - [ ] Opt-in zero-overhead declaration
-- [ ] Free function support
-  - [ ] Operators (non-members)
-- [x] Reflection
-  - [x] Class specific reflection
-  - [x] Generic reflection
-- [ ] Various
-  - [x] Reference-leaking control (e.g. operator=() currently returns int & for int-wrappers), and maybe a more general control mechanism
-  - [ ] Conflict-resolution
-
-# The following features are planned to be implemented:
-- [ ] Member-fields
-    - [ ] User-defined types
-        - [ ] Explicit definition of member-fields
-        - [ ] Non-intrusive discovery of member-fields using the `REFLECTABLE` macro
-- [ ] More test coverage
-    - [ ] Implicit conversions while passing to function
-    - [ ] Performance tests
-        - [ ] Compile-time overhead
-        - [ ] Runtime overhead
-        - [ ] Memory overhead
-- [ ] More examples
-    - [ ] Proxy
-    - [ ] Poly (value-based ClonablePtr)
-    - [ ] Strong typedef
-    - [ ] Perfect pimpl
-    - [ ] Observable
-    - [ ] Uniform call syntax
-- [ ] Documentation
-    - [ ] User
-    - [ ] Source code
-- [ ] Compiler support
-    - [x] Clang (4.0.1)
-    - [ ] GCC
-    - [ ] MSVC
-    - [ ] Intel
+- [x] Header-only
+- [x] Non-intrusive support for user-defined types
+- [x] Generic support
+- [x] Support for typedefs / nested classes
+- [x] Support for member-functions
+  - [x] Non-templates
+  - [x] Overloads
+  - [x] Templates
+    - [x] Deducible
+    - [x] Non-deducible
+  - [x] Operators
+    - [x] Unary
+    - [x] Binary
+    - [x] Assignment
+  - [x] Qualifiers
+    - [x] Non-const member-functions
+    - [ ] const member-functions
+    - [ ] rvalue member-functions
+    - [ ] const rvalue member-functions
+- [ ] Support for data members
 
 ## Build instructions
 Execute the following commands:
