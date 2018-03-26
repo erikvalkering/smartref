@@ -62,49 +62,26 @@ for (auto &x : v)
 }
 ```
 
-Out of the box, the `using_` class-template defines member-functions and member-types corresponding to all those found in the data types defined by the `STL`. In order to support user-defined types, their member-functions and member-types need to be _registered_. For this, the `smartref` library comes with a tiny reflection utility, which provides an intrusive as well as a non-intrusive `REFLECTABLE` macro, to annotate the classes.
-
-For example, by wrapping the name of a member-function inside this macro, this member-function can be picked-up automatically by the `using_` class-template.
-
-```c++
-struct Foo
-{
-    int REFLECTABLE(bar)(bool a, unique_ptr<double> b) {...}
-};
-
-proxy<Foo> foo = ...;
-auto x = foo.bar(true, make_unique<double>(3.141592654));
-```
-
-Non-intrusive reflection is also possible using the `REFLECTABLE` macro, for example to support 3rd-party data-types:
-
-```c++
-struct Bar
-{
-    template<typename T>
-    bool baz(T x) {...}
-};
-
-REFLECTABLE(Bar, baz);
-
-proxy<Bar> bar = ...;
-if (bar.baz(foo)) ...
-```
-
-Generic reflection is also possible, by specifying `auto` as the class in the `REFLECTABLE` macro:
+Out of the box, the `using_` class-template defines member-functions and member-types corresponding to all those found in the data types defined by the `STL`. In order to support user-defined types, their member-functions and member-types need to be _registered_. For this, the `smartref` library comes with a tiny reflection utility, which provides a non-intrusive `REFLECTABLE` macro, to annotate the classes:
 
 ```c++
 template<typename T>
-struct Baz
+struct Foo
 {
-    void foobar(T x) {...}
+    int bar(bool a, unique_ptr<T> b) {...}
+
+    using baz = T;
 };
 
-REFLECTABLE(auto, foobar);
+REFLECTABLE(bar);
+REFLECTABLE(baz);
 
-proxy<Baz<int>> baz = ...;
-baz.foobar(42);
+proxy<Foo<double>> foo = ...;
+auto x = foo.bar(true, make_unique<double>(3.141592654));
+using y = decltype(x)::baz;
 ```
+
+This will support the `bar` and `baz` members *generically*, which means the `using_` class can now be used for any type that has one of these member function defined.
 
 > ##### Limitations
 > - Member-variables are currently not supported. ~At the moment, I don't know of a way to add support for them without breaking the zero-overhead principle.~ Nevertheless, this might be some future research topic.
