@@ -146,14 +146,14 @@ REFLECTABLE(foobar::Bar, bar);
 REFLECTABLE(foobar::Bar, bar2);
 REFLECTABLE(foobar::Bar, bar3);
 
-REFLECTABLE(foobar::Baz, baz)
-REFLECTABLE(foobar::Baz, baz2)
+REFLECTABLE(foobar::Baz, baz);
+REFLECTABLE(foobar::Baz, baz2);
 
-REFLECTABLE(foobar::Bat, bat)
-REFLECTABLE(foobar::Bat, bat2)
+REFLECTABLE(foobar::Bat, bat);
+REFLECTABLE(foobar::Bat, bat2);
 
 REFLECTABLE(foobar::Bla, foo); // Member-function
-REFLECTABLE(foobar::Bla, bar)
+REFLECTABLE(foobar::Bla, bar);
 REFLECTABLE(foobar::Bla, baz);
 REFLECTABLE(foobar::Bla, bla); // Member-type
 
