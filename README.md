@@ -1,5 +1,132 @@
 # smartref [![Build Status](https://travis-ci.org/erikvalkering/smartref.svg?branch=master)](https://travis-ci.org/erikvalkering/smartref)
-Emulating Smart References in C++11/14/17
+A modern header-only zero-overhead library for creating smart references
+
+## Abstract
+
+`smartref` is a *pure-library* solution for creating smart reference classes using C++11/14/17, and comprises two parts: the `using_` class-template, which acts as a *reusable* base-class for smart references, and a tiny reflection facility, which is used for supporting user-defined types. Together, they provide a new building block with which powerful zero-overhead abstractions can be created, today.
+
+## Introduction
+
+Smart references are a fundamental missing building block of the C++ language, and are a long-demanded feature [by the C++ community](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/1990/WG21%201990/X3J16_90%20WG21%20Request%20for%20Consideration%20-%20Overloadable%20Unary%20operator.pdf). They allow for creating objects that act as if they are other objects, like proxies, rebindable references, properties, strong typedefs, etc.
+
+There currently exist several proposals for adding language support for smart references, ([p0416r1](https://wg21.link/p0416r1), [p0060r0](https://wg21.link/p0060r0), [p0352r1](https://wg21.link/p0352r1)). Despite the demand for language support, it does seem there is currently no consensus yet which direction to pursue.
+
+The `smartref` library is an attempt to provide this missing building block, but instead as a pure-library solution. Furthermore, its syntax is based on the smart reference proposal from p0352r1 - "Smart References through Delegation", which arguably leads to a very intuitive way of thinking about how to design smart references.
+
+## Overview
+
+The core of the `smartref` library is the `using_` class-template, from which _smart reference_-classes can derive.
+
+##### The `using_` class-template:
+* Parameterizes over the *delegate type*.
+* Obtains the *delegate object* from the derived class.
+* Defines members, corresponding to those found in the delegate type.
+* Member-*functions* forward the call to the delegate object.
+* Member-*types* are aliases for the types defined in the delegate type.
+
+##### The smart reference class:
+* Defines a conversion function which returns the delegate object.
+* Derives from the `using_` class, and thereby inherits the interface from the delegate type.
+
+## Example: a proxy class for on-demand loading from disk
+
+For example, it becomes reasonably easy to implement a `proxy` class, for on-demand loading from disk of some wrapped container class (e.g. `std::vector`), while providing exactly the same interface as the wrapped class:
+
+```c++
+template<typename T>
+class proxy : public using_<T>
+{
+    T data_;
+
+public:
+    operator T &()
+    {
+        // ...lazy-load data_
+        return data_;
+    }
+};
+```
+
+Now, `proxy` provides exactly the same interface as the wrapped `std::vector<double>`, while every function call is 'intercepted' by the conversion function.
+
+It can be used as follows:
+```c++
+proxy<vector<double>> v = read_from_file(...);
+
+v.push_back(3.141592654);
+
+for (auto &x : v)
+{
+    x *= 2;
+}
+```
+
+## Batteries included
+
+Out of the box, the `using_` class-template defines member-functions and member-types corresponding to all those found in the data types defined by the STL. More importantly, this support is generic: any type satisfying (part of) the interface of an STL type, is also supported out of the box.
+
+## User-defined types
+
+In order to support user-defined types, their members need to be explicitly registered.
+
+For this, the `smartref` library comes with a tiny reflection facility, which provides a non-intrusive `REFLECTABLE` macro. By annotating the name of a member using this macro, this member will be picked up automatically by the `using_` class-template:
+
+```c++
+class Person
+{
+public:
+    auto first_name() {...}
+    auto last_name() {...}
+};
+
+REFLECTABLE(first_name);
+REFLECTABLE(last_name);
+```
+
+which could be used as follows:
+```c++
+template<typename T>
+auto greet(const T &person)
+{
+    cout << "Hi, " << person.first_name() + " " + person.last_name() << endl;
+}
+
+auto real_person  = Person{...};
+auto proxy_person = proxy<Person>{...};
+
+greet(real_person);
+greet(proxy_person);
+```
+
+Note that in the example above, the `greet()` function generically supports both the `Person` class, as well as the `proxy<Person>` class.
+
+## Completion Status
+
+The implementation has been tested using the following compilers:
+- Clang 4.0.1
+
+## Features
+- [x] Zero-overhead
+- [x] Header-only
+- [x] Non-intrusive support for user-defined types
+- [x] Generic support
+- [x] Support for typedefs / nested classes
+- [x] Support for member-functions
+  - [x] Non-templates
+  - [x] Overloads
+  - [x] Templates
+    - [x] Deducible
+    - [x] Non-deducible
+  - [x] Operators
+    - [x] Unary
+    - [x] Binary
+    - [x] Assignment
+  - [x] Qualifiers
+    - [x] Non-const member-functions
+    - [ ] const member-functions
+    - [ ] rvalue member-functions
+    - [ ] const rvalue member-functions
+- [ ] Support for data members
 
 ## Build instructions
 Execute the following commands:
@@ -14,169 +141,3 @@ this will create several test executables, which can be invoked using:
 ```bash
 > ctest
 ```
-
-# Introduction
-
-There exist several proposals for adding language support for _smart references_, a long-demanded feature by the C++ community. In [p0416r1](https://wg21.link/p0416r1), a design is proposed by introducing an overloadable `operator.()` to the language, whereas in [p0060r0](https://wg21.link/p0060r0), a more sophisticated design was proposed, which involves having the compiler synthesize a function object, that is passed to an overloadable `operator.()`. Finally, [p0352r1](https://wg21.link/p0352r1) proposes an entirely different approach, by using an inheritance-like mechanism combined with a conversion function.
-
-The `smartref` library emulates the smart reference proposal as proposed in [p0352r1 - Smart References through Delegation](https://wg21.link/p0352r1), by clever use of modern C++11/14/17.
-
-# Background
-
-Although there is demand for language support for _smart references_, it seems there is currently no consensus yet which direction to pursue. Even if it will eventually be adopted into the standard (C++20/23/26?), it might still take a while for the compiler vendors to catch up. And even then, it is sometimes not possible or difficult for software companies to upgrade their compiler toolchain to benefit from these new features.
-
-Due to this slow adoption, developers might write their own boilerplate code to support all the delegation, or simply ignore the problem, and go for an inferior solution and sacrifice generic programming.
-
-By factoring out the "smart reference" problem into a reusable library, we can provide a building block onto which people can start developing new abstractions, like proxies, rebindable references, properties, light-weight pimpl. Furthermore, by providing it in the form of a library, we can use it today!
-
-# High level overview of the library
-
-The core of the `smartref` library is the `using_` class-template, from which _smart reference_-classes can inherit. This template is parameterized over the _referred-to_ type, and defines a set of member-functions and member-types (unfortunately no member-variables, see the [Limitations](#limitations) section below), corresponding to those defined in that type. The member-types are simply aliases for the types defined in the referred-to type. The member-functions use the conversion function defined in the smart reference class (i.e. the class inheriting from the `using_` class), and delegate the function call to the referred-to object, which is returned by the conversion function.
-
-For example, it becomes reasonably easy to implement a `proxy` class, for on-demand loading from disk of some wrapped container class (e.g. std::vector), while providing exactly the same interface as the wrapped class:
-```c++
-// smartref library                             // p0352r1
-template<typename T>                            template<typename T>
-class proxy : public using_<T>                  class proxy : public using T
-{                                               {
-public:                                         public:
-    operator T &()                                  operator T &()
-    {                                               {
-        // ...lazy-load data_                           // ...lazy-load data_
-        return data_;                                   return data_;
-    }                                               }
-    
-    // ...other members                             // ...other members
-private:                                        private:
-    T data_;                                        T data_;
-};                                              };
-```
-
-Now, this class can be used as follows:
-```c++
-proxy<vector<double>> v = read_from_file(...);
-
-for (auto &x : v)
-{
-    x *= 2;
-}
-```
-
-Out of the box, the `using_` class-template defines member-functions and member-types corresponding to all those found in the data types defined by the `STL`. In order to support user-defined types, their member-functions and member-types need to be _registered_. For this, the `smartref` library comes with a tiny reflection utility, which provides an intrusive as well as a non-intrusive `REFLECTABLE` macro, to annotate the classes.
-
-For example, by wrapping the name of a member-function inside this macro, this member-function can be picked-up automatically by the `using_` class-template.
-
-```c++
-struct Foo
-{
-    int REFLECTABLE(bar)(bool a, unique_ptr<double> b) {...}
-};
-
-proxy<Foo> foo = ...;
-auto x = foo.bar(true, make_unique<double>(3.141592654));
-```
-
-Non-intrusive reflection is also possible using the `REFLECTABLE` macro, for example to support 3rd-party data-types:
-
-```c++
-struct Bar
-{
-    template<typename T>
-    bool baz(T x) {...}
-};
-
-REFLECTABLE(Bar, baz);
-
-proxy<Bar> bar = ...;
-if (bar.baz(foo)) ...
-```
-
-Generic reflection is also possible, by specifying `auto` as the class in the `REFLECTABLE` macro:
-
-```c++
-template<typename T>
-struct Baz
-{
-    void foobar(T x) {...}
-};
-
-REFLECTABLE(auto, foobar);
-
-proxy<Baz<int>> baz = ...;
-baz.foobar(42);
-```
-
-> ##### Limitations
-> - Member-variables are currently not supported. ~At the moment, I don't know of a way to add support for them without breaking the zero-overhead principle.~ Nevertheless, this might be some future research topic.
-
-# Completion Status
-
-The implementation has been tested using the following compilers:
-- Clang 4.0.1
-
-The following features are planned to be implemented:
-- [ ] Member-types
-    - [ ] STL
-        - [x] All of `std::vector`
-        - [ ] Full support of the STL
-    - [ ] User-defined types
-        - [x] Explicit definition of member-types
-        - [x] Non-intrusive discovery of member-types using the `REFLECTABLE` macro
-        - [ ] Intrusive discovery of member-types using the `REFLECTABLE` macro
-        - [ ] Alias templates / nested class templates
-- [ ] Member-functions
-    - [ ] Core
-        - [x] Non-const member-functions
-        - [ ] const member-functions
-        - [ ] rvalue member-functions
-        - [ ] const rvalue member-functions
-        - [x] Operators (member, binary)
-        - [x] Operators (member, unary)
-        - [x] Operators (member, assignment)
-        - [ ] Operators (non-members)
-        - [x] Overloads
-        - [x] Templates (deducible)
-        - [x] Templates (non-deducible)
-        - [ ] Non-type templates
-        - [ ] Mixed type and non-type templates
-    - [ ] STL
-        - [x] All of `std::vector`
-        - [ ] Full support of the STL
-    - [x] User-defined types
-        - [x] Explicit definition of member-functions
-        - [x] Non-intrusive discovery of member-functions using the `REFLECTABLE` macro
-        - [x] Intrusive discovery of member-functions using the `REFLECTABLE` macro
-- [ ] Member-fields
-    - [ ] STL
-        - [ ] Proof-of-concept member-fields: `first`, `second`
-        - [ ] Full support of STL
-    - [ ] User-defined types
-        - [ ] Explicit definition of member-fields
-        - [ ] Non-intrusive discovery of member-fields using the `REFLECTABLE` macro
-        - [ ] Intrusive discovery of member-fields using the `REFLECTABLE` macro
-    - [ ] Opt-in zero-overhead declaration
-- [ ] Support for fundamental types (e.g. `size_t`, `bool`, `double`).
-- [ ] Support for non-member functions (`std::vector`)
-- [x] Generic reflection
-- [ ] Conflict-resolution
-- [ ] Reference-leaking control (e.g. operator=() currently returns int & for int-wrappers), and maybe a more general control mechanism
-- [ ] More test coverage
-    - [ ] Implicit conversions while passing to function
-    - [ ] Performance tests
-        - [ ] Compile-time overhead
-        - [ ] Runtime overhead
-        - [ ] Memory overhead
-- [ ] More examples
-    - [ ] Proxy
-    - [ ] Poly (value-based ClonablePtr)
-    - [ ] Strong typedef
-    - [ ] Perfect pimpl
-    - [ ] Observable
-- [ ] Documentation
-    - [ ] User
-    - [ ] Source code
-- [ ] Compiler support
-    - [x] Clang (4.0.1)
-    - [ ] GCC
-    - [ ] MSVC
-    - [ ] Intel
