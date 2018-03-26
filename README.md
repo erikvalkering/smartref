@@ -35,21 +35,21 @@ The core of the `smartref` library is the `using_` class-template, from which _s
 
 For example, it becomes reasonably easy to implement a `proxy` class, for on-demand loading from disk of some wrapped container class (e.g. std::vector), while providing exactly the same interface as the wrapped class:
 ```c++
-// smartref library                             // p0352r1
-template<typename T>                            template<typename T>
-class proxy : public using_<T>                  class proxy : public using T
-{                                               {
-public:                                         public:
-    operator T &()                                  operator T &()
-    {                                               {
-        // ...lazy-load data_                           // ...lazy-load data_
-        return data_;                                   return data_;
-    }                                               }
-    
-    // ...other members                             // ...other members
-private:                                        private:
-    T data_;                                        T data_;
-};                                              };
+// smartref library
+template<typename T>
+class proxy : public using_<T>
+{
+public:
+    operator T &()
+    {
+        // ...lazy-load data_
+        return data_;
+    }
+
+    // ...other members
+private:
+    T data_;
+};
 ```
 
 Now, this class can be used as follows:
