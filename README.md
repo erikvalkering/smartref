@@ -69,14 +69,12 @@ Out of the box, the `using_` class-template defines member-functions and member-
 
 In order to support user-defined types, their members need to be explicitly registered.
 
-For this, the `smartref` library comes with a tiny reflection facility, which provides a non-intrusive `REFLECTABLE` macro. By annotating the name of a member using this macro, this member will be picked up automatically by the using_ class-template:
+For this, the `smartref` library comes with a tiny reflection facility, which provides a non-intrusive `REFLECTABLE` macro. By annotating the name of a member using this macro, this member will be picked up automatically by the `using_` class-template:
 
 ```c++
 class Person
 {
 public:
-    using baz = T;
-
     auto first_name() {...}
     auto last_name() {...}
 };
@@ -88,13 +86,16 @@ REFLECTABLE(last_name);
 which could be used as follows:
 ```c++
 template<typename T>
-auto full_name(const T &person) { return person.first_name() + " " + person.last_name(); }
+auto greet(const T &person)
+{
+    cout << "Hi, " << person.first_name() + " " + person.last_name() << endl;
+}
 
-Person        real_person  = ...;
-proxy<Person> proxy_person = ...;
+auto real_person  = Person{...};
+auto proxy_person = proxy<Person>{...};
 
-cout << "Real person's name:  " << full_name(real_person)  << endl;
-cout << "Proxy person's name: " << full_name(proxy_person) << endl;
+greet(real_person);
+greet(proxy_person);
 ```
 
 ## Completion Status
