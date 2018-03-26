@@ -83,9 +83,6 @@ using y = decltype(x)::baz;
 
 This will support the `bar` and `baz` members *generically*, which means the `using_` class can now be used for any type that has one of these member function defined.
 
-> ##### Limitations
-> - Member-variables are currently not supported. ~At the moment, I don't know of a way to add support for them without breaking the zero-overhead principle.~ Nevertheless, this might be some future research topic.
-
 # Completion Status
 
 The implementation has been tested using the following compilers:
