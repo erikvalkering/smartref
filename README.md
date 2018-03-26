@@ -50,7 +50,7 @@ public:
 
 Now, `proxy` provides exactly the same interface as the wrapped `std::vector<double>`, while every function call is 'intercepted' by the conversion function.
 
-Now, this class can be used as follows:
+It can be used as follows:
 ```c++
 proxy<vector<double>> v = read_from_file(...);
 
@@ -62,7 +62,15 @@ for (auto &x : v)
 }
 ```
 
-Out of the box, the `using_` class-template defines member-functions and member-types corresponding to all those found in the data types defined by the `STL`. In order to support user-defined types, their member-functions and member-types need to be _registered_. For this, the `smartref` library comes with a tiny reflection utility, which provides a non-intrusive `REFLECTABLE` macro, to annotate the classes:
+## Batteries included
+
+Out of the box, the `using_` class-template defines member-functions and member-types corresponding to all those found in the data types defined by the STL. More importantly, this support is generic: any type satisfying (part of) the interface of an STL type, is also supported out of the box.
+
+## User-defined types
+
+In order to support user-defined types, their members need to be explicitly registered.
+
+For this, the `smartref` library comes with a tiny reflection facility, which provides a non-intrusive `REFLECTABLE` macro. By annotating the name of a member using this macro, this member will be picked up automatically by the using_ class-template:
 
 ```c++
 template<typename T>
@@ -80,8 +88,6 @@ proxy<Foo<double>> foo = ...;
 auto x = foo.bar(true, make_unique<double>(3.141592654));
 using y = decltype(x)::baz;
 ```
-
-This will support the `bar` and `baz` members *generically*, which means the `using_` class can now be used for any type that has one of these member function defined.
 
 ## Completion Status
 
