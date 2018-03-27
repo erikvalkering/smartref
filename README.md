@@ -110,6 +110,7 @@ The implementation has been tested using the following compilers:
 - [x] Header-only
 - [x] Non-intrusive support for user-defined types
 - [x] Generic support
+- [x] Fully uncoupled reflection emulation library
 - [x] Support for typedefs / nested classes
 - [x] Support for member-functions
   - [x] Non-templates
