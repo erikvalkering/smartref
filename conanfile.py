@@ -8,4 +8,4 @@ class HelloConan(ConanFile):
     no_copy_source = True
 
     def package(self):
-        self.copy("*.h")
+        self.copy("*.h", dst='include', src='src')
