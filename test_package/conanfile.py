@@ -9,3 +9,6 @@ class TestPackage(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
+
+    def test(self):
+        pass
