@@ -139,15 +139,16 @@ Also note that all the library classes are in the `smartref` namespace. The `exa
 ##### Using Conan
 In case you're using the [Conan C/C++ package manager](https://www.conan.io), it's very easy to use the `smartref` library in your project.
 
-From the root directory, invoke:
+First, install the conan package:
 ```bash
-> conan create . yourname/somechannel
+> conan remote add smartref-conan-remote https://api.bintray.com/conan/erikvalkering/smartref 
+> conan install smartref/master@erikvalkering/unstable -r smartref-conan-remote
 ```
 
 Now, you can add the `smartref` library as a requirement in your project's `conanfile.txt` (or `conanfile.py`):
 ```ini
 [requires]
-smartref/master/yourname/somechannel
+smartref/master/erikvalkering/unstable
 ```
 
 ##### Running the unit tests
