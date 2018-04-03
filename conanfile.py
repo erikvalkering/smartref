@@ -5,7 +5,7 @@ class HelloConan(ConanFile):
     name = "smartref"
     version = "master"
     url = 'https://github.com/erikvalkering/smartref'
-    license = 'mit'
+    license = 'MIT'
     description = 'A modern header-only zero-overhead library ' + \
                   'for creating smart references'
     exports_sources = "include/*"
