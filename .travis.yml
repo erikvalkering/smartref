@@ -35,4 +35,4 @@ script:
   - cmake --build .
   - ctest
   - cd ..
-  - conan create . erikvalkering/unstable -s compiler.version=4
+  - conan create . erikvalkering/unstable -s compiler.version=4.0
