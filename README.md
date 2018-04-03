@@ -142,7 +142,7 @@ In case you're using the [Conan C/C++ package manager](https://www.conan.io), it
 First, install the conan package:
 ```bash
 > conan remote add smartref-conan-remote https://api.bintray.com/conan/erikvalkering/smartref 
-> conan install smartref/master@erikvalkering/unstable -r smartref-conan-remote
+> conan install smartref/master@erikvalkering/unstable -r smartref-conan-remote --build smartref
 ```
 
 Now, you can add the `smartref` library as a requirement in your project's `conanfile.txt` (or `conanfile.py`):
