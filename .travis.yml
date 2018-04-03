@@ -25,8 +25,14 @@ install:
   - mkdir -p cmake && travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C cmake
   - export PATH="${DEPS_DIR}/cmake/bin:${PATH}"
 
+  - sudo pip install conan
+
 script:
   - cd "${TRAVIS_BUILD_DIR}"
   - mkdir build
   - cd build
-  - cmake .. && cmake --build . && ctest
+  - cmake ..
+  - cmake --build .
+  - ctest
+  - cd ..
+  - conan create . erikvalkering/unstable -s compiler.version=4.0
