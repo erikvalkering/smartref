@@ -129,8 +129,29 @@ The implementation has been tested using the following compilers:
     - [ ] const rvalue member-functions
 - [ ] Support for data members
 
-## Build instructions
-Execute the following commands:
+## How to use
+
+##### Manually
+Because the `smartref` library is a header-only library, using the library is just a matter of adding the `include` directory to the list of include directories while building your project. Furthermore, there are no other dependencies than a modern C++ compiler with support for C++17 (although currently only clang-4.0 is officially supported).
+
+Also note that all the library classes are in the `smartref` namespace. The `examples` directory, as well as the `tests` directory contain lots of examples demonstrating how to use the `smartref` library.
+
+##### Using Conan
+In case you're using the [Conan C/C++ package manager](https://www.conan.io), it's very easy to use the `smartref` library in your project.
+
+From the root directory, invoke:
+```bash
+> conan create . yourname/somechannel
+```
+
+Now, you can add the `smartref` library as a requirement in your project's `conanfile.txt` (or `conanfile.py`):
+```ini
+[requires]
+smartref/master/yourname/somechannel
+```
+
+##### Running the unit tests
+If you would like to run all the unit tests, you can do this quite easily, by executing the following commands:
 ```bash
 > mkdir build
 > cd build
