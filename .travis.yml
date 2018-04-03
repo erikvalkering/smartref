@@ -31,6 +31,8 @@ script:
   - cd "${TRAVIS_BUILD_DIR}"
   - mkdir build
   - cd build
-  - cmake .. && cmake --build . && ctest
+  - cmake ..
+  - cmake --build .
+  - ctest
   - cd ..
   - conan create . erikvalkering/unstable
