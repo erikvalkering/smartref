@@ -30,3 +30,4 @@ script:
   - mkdir build
   - cd build
   - cmake .. && cmake --build . && ctest
+  - conan create . erikvalkering/unstable
