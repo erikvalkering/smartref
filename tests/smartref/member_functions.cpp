@@ -14,53 +14,55 @@ constexpr auto has_foo(int) -> decltype(std::declval<T>().foo(), bool{}) {return
 template<typename T>
 constexpr auto has_foo(...) {return false;}
 
-struct Foo
+struct Empty {};
+
+struct NonConst
 {
   void foo() {}
 };
 
-struct Bar
+struct Const
 {
-  void bar() const {}
+  void foo() const {}
 };
 
-struct Baz
+struct Mixed
 {
-  void baz() {}
-  void baz() const {}
+  void foo() {}
+  void foo() const {}
 };
 
 ////////////////////////////////
 // non-const member functions //
 ////////////////////////////////
 
-static_assert(has_foo<Foo>(0),
-              "TEST FAILED: Foo doesn't seem to have a foo() member-function!");
+static_assert(!has_foo<Empty>(0),
+              "TEST FAILED: Empty seems to have a foo() member-function!");
 
-static_assert(has_foo<using_<Foo>>(0),
-              "TEST FAILED: using_<Foo> doesn't seem to have a foo() member-function!");
+static_assert(!has_foo<using_<Empty>>(0),
+              "TEST FAILED: using_<Empty> seems to have a foo() member-function!");
 
-static_assert(!has_foo<Bar>(0),
-              "TEST FAILED: Bar seems to have a foo() member-function!");
+static_assert(has_foo<NonConst>(0),
+              "TEST FAILED: NonConst doesn't seem to have a foo() member-function!");
 
-static_assert(!has_foo<using_<Bar>>(0),
-              "TEST FAILED: using_<Bar> seems to have a foo() member-function!");
+static_assert(has_foo<using_<NonConst>>(0),
+              "TEST FAILED: using_<NonConst> doesn't seem to have a foo() member-function!");
 
 ////////////////////////////
 // const member functions //
 ////////////////////////////
 
-static_assert(!has_foo<const Foo>(0),
-              "TEST FAILED: const Foo seems to have a foo() const member-function!");
+static_assert(!has_foo<const Empty>(0),
+              "TEST FAILED: const Empty seems to have a foo() member-function!");
 
-static_assert(!has_foo<const using_<Foo>>(0),
-              "TEST FAILED: const using_<Foo> seem to have a foo() const member-function!");
+static_assert(!has_foo<const using_<Empty>>(0),
+              "TEST FAILED: const using_<Empty> seems to have a foo() member-function!");
 
-static_assert(!has_foo<const Bar>(0),
-              "TEST FAILED: const Bar seems to have a foo() const member-function!");
+static_assert(!has_foo<const NonConst>(0),
+              "TEST FAILED: const NonConst seems to have a foo() const member-function!");
 
-static_assert(!has_foo<const using_<Bar>>(0),
-              "TEST FAILED: const using_<Bar> seems to have a foo() const member-function!");
+static_assert(!has_foo<const using_<NonConst>>(0),
+              "TEST FAILED: const using_<NonConst> seem to have a foo() const member-function!");
 
 } // namespace test_existence
 } // namespace tests
