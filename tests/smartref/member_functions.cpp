@@ -19,7 +19,10 @@ struct Foo
   void foo() {}
 };
 
-struct Bar {};
+struct Bar
+{
+  void bar() const {}
+};
 
 ////////////////////////////////
 // non-const member functions //
