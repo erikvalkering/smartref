@@ -48,6 +48,12 @@ static_assert(has_foo<NonConst>(0),
 static_assert(has_foo<using_<NonConst>>(0),
               "TEST FAILED: using_<NonConst> doesn't seem to have a foo() member-function!");
 
+static_assert(has_foo<Mixed>(0),
+              "TEST FAILED: Mixed doesn't seem to have a foo() member-function!");
+
+static_assert(has_foo<using_<Mixed>>(0),
+              "TEST FAILED: using_<Mixed> doesn't seem to have a foo() member-function!");
+
 ////////////////////////////
 // const member functions //
 ////////////////////////////
