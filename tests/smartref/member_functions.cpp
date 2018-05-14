@@ -24,6 +24,12 @@ struct Bar
   void bar() const {}
 };
 
+struct Baz
+{
+  void baz() {}
+  void baz() const {}
+};
+
 ////////////////////////////////
 // non-const member functions //
 ////////////////////////////////
