@@ -51,7 +51,8 @@ static_assert(has_member<using_<NonConstClass>>(0),
 static_assert(has_member<ConstClass>(0),
               "TEST FAILED: ConstClass doesn't seem to have a member-function!");
 
-// TODO: This should currently fail
+// TODO: This reifies a non-const member-function that delegates to the const member-function
+//       It should reify a const member-function
 static_assert(has_member<using_<ConstClass>>(0),
               "TEST FAILED: using_<ConstClass> doesn't seem to have a member-function!");
 
