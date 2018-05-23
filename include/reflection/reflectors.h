@@ -18,6 +18,13 @@ private:
   }
 
   template<typename Self>
+  friend auto derived(const Self &self)
+    -> const utils::Delayed<Derived, Self> &
+  {
+    return static_cast<const Derived &>(self);
+  }
+
+  template<typename Self>
   friend auto reflector(Self &&self)
   {
     return utils::remove_cvref_t<Self>{};
@@ -155,6 +162,25 @@ using detect_is_member_type = decltype(
   public:                                                                                               \
     template<typename... ExplicitArgs, typename... Args>                                                \
     auto member(Args &&... args)                                                                        \
+      -> decltype(                                                                                      \
+        on_call(                                                                                        \
+          reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
+          derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
+          utils::type_list<ExplicitArgs...>{},                                                          \
+          std::forward<Args>(args)...                                                                   \
+        )                                                                                               \
+      )                                                                                                 \
+    {                                                                                                   \
+      return on_call(                                                                                   \
+        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
+        derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                            \
+        utils::type_list<ExplicitArgs...>{},                                                            \
+        std::forward<Args>(args)...                                                                     \
+      );                                                                                                \
+    }                                                                                                   \
+                                                                                                        \
+    template<typename... ExplicitArgs, typename... Args>                                                \
+    auto member(Args &&... args) const                                                                  \
       -> decltype(                                                                                      \
         on_call(                                                                                        \
           reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \

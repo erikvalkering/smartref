@@ -15,12 +15,19 @@ struct using_base
     auto &derived = static_cast<Derived &>(*this);
     return static_cast<Delegate &>(derived);
   }
+
+  operator const Delegate &() const
+  {
+    auto &derived = static_cast<const Derived &>(*this);
+    return static_cast<const Delegate &>(derived);
+  }
 };
 
 template<typename Delegate>
 struct using_base<Delegate, void>
 {
   virtual operator Delegate &() = 0;
+  virtual operator const Delegate &() const = 0;
 };
 
 // TODO: -cmaster rename the non_void stuff. And maybe it can go to utils?
@@ -62,6 +69,13 @@ auto delegate(using_<Delegate, Derived> &base)
   return static_cast<Delegate &>(base);
 }
 
+template<typename Delegate, typename Derived>
+auto delegate(const using_<Delegate, Derived> &base)
+  -> const Delegate &
+{
+  return static_cast<const Delegate &>(base);
+}
+
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
@@ -69,11 +83,18 @@ auto delegate(using_<Delegate, Derived> &base)
 // TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
 // TODO: -cmaster args should use forwarding references (unit test this!)
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
-template<typename Reflector, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
-auto on_call(Reflector reflector, using_<Delegate, Derived> &self, utils::type_list<ExplicitArgs...> explicitArgs, Args... args)
-  -> decltype(call(reflector, delegate(self), explicitArgs, std::forward<Args>(args)...))
+template<typename Reflection, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
+auto on_call(Reflection reflection, using_<Delegate, Derived> &self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
+  -> decltype(call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...))
 {
-  return call(reflector, delegate(self), explicitArgs, std::forward<Args>(args)...);
+  return call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...);
+}
+
+template<typename Reflection, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
+auto on_call(Reflection reflection, const using_<Delegate, Derived> &self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
+  -> decltype(call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...))
+{
+  return call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...);
 }
 
 } // namespace smartref

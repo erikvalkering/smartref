@@ -17,6 +17,11 @@ public:
     return data;
   }
 
+  operator const T &() const
+  {
+    return data;
+  }
+
 private:
   T data;
 };
