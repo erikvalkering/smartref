@@ -11,17 +11,10 @@ class reflector_base
 {
 private:
   template<typename Self>
-  friend auto derived(Self &self)
-    -> utils::Delayed<Derived, Self> &
+  friend auto derived(Self &&self)
+    -> utils::Delayed<utils::like_t<Self, Derived>, Self>
   {
-    return static_cast<Derived &>(self);
-  }
-
-  template<typename Self>
-  friend auto derived(const Self &self)
-    -> const utils::Delayed<Derived, Self> &
-  {
-    return static_cast<const Derived &>(self);
+    return static_cast<utils::like_t<Self, Derived>>(self);
   }
 
   template<typename Self>
