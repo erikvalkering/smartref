@@ -138,6 +138,20 @@ struct ClassTemplate
   using some_foo_type = double;
 };
 
+class ConstClass
+{
+public:
+  void foo() const
+  {
+    std::cout << "const" << std::endl;
+  }
+
+  void bar()
+  {
+    std::cout << "non-const" << std::endl;
+  }
+};
+
 } // namespace foobar
 
 REFLECTABLE(foobar::Foo, foo);
@@ -164,3 +178,6 @@ REFLECTABLE(auto, foobar);
 REFLECTABLE(auto, some_type);
 REFLECTABLE(auto, foobarbaz);
 REFLECTABLE(auto, some_foo_type);
+
+REFLECTABLE(foobar::ConstClass, foo);
+REFLECTABLE(foobar::ConstClass, bar);
