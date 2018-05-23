@@ -94,6 +94,22 @@ using detect_is_member_type = decltype(
         utils::type_list<>{}                                                                          \
       );                                                                                              \
     }                                                                                                 \
+                                                                                                      \
+    auto member() const                                                                               \
+      -> decltype(                                                                                    \
+        on_call(                                                                                      \
+          reflector(*this),                                                                           \
+          derived(*this),                                                                             \
+          utils::type_list<>{}                                                                        \
+        )                                                                                             \
+      )                                                                                               \
+    {                                                                                                 \
+      return on_call(                                                                                 \
+        reflector(*this),                                                                             \
+        derived(*this),                                                                               \
+        utils::type_list<>{}                                                                          \
+      );                                                                                              \
+    }                                                                                                 \
   }                                                                                                   \
 
 // TODO: Get rid of code duplication
@@ -119,6 +135,25 @@ using detect_is_member_type = decltype(
                                                                                                               \
     template<typename Arg>                                                                                    \
     auto member(Arg &&arg)                                                                                    \
+      -> decltype(                                                                                            \
+        on_call(                                                                                              \
+          reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
+          derived(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
+          utils::type_list<>{},                                                                               \
+          std::forward<Arg>(arg)                                                                              \
+        )                                                                                                     \
+      )                                                                                                       \
+    {                                                                                                         \
+      return on_call(                                                                                         \
+        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
+        derived(utils::delayed(*this, utils::type_list<Arg>{})),                                              \
+        utils::type_list<>{},                                                                                 \
+        std::forward<Arg>(arg)                                                                                \
+      );                                                                                                      \
+    }                                                                                                         \
+                                                                                                              \
+    template<typename Arg>                                                                                    \
+    auto member(Arg &&arg) const                                                                              \
       -> decltype(                                                                                            \
         on_call(                                                                                              \
           reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
