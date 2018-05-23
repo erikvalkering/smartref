@@ -23,6 +23,12 @@ struct Ref : smartref::using_<T>
     return ref;
   }
 
+  operator const T &() const
+  {
+    ++counter();
+    return ref;
+  }
+
   Ref(T arg) : ref{arg} {}
 
   using smartref::using_<T>::operator=;
