@@ -60,6 +60,27 @@ struct remove_cvref
 template<typename T>
 using remove_cvref_t = typename remove_cvref<T>::type;
 
+template<typename T, typename U>
+struct like
+{
+  using stripped_U = remove_cvref_t<U>;
+
+  using qualified_U = std::conditional_t<
+    std::is_const<std::remove_reference_t<T>>::value,
+    const stripped_U,
+    stripped_U
+  >;
+
+  using type = std::conditional_t<
+    std::is_lvalue_reference<T>::value,
+    qualified_U &,
+    qualified_U &&
+  >;
+};
+
+template<typename T, typename U>
+using like_t = typename like<T, U>::type;
+
 } // namespace utils
 
 #define CONCAT2(x, y) x ## y
