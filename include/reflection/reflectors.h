@@ -53,8 +53,8 @@ using detect_is_member_type = decltype(
   {                                                                                   \
   private:                                                                            \
     template<typename Obj, typename... Args>                                          \
-    friend auto call(const ReflectorClassName &, Obj &obj, utils::type_list<>)        \
-      -> typename Obj::member;                                                        \
+    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>)       \
+      -> typename std::forward<Obj>::member;                                          \
                                                                                       \
   public:                                                                             \
     using member = utils::detected_or_t<                                              \
@@ -72,10 +72,10 @@ using detect_is_member_type = decltype(
   {                                                                                                   \
   private:                                                                                            \
     template<typename Obj>                                                                            \
-    friend auto call(const ReflectorClassName &, Obj &obj, utils::type_list<>)                        \
-      -> decltype(obj.member())                                                                       \
+    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>)                       \
+      -> decltype(std::forward<Obj>(obj).member())                                                    \
     {                                                                                                 \
-      return obj.member();                                                                            \
+      return std::forward<Obj>(obj).member();                                                         \
     }                                                                                                 \
                                                                                                       \
   public:                                                                                             \
@@ -104,10 +104,10 @@ using detect_is_member_type = decltype(
   {                                                                                                           \
   private:                                                                                                    \
     template<typename Obj, typename Arg>                                                                      \
-    friend auto call(const ReflectorClassName &, Obj &obj, utils::type_list<>, Arg arg)                       \
-      -> decltype(obj = arg)                                                                                  \
+    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Arg arg)                      \
+      -> decltype(std::forward<Obj>(obj) = arg)                                                               \
     {                                                                                                         \
-      return obj = arg;                                                                                       \
+      return std::forward<Obj>(obj) = arg;                                                                    \
     }                                                                                                         \
                                                                                                               \
   public:                                                                                                     \
@@ -142,26 +142,25 @@ using detect_is_member_type = decltype(
   {                                                                                                     \
   private:                                                                                              \
     template<typename Obj, typename... Args>                                                            \
-    friend auto call(const ReflectorClassName &, Obj &obj, utils::type_list<>, Args &&... args)         \
-      -> decltype(obj.member(std::forward<Args>(args)...))                                              \
+    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Args &&... args)        \
+      -> decltype(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                           \
     {                                                                                                   \
-      return obj.member(std::forward<Args>(args)...);                                                   \
+      return std::forward<Obj>(obj).member(std::forward<Args>(args)...);                                \
     }                                                                                                   \
                                                                                                         \
-    /* TODO: What if *this was an rvalue, then it should be auto &&obj */                               \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
     friend auto call(                                                                                   \
       const ReflectorClassName &,                                                                       \
-      Obj &obj,                                                                                         \
+      Obj &&obj,                                                                                        \
       utils::type_list<ExplicitArgs...>,                                                                \
       Args &&... args                                                                                   \
     )                                                                                                   \
       -> std::enable_if_t<                                                                              \
         sizeof...(ExplicitArgs) != 0,                                                                   \
-        decltype(obj.template member<ExplicitArgs...>(std::forward<Args>(args)...))                     \
+        decltype(std::forward<Obj>(obj).template member<ExplicitArgs...>(std::forward<Args>(args)...))  \
       >                                                                                                 \
     {                                                                                                   \
-      return obj.template member<ExplicitArgs...>(std::forward<Args>(args)...);                         \
+      return std::forward<Obj>(obj).template member<ExplicitArgs...>(std::forward<Args>(args)...);      \
     }                                                                                                   \
                                                                                                         \
   public:                                                                                               \
