@@ -81,7 +81,6 @@ auto delegate(const using_<Delegate, Derived> &base)
 //       which requires a runtime double dispatch mechanism.
 
 // TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
-// TODO: -cmaster args should use forwarding references (unit test this!)
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 template<typename Reflection, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
 auto on_call(const Reflection &reflection, using_<Delegate, Derived> &self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
