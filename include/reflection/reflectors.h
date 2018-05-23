@@ -104,10 +104,10 @@ using detect_is_member_type = decltype(
   {                                                                                                           \
   private:                                                                                                    \
     template<typename Obj, typename Arg>                                                                      \
-    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Arg arg)                      \
-      -> decltype(std::forward<Obj>(obj) = arg)                                                               \
+    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Arg &&arg)                    \
+      -> decltype(std::forward<Obj>(obj) = std::forward<Arg>(arg))                                            \
     {                                                                                                         \
-      return std::forward<Obj>(obj) = arg;                                                                    \
+      return std::forward<Obj>(obj) = std::forward<Arg>(arg);                                                 \
     }                                                                                                         \
                                                                                                               \
   public:                                                                                                     \
@@ -123,14 +123,16 @@ using detect_is_member_type = decltype(
         on_call(                                                                                              \
           reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
           derived(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
-          utils::type_list<>{}, arg                                                                           \
+          utils::type_list<>{},                                                                               \
+          std::forward<Arg>(arg)                                                                              \
         )                                                                                                     \
       )                                                                                                       \
     {                                                                                                         \
       return on_call(                                                                                         \
         reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
         derived(utils::delayed(*this, utils::type_list<Arg>{})),                                              \
-        utils::type_list<>{}, arg                                                                             \
+        utils::type_list<>{},                                                                                 \
+        std::forward<Arg>(arg)                                                                                \
       );                                                                                                      \
     }                                                                                                         \
   }                                                                                                           \
