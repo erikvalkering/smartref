@@ -27,14 +27,14 @@ private:
   template<typename Self>
   friend auto reflector(Self &&self)
   {
-    return utils::remove_cvref_t<Self>{};
+    return std::add_const_t<utils::remove_cvref_t<Self>>{};
   }
 };
 
 template<class Reflection, class Derived>
 using detect_is_member_type = decltype(
   on_call(
-    std::declval<Reflection &>(),
+    std::declval<const Reflection &>(),
     std::declval<Derived &>(),
     utils::type_list<>{}
   )
@@ -53,7 +53,7 @@ using detect_is_member_type = decltype(
   {                                                                                   \
   private:                                                                            \
     template<typename Obj, typename... Args>                                          \
-    friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>)              \
+    friend auto call(const ReflectorClassName &, Obj &obj, utils::type_list<>)        \
       -> typename Obj::member;                                                        \
                                                                                       \
   public:                                                                             \
@@ -72,7 +72,7 @@ using detect_is_member_type = decltype(
   {                                                                                                   \
   private:                                                                                            \
     template<typename Obj>                                                                            \
-    friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>)                              \
+    friend auto call(const ReflectorClassName &, Obj &obj, utils::type_list<>)                        \
       -> decltype(obj.member())                                                                       \
     {                                                                                                 \
       return obj.member();                                                                            \
@@ -104,7 +104,7 @@ using detect_is_member_type = decltype(
   {                                                                                                           \
   private:                                                                                                    \
     template<typename Obj, typename Arg>                                                                      \
-    friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>, Arg arg)                             \
+    friend auto call(const ReflectorClassName &, Obj &obj, utils::type_list<>, Arg arg)                       \
       -> decltype(obj = arg)                                                                                  \
     {                                                                                                         \
       return obj = arg;                                                                                       \
@@ -142,7 +142,7 @@ using detect_is_member_type = decltype(
   {                                                                                                     \
   private:                                                                                              \
     template<typename Obj, typename... Args>                                                            \
-    friend auto call(ReflectorClassName &, Obj &obj, utils::type_list<>, Args &&... args)               \
+    friend auto call(const ReflectorClassName &, Obj &obj, utils::type_list<>, Args &&... args)         \
       -> decltype(obj.member(std::forward<Args>(args)...))                                              \
     {                                                                                                   \
       return obj.member(std::forward<Args>(args)...);                                                   \
@@ -150,7 +150,12 @@ using detect_is_member_type = decltype(
                                                                                                         \
     /* TODO: What if *this was an rvalue, then it should be auto &&obj */                               \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
-    friend auto call(ReflectorClassName, Obj &obj, utils::type_list<ExplicitArgs...>, Args &&... args)  \
+    friend auto call(                                                                                   \
+      const ReflectorClassName &,                                                                       \
+      Obj &obj,                                                                                         \
+      utils::type_list<ExplicitArgs...>,                                                                \
+      Args &&... args                                                                                   \
+    )                                                                                                   \
       -> std::enable_if_t<                                                                              \
         sizeof...(ExplicitArgs) != 0,                                                                   \
         decltype(obj.template member<ExplicitArgs...>(std::forward<Args>(args)...))                     \
