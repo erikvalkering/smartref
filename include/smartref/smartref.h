@@ -65,18 +65,15 @@ auto delegate(using_<Delegate, Derived> &base)
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
-// TODO: Reflection is not the actual member reflection, but the reflector
-//       (i.e. the class from which we inherit the member-function)
 
-// TODO: -cmaster Reflection should be named Reflector (better: rename everything)
 // TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
 // TODO: -cmaster args should use forwarding references (unit test this!)
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
-template<typename Reflection, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
-auto on_call(Reflection &reflection, using_<Delegate, Derived> &self, utils::type_list<ExplicitArgs...> explicitArgs, Args... args)
-  -> decltype(call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...))
+template<typename Reflector, typename Delegate, typename Derived, typename... ExplicitArgs, typename... Args>
+auto on_call(Reflector reflector, using_<Delegate, Derived> &self, utils::type_list<ExplicitArgs...> explicitArgs, Args... args)
+  -> decltype(call(reflector, delegate(self), explicitArgs, std::forward<Args>(args)...))
 {
-  return call(reflection, delegate(self), explicitArgs, std::forward<Args>(args)...);
+  return call(reflector, delegate(self), explicitArgs, std::forward<Args>(args)...);
 }
 
 } // namespace smartref

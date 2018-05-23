@@ -16,6 +16,12 @@ private:
   {
     return static_cast<Derived &>(self);
   }
+
+  template<typename Self>
+  friend auto reflector(Self &&self)
+  {
+    return utils::remove_cvref_t<Self>{};
+  }
 };
 
 template<class Reflection, class Derived>
@@ -67,9 +73,19 @@ using detect_is_member_type = decltype(
                                                                                                       \
   public:                                                                                             \
     auto member()                                                                                     \
-      -> decltype(on_call(*this, derived(*this), utils::type_list<>{}))                               \
+      -> decltype(                                                                                    \
+        on_call(                                                                                      \
+          reflector(*this),                                                                           \
+          derived(*this),                                                                             \
+          utils::type_list<>{}                                                                        \
+        )                                                                                             \
+      )                                                                                               \
     {                                                                                                 \
-      return on_call(*this, derived(*this), utils::type_list<>{});                                    \
+      return on_call(                                                                                 \
+        reflector(*this),                                                                             \
+        derived(*this),                                                                               \
+        utils::type_list<>{}                                                                          \
+      );                                                                                              \
     }                                                                                                 \
   }                                                                                                   \
 
@@ -98,14 +114,14 @@ using detect_is_member_type = decltype(
     auto member(Arg &&arg)                                                                                    \
       -> decltype(                                                                                            \
         on_call(                                                                                              \
-          *this,                                                                                              \
+          reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
           derived(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
           utils::type_list<>{}, arg                                                                           \
         )                                                                                                     \
       )                                                                                                       \
     {                                                                                                         \
       return on_call(                                                                                         \
-        *this,                                                                                                \
+        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
         derived(utils::delayed(*this, utils::type_list<Arg>{})),                                              \
         utils::type_list<>{}, arg                                                                             \
       );                                                                                                      \
@@ -140,14 +156,16 @@ using detect_is_member_type = decltype(
     template<typename... ExplicitArgs, typename... Args>                                                \
     auto member(Args &&... args)                                                                        \
       -> decltype(                                                                                      \
-        on_call(*this,                                                                                  \
+        on_call(                                                                                        \
+          reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
           derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
           utils::type_list<ExplicitArgs...>{},                                                          \
           std::forward<Args>(args)...                                                                   \
         )                                                                                               \
       )                                                                                                 \
     {                                                                                                   \
-      return on_call(*this,                                                                             \
+      return on_call(                                                                                   \
+        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
         derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                            \
         utils::type_list<ExplicitArgs...>{},                                                            \
         std::forward<Args>(args)...                                                                     \
