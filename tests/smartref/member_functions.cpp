@@ -12,7 +12,7 @@ using smartref::using_;
 namespace test_existence {
 
 template<typename T>
-constexpr auto has_member(int) -> decltype(std::declval<T>().member(), bool{}) {return true;}
+constexpr auto has_member(int) -> decltype(std::declval<T &>().member(), bool{}) {return true;}
 template<typename T>
 constexpr auto has_member(...) {return false;}
 
@@ -66,6 +66,12 @@ static_assert(!has_member<const using_<EmptyClass>>(0),
 
 static_assert(!has_member<const using_<NonConstMemberClass>>(0),
               "TEST FAILED: const using_<NonConstMemberClass> seem to have a const member-function!");
+
+static_assert(has_member<const using_<ConstMemberClass>>(0),
+              "TEST FAILED: const using_<ConstMemberClass> doesn't seem to have a const member-function!");
+
+static_assert(has_member<const using_<MixedMemberClass>>(0),
+              "TEST FAILED: const using_<MixedMemberClass> doesn't seem to have a const member-function!");
 
 } // namespace test_existence
 } // namespace tests
