@@ -54,7 +54,7 @@ using detect_is_member_type = decltype(
   private:                                                                            \
     template<typename Obj, typename... Args>                                          \
     friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>)       \
-      -> typename Obj::member;                                                        \
+      -> typename utils::remove_cvref_t<Obj>::member;                                 \
                                                                                       \
   public:                                                                             \
     using member = utils::detected_or_t<                                              \
