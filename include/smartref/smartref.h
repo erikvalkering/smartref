@@ -62,18 +62,23 @@ public:
   using_ &operator=(using_ &&) = default;
 };
 
-template<typename Delegate, typename Derived>
-auto delegate(using_<Delegate, Derived> &base)
-  -> Delegate &
-{
-  return static_cast<Delegate &>(base);
-}
+template<typename>
+struct DelegateTypeImpl;
 
 template<typename Delegate, typename Derived>
-auto delegate(const using_<Delegate, Derived> &base)
-  -> const Delegate &
+struct DelegateTypeImpl<using_<Delegate, Derived>>
 {
-  return static_cast<const Delegate &>(base);
+  using type = Delegate;
+};
+
+template<typename Using_>
+using DelegateType = typename DelegateTypeImpl<Using_>::type;
+
+template<typename Using_>
+auto delegate(Using_ &&base)
+  -> utils::like_t<Using_, DelegateType<utils::remove_cvref_t<Using_>>>
+{
+  return static_cast<utils::like_t<Using_, DelegateType<utils::remove_cvref_t<Using_>>>>(base);
 }
 
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
