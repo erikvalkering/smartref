@@ -50,6 +50,37 @@ constexpr auto pack_size(T<Us...>)
   return sizeof...(Us);
 }
 
+//! C++20 type trait (from cppreference.com)
+template<typename T>
+struct remove_cvref
+{
+  using type = std::remove_cv_t<std::remove_reference_t<T>>;
+};
+
+template<typename T>
+using remove_cvref_t = typename remove_cvref<T>::type;
+
+template<typename T, typename U>
+struct like
+{
+  using stripped_U = remove_cvref_t<U>;
+
+  using qualified_U = std::conditional_t<
+    std::is_const<std::remove_reference_t<T>>::value,
+    const stripped_U,
+    stripped_U
+  >;
+
+  using type = std::conditional_t<
+    std::is_lvalue_reference<T>::value,
+    qualified_U &,
+    qualified_U &&
+  >;
+};
+
+template<typename T, typename U>
+using like_t = typename like<T, U>::type;
+
 } // namespace utils
 
 #define CONCAT2(x, y) x ## y

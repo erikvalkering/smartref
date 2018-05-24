@@ -124,10 +124,11 @@ The implementation has been tested using the following compilers:
     - [x] Assignment
   - [x] Qualifiers
     - [x] Non-const member-functions
-    - [ ] const member-functions
+    - [x] const member-functions
     - [ ] rvalue member-functions
     - [ ] const rvalue member-functions
 - [ ] Support for data members
+- [ ] Support for non-member functions
 
 ## How to use
 

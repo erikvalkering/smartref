@@ -17,6 +17,11 @@ public:
     return data;
   }
 
+  operator const T &() const
+  {
+    return data;
+  }
+
 private:
   T data;
 };
@@ -158,5 +163,15 @@ int main()
     Property<foobar::ClassTemplate<float>> d;
     d.foobarbaz();
     static_assert(std::is_same<decltype(d)::some_foo_type, foobar::ClassTemplate<float>::some_foo_type>::value);
+  }
+
+  {
+    Property<foobar::ConstClass> non_const_obj;
+    const Property<foobar::ConstClass> const_obj;
+
+    non_const_obj.foo();  // Should compile
+    non_const_obj.bar();  // Should compile
+    const_obj.foo();      // Should compile
+    // const_obj.bar();      // Should not compile
   }
 }

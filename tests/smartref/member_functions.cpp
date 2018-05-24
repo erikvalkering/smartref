@@ -1,37 +1,70 @@
 #include <smartref/smartref.h>
 
-REFLECTABLE(foo);
+#include <type_traits>
+
+REFLECTABLE(member);
 
 namespace tests {
 
 using smartref::using_;
 
-//! These tests check for existence of the foo member-function.
+//! These tests check for existence of the member() member-function.
 namespace test_existence {
 
 template<typename T>
-constexpr auto has_foo(int) -> decltype(std::declval<T>().foo(), bool{}) {return true;}
+constexpr auto has_member(int) -> decltype(std::declval<T &>().member(), bool{}) {return true;}
 template<typename T>
-constexpr auto has_foo(...) {return false;}
+constexpr auto has_member(...) {return false;}
 
-struct Foo
+struct EmptyClass {};
+
+struct NonConstMemberClass
 {
-  void foo() {}
+  void member() {}
 };
 
-struct Bar {};
+struct ConstMemberClass
+{
+  void member() const {}
+};
 
-static_assert(has_foo<Foo>(0),
-              "TEST FAILED: Foo doesn't seem to have a foo() member-function!");
+struct MixedMemberClass
+{
+  void member() {}
+  void member() const {}
+};
 
-static_assert(has_foo<using_<Foo>>(0),
-              "TEST FAILED: using_<Foo> doesn't seem to have a foo() member-function!");
+////////////////////////////////
+// non-const member functions //
+////////////////////////////////
 
-static_assert(!has_foo<Bar>(0),
-              "TEST FAILED: Foo seems to have a foo() member-function!");
+static_assert(!has_member<using_<EmptyClass>>(0),
+              "TEST FAILED: using_<EmptyClass> seems to have a member-function!");
 
-static_assert(!has_foo<using_<Bar>>(0),
-              "TEST FAILED: using_<Bar> doseems to have a foo() member-function!");
+static_assert(has_member<using_<NonConstMemberClass>>(0),
+              "TEST FAILED: using_<NonConstMemberClass> doesn't seem to have a member-function!");
+
+static_assert(has_member<using_<ConstMemberClass>>(0),
+              "TEST FAILED: using_<ConstMemberClass> doesn't seem to have a member-function!");
+
+static_assert(has_member<using_<MixedMemberClass>>(0),
+              "TEST FAILED: using_<MixedMemberClass> doesn't seem to have a member-function!");
+
+////////////////////////////
+// const member functions //
+////////////////////////////
+
+static_assert(!has_member<const using_<EmptyClass>>(0),
+              "TEST FAILED: const using_<EmptyClass> seems to have a const member-function!");
+
+static_assert(!has_member<const using_<NonConstMemberClass>>(0),
+              "TEST FAILED: const using_<NonConstMemberClass> seem to have a const member-function!");
+
+static_assert(has_member<const using_<ConstMemberClass>>(0),
+              "TEST FAILED: const using_<ConstMemberClass> doesn't seem to have a const member-function!");
+
+static_assert(has_member<const using_<MixedMemberClass>>(0),
+              "TEST FAILED: const using_<MixedMemberClass> doesn't seem to have a const member-function!");
 
 } // namespace test_existence
 } // namespace tests
