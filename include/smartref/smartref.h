@@ -72,13 +72,13 @@ struct DelegateTypeImpl<using_<Delegate, Derived>>
 };
 
 template<typename Using_>
-using DelegateType = typename DelegateTypeImpl<Using_>::type;
+using DelegateType = typename DelegateTypeImpl<utils::remove_cvref_t<Using_>>::type;
 
 template<typename Using_>
 auto delegate(Using_ &&base)
-  -> utils::like_t<Using_, DelegateType<utils::remove_cvref_t<Using_>>>
+  -> utils::like_t<Using_, DelegateType<Using_>>
 {
-  return static_cast<utils::like_t<Using_, DelegateType<utils::remove_cvref_t<Using_>>>>(base);
+  return static_cast<utils::like_t<Using_, DelegateType<Using_>>>(base);
 }
 
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
