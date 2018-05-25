@@ -174,4 +174,14 @@ int main()
     const_obj.foo();      // Should compile
     // const_obj.bar();      // Should not compile
   }
+
+  {
+    foobar::RefClass obj;
+    const foobar::RefClass cobj;
+
+    obj.foo(); // "RefClass::foo() &"
+    std::move(obj).foo(); // "RefClass::foo() &&"
+    cobj.foo(); // "RefClass::foo() const &"
+    std::move(cobj).foo(); // "RefClass::foo() const &&"
+  }
 }

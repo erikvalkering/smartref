@@ -152,6 +152,30 @@ public:
   }
 };
 
+class RefClass
+{
+public:
+  void foo() &
+  {
+    std::cout << "RefClass::foo() &" << std::endl;
+  }
+
+  void foo() &&
+  {
+    std::cout << "RefClass::foo() &&" << std::endl;
+  }
+
+  void foo() const &
+  {
+    std::cout << "RefClass::foo() const &" << std::endl;
+  }
+
+  void foo() const &&
+  {
+    std::cout << "RefClass::foo() const &&" << std::endl;
+  }
+};
+
 } // namespace foobar
 
 REFLECTABLE(foobar::Foo, foo);
