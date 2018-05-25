@@ -10,24 +10,38 @@ namespace smartref {
 template<typename Delegate, class Derived>
 struct using_base
 {
-  operator Delegate &()
+  operator Delegate &() &
   {
     auto &derived = static_cast<Derived &>(*this);
     return static_cast<Delegate &>(derived);
   }
 
-  operator const Delegate &() const
+  operator Delegate &&() &&
+  {
+    auto &&derived = static_cast<Derived &&>(*this);
+    return static_cast<Delegate &&>(derived);
+  }
+
+  operator const Delegate &() const &
   {
     auto &derived = static_cast<const Derived &>(*this);
     return static_cast<const Delegate &>(derived);
+  }
+
+  operator const Delegate &&() const &&
+  {
+    auto &&derived = static_cast<const Derived &&>(*this);
+    return static_cast<const Delegate &&>(derived);
   }
 };
 
 template<typename Delegate>
 struct using_base<Delegate, void>
 {
-  virtual operator Delegate &() = 0;
-  virtual operator const Delegate &() const = 0;
+  virtual operator Delegate &() & = 0;
+  virtual operator Delegate &&() && = 0;
+  virtual operator const Delegate &() const & = 0;
+  virtual operator const Delegate &&() const && = 0;
 };
 
 // TODO: -cmaster rename the non_void stuff. And maybe it can go to utils?
