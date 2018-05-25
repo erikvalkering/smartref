@@ -176,8 +176,8 @@ int main()
   }
 
   {
-    foobar::RefClass obj;
-    const foobar::RefClass cobj;
+    Property<foobar::RefClass> obj;
+    const Property<foobar::RefClass> cobj;
 
     obj.foo(); // "RefClass::foo() &"
     std::move(obj).foo(); // "RefClass::foo() &&"
