@@ -205,3 +205,5 @@ REFLECTABLE(auto, some_foo_type);
 
 REFLECTABLE(foobar::ConstClass, foo);
 REFLECTABLE(foobar::ConstClass, bar);
+
+REFLECTABLE(foobar::RefClass, foo);
