@@ -326,7 +326,7 @@ using detect_is_member_type = decltype(
       -> decltype(                                                                                      \
         on_call(                                                                                        \
           reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
-          derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
+          derived(std::move(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),               \
           utils::type_list<ExplicitArgs...>{},                                                          \
           std::forward<Args>(args)...                                                                   \
         )                                                                                               \
@@ -334,7 +334,7 @@ using detect_is_member_type = decltype(
     {                                                                                                   \
       return on_call(                                                                                   \
         reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
-        derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                            \
+        derived(std::move(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),                 \
         utils::type_list<ExplicitArgs...>{},                                                            \
         std::forward<Args>(args)...                                                                     \
       );                                                                                                \
