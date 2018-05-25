@@ -12,14 +12,24 @@ template<typename T>
 class Property : public using_<T>
 {
 public:
-  operator T &()
+  operator T &() &
   {
     return data;
   }
 
-  operator const T &() const
+  operator T &&() &&
+  {
+    return std::move(data);
+  }
+
+  operator const T &() const &
   {
     return data;
+  }
+
+  operator const T &&() const &&
+  {
+    return std::move(data);
   }
 
 private:

@@ -17,16 +17,28 @@ struct Ref : smartref::using_<T>
     return count;
   }
 
-  operator T &()
+  operator T &() &
   {
     ++counter();
     return ref;
   }
 
-  operator const T &() const
+  operator T &&() &&
+  {
+    ++counter();
+    return std::move(ref);
+  }
+
+  operator const T &() const &
   {
     ++counter();
     return ref;
+  }
+
+  operator const T &&() const &&
+  {
+    ++counter();
+    return std::move(ref);
   }
 
   Ref(T arg) : ref{arg} {}
