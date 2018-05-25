@@ -92,7 +92,7 @@ template<typename Using_>
 auto delegate(Using_ &&base)
   -> utils::like_t<Using_, DelegateType<Using_>>
 {
-  return static_cast<utils::like_t<Using_, DelegateType<Using_>>>(base);
+  return static_cast<utils::like_t<Using_, DelegateType<Using_>>>(std::forward<Using_>(base));
 }
 
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.

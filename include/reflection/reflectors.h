@@ -14,7 +14,7 @@ private:
   friend auto derived(Self &&self)
     -> utils::Delayed<utils::like_t<Self, Derived>, Self>
   {
-    return static_cast<utils::like_t<Self, Derived>>(self);
+    return static_cast<utils::like_t<Self, Derived>>(std::forward<Self>(self));
   }
 
   template<typename Self>
