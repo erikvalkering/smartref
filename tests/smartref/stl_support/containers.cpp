@@ -10,9 +10,24 @@ struct Ref : smartref::using_<T>
 {
   T ref;
 
-  operator T &()
+  operator T &() &
   {
     return ref;
+  }
+
+  operator T &&() &&
+  {
+    return std::move(ref);
+  }
+
+  operator const T &() const &
+  {
+    return ref;
+  }
+
+  operator const T &&() const &&
+  {
+    return std::move(ref);
   }
 
   Ref() = default;
