@@ -108,6 +108,8 @@ The implementation has been tested using the following compilers:
 ## Features
 - [x] Zero-overhead
 - [x] Header-only
+- [x] No dependencies
+- [x] Out-of-the-box support for the STL
 - [x] Non-intrusive support for user-defined types
 - [x] Generic support
 - [x] Fully uncoupled reflection emulation library
@@ -123,10 +125,10 @@ The implementation has been tested using the following compilers:
     - [x] Binary
     - [x] Assignment
   - [x] Qualifiers
-    - [x] Non-const member-functions
-    - [x] const member-functions
-    - [ ] rvalue member-functions
-    - [ ] const rvalue member-functions
+    - [x] Non-const lvalue-reference member-functions
+    - [x] Non-const rvalue-reference member-functions
+    - [x] const lvalue-reference member-functions
+    - [x] const rvalue-reference member-functions
 - [ ] Support for data members
 - [ ] Support for non-member functions
 
