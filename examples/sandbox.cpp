@@ -6,6 +6,8 @@
 #include <vector>
 #include <typeinfo>
 
+using namespace std;
+using namespace foobar;
 using smartref::using_;
 
 template<typename T>
@@ -19,7 +21,7 @@ public:
 
   operator T &&() &&
   {
-    return std::move(data);
+    return move(data);
   }
 
   operator const T &() const &
@@ -29,7 +31,7 @@ public:
 
   operator const T &&() const &&
   {
-    return std::move(data);
+    return move(data);
   }
 
 private:
@@ -38,9 +40,9 @@ private:
 
 /*
 class JSONValue : public using_<JSONValue, double>,
-          public using_<JSONValue, std::string>,
-          public using_<JSONValue, std::vector<JSONValue>>,
-          public using_<JSONValue, std::map<JSONValue, JSONValue>>
+          public using_<JSONValue, string>,
+          public using_<JSONValue, vector<JSONValue>>,
+          public using_<JSONValue, map<JSONValue, JSONValue>>
 {
 public:
   operator double &()
@@ -50,25 +52,25 @@ public:
 
   operator double &()
   {
-    return get<std::string>(data);
+    return get<string>(data);
   }
 
   operator double &()
   {
-    return get<std::vector<JSONValue>>(data);
+    return get<vector<JSONValue>>(data);
   }
 
   operator double &()
   {
-    return get<std::map<JSONValue, JSONValue>>(data);
+    return get<map<JSONValue, JSONValue>>(data);
   }
 
 private:
-  std::variant<
+  variant<
     double,
-    std::string,
-    std::vector<JSONValue>,
-    std::map<JSONValue, JSONValue>
+    string,
+    vector<JSONValue>,
+    map<JSONValue, JSONValue>
   > data;
 };
 */
@@ -83,9 +85,9 @@ int main()
   json.DOT(qwerty) = "the other (third) operator dot proposal";
 */
 
-  std::cout << "Hello, Wandbox!" << std::endl;
+  cout << "Hello, Wandbox!" << endl;
 
-  Property<std::vector<int>> v;
+  Property<vector<int>> v;
 
   v.push_back(1);
   v.push_back(2);
@@ -94,7 +96,7 @@ int main()
 
   for (auto x : v)
   {
-    std::cout << x << std::endl;
+    cout << x << endl;
   }
 
   Property<int> x{};
@@ -102,82 +104,82 @@ int main()
 
   auto z = x + y;
 
-  std::cout << z << std::endl;
-  std::cout << typeid(z).name() << std::endl;
+  cout << z << endl;
+  cout << typeid(z).name() << endl;
 
-  Property<foobar::Foo> foo;
+  Property<Foo> foo;
   foo.foo();
 
-  Property<foobar::Bar> bar;
+  Property<Bar> bar;
   bar.bar();
   bar.bar2();
   bar.bar3();
 
-  Property<foobar::Baz> baz;
+  Property<Baz> baz;
   baz.baz();
   baz.baz2();
 
-  Property<foobar::Bat> bat;
+  Property<Bat> bat;
   bat.bat();
   bat.bat2();
 
   {
-    foobar::Bar bar;
+    Bar bar;
     bar.bar();
     bar.bar2();
     bar.bar3();
 
-    foobar::Baz baz;
+    Baz baz;
     baz.baz();
     baz.baz2();
 
-    foobar::Bat bat;
+    Bat bat;
     bat.bat();
     bat.bat2();
   }
 
   {
-    Property<foobar::Bla> bla;
+    Property<Bla> bla;
     bla.foo();
     bla.bar();
     auto x = decltype(bla)::baz{1234};
-    std::cout << typeid(x).name() << " " << x << std::endl;
+    cout << typeid(x).name() << " " << x << endl;
     auto y = decltype(bla)::bla{};
     y.foo();
     y.bar();
   }
 
   {
-    Property<foobar::Overloads> o;
+    Property<Overloads> o;
     o.foo();
     o.foo(0);
     o.bar<int>();
   }
 
   {
-    Property<foobar::GenericClassA> a;
+    Property<GenericClassA> a;
     a.foobar();
     a.foobar(1);
     a.foobar(1.0);
-    static_assert(std::is_same<decltype(a)::some_type, foobar::GenericClassA::some_type>::value);
+    static_assert(is_same<decltype(a)::some_type, GenericClassA::some_type>::value);
 
-    Property<foobar::GenericClassB> b;
+    Property<GenericClassB> b;
     b.foobar();
     b.foobar(1);
-    static_assert(std::is_same<decltype(b)::some_type, foobar::GenericClassB::some_type>::value);
+    static_assert(is_same<decltype(b)::some_type, GenericClassB::some_type>::value);
 
-    Property<foobar::ClassTemplate<int>> c;
+    Property<ClassTemplate<int>> c;
     c.foobarbaz();
-    static_assert(std::is_same<decltype(c)::some_foo_type, foobar::ClassTemplate<int>::some_foo_type>::value);
+    static_assert(is_same<decltype(c)::some_foo_type, ClassTemplate<int>::some_foo_type>::value);
 
-    Property<foobar::ClassTemplate<float>> d;
+    Property<ClassTemplate<float>> d;
     d.foobarbaz();
-    static_assert(std::is_same<decltype(d)::some_foo_type, foobar::ClassTemplate<float>::some_foo_type>::value);
+    static_assert(is_same<decltype(d)::some_foo_type, ClassTemplate<float>::some_foo_type>::value);
   }
 
   {
-    Property<foobar::ConstClass> non_const_obj;
-    const Property<foobar::ConstClass> const_obj;
+    Property<ConstClass> non_const_obj;
+    const Property<ConstClass> const_obj;
 
     non_const_obj.foo();  // Should compile
     non_const_obj.bar();  // Should compile
@@ -186,12 +188,12 @@ int main()
   }
 
   {
-    Property<foobar::RefClass> obj;
-    const Property<foobar::RefClass> cobj;
+    Property<RefClass> obj;
+    const Property<RefClass> cobj;
 
     obj.foo(); // "RefClass::foo() &"
-    std::move(obj).foo(); // "RefClass::foo() &&"
+    move(obj).foo(); // "RefClass::foo() &&"
     cobj.foo(); // "RefClass::foo() const &"
-    std::move(cobj).foo(); // "RefClass::foo() const &&"
+    move(cobj).foo(); // "RefClass::foo() const &&"
   }
 }
