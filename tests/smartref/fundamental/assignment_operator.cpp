@@ -177,7 +177,7 @@ void test_ref()
   Ref<T>::counter() = 0;
   test<Ref<T>, T>();
   printf("counter: %d\n", Ref<T>::counter());
-  assert(Ref<T>::counter() == 34);
+  assert(Ref<T>::counter() == 31);
 }
 
 auto tests = []{
