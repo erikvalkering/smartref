@@ -106,6 +106,18 @@ using detect_is_member_type = decltype(
       )                                                                                               \
   }                                                                                                   \
 
+#define MEMBER2(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)          \
+  template<typename Arg>                                                        \
+  auto member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                          \
+    SFINAEABLE_RETURN(                                                          \
+      on_call(                                                                  \
+        reflector(utils::delayed(*this, utils::type_list<Arg>{})),              \
+        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))), \
+        utils::type_list<>{},                                                   \
+        std::forward<Arg>(arg)                                                  \
+      )                                                                         \
+    )                                                                           \
+
 // TODO: Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR(ReflectorClassName, member)  \
   template<typename Derived>                                                                                  \
@@ -124,49 +136,10 @@ using detect_is_member_type = decltype(
     ReflectorClassName &operator=(const ReflectorClassName &) = default;                                      \
     ReflectorClassName &operator=(ReflectorClassName &&) = default;                                           \
                                                                                                               \
-    template<typename Arg>                                                                                    \
-    auto member(Arg &&arg) &                                                                                  \
-      SFINAEABLE_RETURN(                                                                                      \
-        on_call(                                                                                              \
-          reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
-          derived(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
-          utils::type_list<>{},                                                                               \
-          std::forward<Arg>(arg)                                                                              \
-        )                                                                                                     \
-      )                                                                                                       \
-                                                                                                              \
-    template<typename Arg>                                                                                    \
-    auto member(Arg &&arg) &&                                                                                 \
-      SFINAEABLE_RETURN(                                                                                      \
-        on_call(                                                                                              \
-          reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
-          derived(std::move(utils::delayed(*this, utils::type_list<Arg>{}))),                                 \
-          utils::type_list<>{},                                                                               \
-          std::forward<Arg>(arg)                                                                              \
-        )                                                                                                     \
-      )                                                                                                       \
-                                                                                                              \
-    template<typename Arg>                                                                                    \
-    auto member(Arg &&arg) const &                                                                            \
-      SFINAEABLE_RETURN(                                                                                      \
-        on_call(                                                                                              \
-          reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
-          derived(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
-          utils::type_list<>{},                                                                               \
-          std::forward<Arg>(arg)                                                                              \
-        )                                                                                                     \
-      )                                                                                                       \
-                                                                                                              \
-    template<typename Arg>                                                                                    \
-    auto member(Arg &&arg) const &&                                                                           \
-      SFINAEABLE_RETURN(                                                                                      \
-        on_call(                                                                                              \
-          reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
-          derived(std::move(utils::delayed(*this, utils::type_list<Arg>{}))),                                 \
-          utils::type_list<>{},                                                                               \
-          std::forward<Arg>(arg)                                                                              \
-        )                                                                                                     \
-      )                                                                                                       \
+    MEMBER2(member,      , & ,          )                                                                     \
+    MEMBER2(member,      , &&, std::move)                                                                     \
+    MEMBER2(member, const, & ,          )                                                                     \
+    MEMBER2(member, const, &&, std::move)                                                                     \
   }                                                                                                           \
 
 #define MEMBER1(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)                      \
