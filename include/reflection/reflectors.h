@@ -57,6 +57,16 @@ using detect_is_member_type = decltype(
       Derived>;                                                                       \
   }                                                                                   \
 
+#define MEMBER3(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)  \
+  auto member() CONST_QUALIFIER REF_QUALIFIER                           \
+    SFINAEABLE_RETURN(                                                  \
+      on_call(                                                          \
+        reflector(*this),                                               \
+        derived(MOVE_FUNCTION(*this)),                                  \
+        utils::type_list<>{}                                            \
+      )                                                                 \
+    )                                                                   \
+
 // TODO: -cmaster Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member) \
   template<typename Derived>                                                                          \
@@ -69,41 +79,10 @@ using detect_is_member_type = decltype(
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member())                                              \
                                                                                                       \
   public:                                                                                             \
-    auto member() &                                                                                   \
-      SFINAEABLE_RETURN(                                                                              \
-        on_call(                                                                                      \
-          reflector(*this),                                                                           \
-          derived(*this),                                                                             \
-          utils::type_list<>{}                                                                        \
-        )                                                                                             \
-      )                                                                                               \
-                                                                                                      \
-    auto member() &&                                                                                  \
-      SFINAEABLE_RETURN(                                                                              \
-        on_call(                                                                                      \
-          reflector(*this),                                                                           \
-          derived(std::move(*this)),                                                                  \
-          utils::type_list<>{}                                                                        \
-        )                                                                                             \
-      )                                                                                               \
-                                                                                                      \
-    auto member() const &                                                                             \
-      SFINAEABLE_RETURN(                                                                              \
-        on_call(                                                                                      \
-          reflector(*this),                                                                           \
-          derived(*this),                                                                             \
-          utils::type_list<>{}                                                                        \
-        )                                                                                             \
-      )                                                                                               \
-                                                                                                      \
-    auto member() const &&                                                                            \
-      SFINAEABLE_RETURN(                                                                              \
-        on_call(                                                                                      \
-          reflector(*this),                                                                           \
-          derived(std::move(*this)),                                                                  \
-          utils::type_list<>{}                                                                        \
-        )                                                                                             \
-      )                                                                                               \
+    MEMBER3(member,      , & ,          )                                                             \
+    MEMBER3(member,      , &&, std::move)                                                             \
+    MEMBER3(member, const, & ,          )                                                             \
+    MEMBER3(member, const, &&, std::move)                                                             \
   }                                                                                                   \
 
 #define MEMBER2(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)          \
@@ -118,7 +97,6 @@ using detect_is_member_type = decltype(
       )                                                                         \
     )                                                                           \
 
-// TODO: Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR(ReflectorClassName, member)  \
   template<typename Derived>                                                                                  \
   class ReflectorClassName                                                                                    \
