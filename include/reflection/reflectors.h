@@ -169,6 +169,18 @@ using detect_is_member_type = decltype(
       )                                                                                                       \
   }                                                                                                           \
 
+#define MEMBER1(member, REF_QUALIFIER, MOVE_FUNCTION)                                       \
+  template<typename... ExplicitArgs, typename... Args>                                      \
+  auto member(Args &&... args) const REF_QUALIFIER                                          \
+    SFINAEABLE_RETURN(                                                                      \
+      on_call(                                                                              \
+        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),              \
+        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))), \
+        utils::type_list<ExplicitArgs...>{},                                                \
+        std::forward<Args>(args)...                                                         \
+      )                                                                                     \
+    )                                                                                       \
+
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
   template<typename Derived>                                                                            \
   class ReflectorClassName                                                                              \
@@ -217,25 +229,6 @@ using detect_is_member_type = decltype(
         )                                                                                               \
       )                                                                                                 \
                                                                                                         \
-    template<typename... ExplicitArgs, typename... Args>                                                \
-    auto member(Args &&... args) const &                                                                \
-      SFINAEABLE_RETURN(                                                                                \
-        on_call(                                                                                        \
-          reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
-          derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
-          utils::type_list<ExplicitArgs...>{},                                                          \
-          std::forward<Args>(args)...                                                                   \
-        )                                                                                               \
-      )                                                                                                 \
-                                                                                                        \
-    template<typename... ExplicitArgs, typename... Args>                                                \
-    auto member(Args &&... args) const &&                                                               \
-      SFINAEABLE_RETURN(                                                                                \
-        on_call(                                                                                        \
-          reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
-          derived(std::move(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),               \
-          utils::type_list<ExplicitArgs...>{},                                                          \
-          std::forward<Args>(args)...                                                                   \
-        )                                                                                               \
-      )                                                                                                 \
+    MEMBER1(member, & ,          )                                                                      \
+    MEMBER1(member, &&, std::move)                                                                      \
   }                                                                                                     \
