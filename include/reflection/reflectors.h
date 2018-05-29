@@ -148,13 +148,10 @@ using detect_is_member_type = decltype(
       utils::type_list<ExplicitArgs...>,                                                                \
       Args &&... args                                                                                   \
     )                                                                                                   \
-      -> std::enable_if_t<                                                                              \
+      CONSTRAINED_SFINAEABLE_RETURN(                                                                    \
         sizeof...(ExplicitArgs) != 0,                                                                   \
-        decltype(std::forward<Obj>(obj).template member<ExplicitArgs...>(std::forward<Args>(args)...))  \
-      >                                                                                                 \
-    {                                                                                                   \
-      return std::forward<Obj>(obj).template member<ExplicitArgs...>(std::forward<Args>(args)...);      \
-    }                                                                                                   \
+        std::forward<Obj>(obj).template member<ExplicitArgs...>(std::forward<Args>(args)...)            \
+      )                                                                                                 \
                                                                                                         \
   public:                                                                                               \
     REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, const, & ,          )                            \

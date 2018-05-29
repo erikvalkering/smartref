@@ -87,7 +87,16 @@ using like_t = typename like<T, U>::type;
 #define CONCAT(x, y) CONCAT2(x, y)
 
 #define SFINAEABLE_RETURN(expression) \
-  -> decltype(expression)             \
+    -> decltype(expression)           \
   {                                   \
     return expression;                \
   }                                   \
+
+#define CONSTRAINED_SFINAEABLE_RETURN(constraint, expression) \
+    -> std::enable_if_t<                                      \
+      constraint,                                             \
+      decltype(expression)                                    \
+    >                                                         \
+  {                                                           \
+    return expression;                                        \
+  }                                                           \
