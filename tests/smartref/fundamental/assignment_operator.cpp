@@ -107,7 +107,7 @@ auto test = []{
   a = std::move(b);
   a = b = std::move(c);
   a = (b = std::move(c));
-  (a = b) = std::move(c);
+  // (a = b) = std::move(c); // TODO: Fix (requires proper support for assignment from rvalue reference)
 
   //! Delegate type copy assignment
   a = delegate;
@@ -120,6 +120,51 @@ auto test = []{
   a = b = std::move(delegate);
   a = (b = std::move(delegate));
   (a = b) = std::move(delegate);
+
+// TODO: Fix this
+// There seem to be problems either in:
+// 1. My understanding of how implicit conversions work (using the user-defined conversion function)
+// 2. Clang contains a bug (GCC doesn't seem to have the problem)
+// 3. The standard contains a bug.
+
+// Anyway, this is the problem:
+
+// struct Foo {};
+// struct Bar : Foo {};
+// struct Baz
+// {
+//   Foo foo;
+
+//   operator       Foo & ()       &  { return foo;       }
+//   operator       Foo &&()       && { return move(foo); }
+//   operator const Foo & () const &  { return foo;       }
+//   operator const Foo &&() const && { return move(foo); }
+// };
+
+// Foo foo; const Foo cfoo;
+// Bar bar; const Bar cbar;
+// Baz baz; const Baz cbaz;
+
+// // assignment from Foo
+// foo = foo;
+// foo = move(foo);
+// foo = cfoo;
+// foo = move(cfoo);
+
+// // assignment from Bar (inherits from Foo)
+// foo = bar;
+// foo = move(bar);
+// foo = cbar;
+// foo = move(cbar);
+
+// // assignment from Baz (smart reference to Foo)
+// foo = baz;
+// foo = move(baz);
+// foo = cbaz;
+// foo = move(cbaz);
+
+// While the first two assignment tests obviously succeed (Foo and Bar), the third one does not (Baz). You would expect the same implicit conversion behavior as if you're inheriting from Foo.
+// Note that the problem also occurs when calling a function overload set, and it again only fails for Clang. However, this can be worked around by marking all the free functions as reflectable.
 
   return 0;
 };

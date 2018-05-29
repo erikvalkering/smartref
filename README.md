@@ -124,6 +124,8 @@ The implementation has been tested using the following compilers:
     - [x] Unary
     - [x] Binary
     - [x] Assignment
+      - [x] From lvalue reference
+      - [ ] From rvalue reference
   - [x] Qualifiers
     - [x] Non-const lvalue-reference member-functions
     - [x] Non-const rvalue-reference member-functions
