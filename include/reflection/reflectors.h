@@ -66,75 +66,44 @@ using detect_is_member_type = decltype(
   private:                                                                                            \
     template<typename Obj>                                                                            \
     friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>)                       \
-      -> decltype(std::forward<Obj>(obj).member())                                                    \
-    {                                                                                                 \
-      return std::forward<Obj>(obj).member();                                                         \
-    }                                                                                                 \
+      SFINAEABLE_RETURN(std::forward<Obj>(obj).member())                                              \
                                                                                                       \
   public:                                                                                             \
     auto member() &                                                                                   \
-      -> decltype(                                                                                    \
+      SFINAEABLE_RETURN(                                                                              \
         on_call(                                                                                      \
           reflector(*this),                                                                           \
           derived(*this),                                                                             \
           utils::type_list<>{}                                                                        \
         )                                                                                             \
       )                                                                                               \
-    {                                                                                                 \
-      return on_call(                                                                                 \
-        reflector(*this),                                                                             \
-        derived(*this),                                                                               \
-        utils::type_list<>{}                                                                          \
-      );                                                                                              \
-    }                                                                                                 \
                                                                                                       \
     auto member() &&                                                                                  \
-      -> decltype(                                                                                    \
+      SFINAEABLE_RETURN(                                                                              \
         on_call(                                                                                      \
           reflector(*this),                                                                           \
           derived(std::move(*this)),                                                                  \
           utils::type_list<>{}                                                                        \
         )                                                                                             \
       )                                                                                               \
-    {                                                                                                 \
-      return on_call(                                                                                 \
-        reflector(*this),                                                                             \
-        derived(std::move(*this)),                                                                    \
-        utils::type_list<>{}                                                                          \
-      );                                                                                              \
-    }                                                                                                 \
                                                                                                       \
     auto member() const &                                                                             \
-      -> decltype(                                                                                    \
+      SFINAEABLE_RETURN(                                                                              \
         on_call(                                                                                      \
           reflector(*this),                                                                           \
           derived(*this),                                                                             \
           utils::type_list<>{}                                                                        \
         )                                                                                             \
       )                                                                                               \
-    {                                                                                                 \
-      return on_call(                                                                                 \
-        reflector(*this),                                                                             \
-        derived(*this),                                                                               \
-        utils::type_list<>{}                                                                          \
-      );                                                                                              \
-    }                                                                                                 \
                                                                                                       \
     auto member() const &&                                                                            \
-      -> decltype(                                                                                    \
+      SFINAEABLE_RETURN(                                                                              \
         on_call(                                                                                      \
           reflector(*this),                                                                           \
           derived(std::move(*this)),                                                                  \
           utils::type_list<>{}                                                                        \
         )                                                                                             \
       )                                                                                               \
-    {                                                                                                 \
-      return on_call(                                                                                 \
-        reflector(*this),                                                                             \
-        derived(std::move(*this)),                                                                    \
-        utils::type_list<>{}                                                                          \
-      );                                                                                              \
-    }                                                                                                 \
   }                                                                                                   \
 
 // TODO: Get rid of code duplication
@@ -146,10 +115,7 @@ using detect_is_member_type = decltype(
   private:                                                                                                    \
     template<typename Obj, typename Arg>                                                                      \
     friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Arg &&arg)                    \
-      -> decltype(std::forward<Obj>(obj) = std::forward<Arg>(arg))                                            \
-    {                                                                                                         \
-      return std::forward<Obj>(obj) = std::forward<Arg>(arg);                                                 \
-    }                                                                                                         \
+      SFINAEABLE_RETURN(std::forward<Obj>(obj) = std::forward<Arg>(arg))                                      \
                                                                                                               \
   public:                                                                                                     \
     ReflectorClassName() = default;                                                                           \
@@ -160,7 +126,7 @@ using detect_is_member_type = decltype(
                                                                                                               \
     template<typename Arg>                                                                                    \
     auto member(Arg &&arg) &                                                                                  \
-      -> decltype(                                                                                            \
+      SFINAEABLE_RETURN(                                                                                      \
         on_call(                                                                                              \
           reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
           derived(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
@@ -168,18 +134,10 @@ using detect_is_member_type = decltype(
           std::forward<Arg>(arg)                                                                              \
         )                                                                                                     \
       )                                                                                                       \
-    {                                                                                                         \
-      return on_call(                                                                                         \
-        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
-        derived(utils::delayed(*this, utils::type_list<Arg>{})),                                              \
-        utils::type_list<>{},                                                                                 \
-        std::forward<Arg>(arg)                                                                                \
-      );                                                                                                      \
-    }                                                                                                         \
                                                                                                               \
     template<typename Arg>                                                                                    \
     auto member(Arg &&arg) &&                                                                                 \
-      -> decltype(                                                                                            \
+      SFINAEABLE_RETURN(                                                                                      \
         on_call(                                                                                              \
           reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
           derived(std::move(utils::delayed(*this, utils::type_list<Arg>{}))),                                 \
@@ -187,18 +145,10 @@ using detect_is_member_type = decltype(
           std::forward<Arg>(arg)                                                                              \
         )                                                                                                     \
       )                                                                                                       \
-    {                                                                                                         \
-      return on_call(                                                                                         \
-        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
-        derived(std::move(utils::delayed(*this, utils::type_list<Arg>{}))),                                   \
-        utils::type_list<>{},                                                                                 \
-        std::forward<Arg>(arg)                                                                                \
-      );                                                                                                      \
-    }                                                                                                         \
                                                                                                               \
     template<typename Arg>                                                                                    \
     auto member(Arg &&arg) const &                                                                            \
-      -> decltype(                                                                                            \
+      SFINAEABLE_RETURN(                                                                                      \
         on_call(                                                                                              \
           reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
           derived(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
@@ -206,18 +156,10 @@ using detect_is_member_type = decltype(
           std::forward<Arg>(arg)                                                                              \
         )                                                                                                     \
       )                                                                                                       \
-    {                                                                                                         \
-      return on_call(                                                                                         \
-        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
-        derived(utils::delayed(*this, utils::type_list<Arg>{})),                                              \
-        utils::type_list<>{},                                                                                 \
-        std::forward<Arg>(arg)                                                                                \
-      );                                                                                                      \
-    }                                                                                                         \
                                                                                                               \
     template<typename Arg>                                                                                    \
     auto member(Arg &&arg) const &&                                                                           \
-      -> decltype(                                                                                            \
+      SFINAEABLE_RETURN(                                                                                      \
         on_call(                                                                                              \
           reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                          \
           derived(std::move(utils::delayed(*this, utils::type_list<Arg>{}))),                                 \
@@ -225,14 +167,6 @@ using detect_is_member_type = decltype(
           std::forward<Arg>(arg)                                                                              \
         )                                                                                                     \
       )                                                                                                       \
-    {                                                                                                         \
-      return on_call(                                                                                         \
-        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                            \
-        derived(std::move(utils::delayed(*this, utils::type_list<Arg>{}))),                                   \
-        utils::type_list<>{},                                                                                 \
-        std::forward<Arg>(arg)                                                                                \
-      );                                                                                                      \
-    }                                                                                                         \
   }                                                                                                           \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
@@ -243,10 +177,7 @@ using detect_is_member_type = decltype(
   private:                                                                                              \
     template<typename Obj, typename... Args>                                                            \
     friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Args &&... args)        \
-      -> decltype(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                           \
-    {                                                                                                   \
-      return std::forward<Obj>(obj).member(std::forward<Args>(args)...);                                \
-    }                                                                                                   \
+      SFINAEABLE_RETURN(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                     \
                                                                                                         \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
     friend auto call(                                                                                   \
@@ -266,7 +197,7 @@ using detect_is_member_type = decltype(
   public:                                                                                               \
     template<typename... ExplicitArgs, typename... Args>                                                \
     auto member(Args &&... args) &                                                                      \
-      -> decltype(                                                                                      \
+      SFINAEABLE_RETURN(                                                                                \
         on_call(                                                                                        \
           reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
           derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
@@ -274,18 +205,10 @@ using detect_is_member_type = decltype(
           std::forward<Args>(args)...                                                                   \
         )                                                                                               \
       )                                                                                                 \
-    {                                                                                                   \
-      return on_call(                                                                                   \
-        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
-        derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                            \
-        utils::type_list<ExplicitArgs...>{},                                                            \
-        std::forward<Args>(args)...                                                                     \
-      );                                                                                                \
-    }                                                                                                   \
                                                                                                         \
     template<typename... ExplicitArgs, typename... Args>                                                \
     auto member(Args &&... args) &&                                                                     \
-      -> decltype(                                                                                      \
+      SFINAEABLE_RETURN(                                                                                \
         on_call(                                                                                        \
           reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
           derived(std::move(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),               \
@@ -293,18 +216,10 @@ using detect_is_member_type = decltype(
           std::forward<Args>(args)...                                                                   \
         )                                                                                               \
       )                                                                                                 \
-    {                                                                                                   \
-      return on_call(                                                                                   \
-        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
-        derived(std::move(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),                 \
-        utils::type_list<ExplicitArgs...>{},                                                            \
-        std::forward<Args>(args)...                                                                     \
-      );                                                                                                \
-    }                                                                                                   \
                                                                                                         \
     template<typename... ExplicitArgs, typename... Args>                                                \
     auto member(Args &&... args) const &                                                                \
-      -> decltype(                                                                                      \
+      SFINAEABLE_RETURN(                                                                                \
         on_call(                                                                                        \
           reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
           derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
@@ -312,18 +227,10 @@ using detect_is_member_type = decltype(
           std::forward<Args>(args)...                                                                   \
         )                                                                                               \
       )                                                                                                 \
-    {                                                                                                   \
-      return on_call(                                                                                   \
-        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
-        derived(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                            \
-        utils::type_list<ExplicitArgs...>{},                                                            \
-        std::forward<Args>(args)...                                                                     \
-      );                                                                                                \
-    }                                                                                                   \
                                                                                                         \
     template<typename... ExplicitArgs, typename... Args>                                                \
     auto member(Args &&... args) const &&                                                               \
-      -> decltype(                                                                                      \
+      SFINAEABLE_RETURN(                                                                                \
         on_call(                                                                                        \
           reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                        \
           derived(std::move(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),               \
@@ -331,12 +238,4 @@ using detect_is_member_type = decltype(
           std::forward<Args>(args)...                                                                   \
         )                                                                                               \
       )                                                                                                 \
-    {                                                                                                   \
-      return on_call(                                                                                   \
-        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                          \
-        derived(std::move(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),                 \
-        utils::type_list<ExplicitArgs...>{},                                                            \
-        std::forward<Args>(args)...                                                                     \
-      );                                                                                                \
-    }                                                                                                   \
   }                                                                                                     \

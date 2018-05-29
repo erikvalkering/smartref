@@ -85,3 +85,9 @@ using like_t = typename like<T, U>::type;
 
 #define CONCAT2(x, y) x ## y
 #define CONCAT(x, y) CONCAT2(x, y)
+
+#define SFINAEABLE_RETURN(expression) \
+  -> decltype(expression)             \
+  {                                   \
+    return expression;                \
+  }                                   \
