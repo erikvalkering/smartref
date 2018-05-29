@@ -57,17 +57,16 @@ using detect_is_member_type = decltype(
       Derived>;                                                                       \
   }                                                                                   \
 
-#define MEMBER3(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)  \
-  auto member() CONST_QUALIFIER REF_QUALIFIER                           \
-    SFINAEABLE_RETURN(                                                  \
-      on_call(                                                          \
-        reflector(*this),                                               \
-        derived(MOVE_FUNCTION(*this)),                                  \
-        utils::type_list<>{}                                            \
-      )                                                                 \
-    )                                                                   \
+#define REFLECTION_INJECT_MEMBER_FUNCTION(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
+  auto member() CONST_QUALIFIER REF_QUALIFIER                                                    \
+    SFINAEABLE_RETURN(                                                                           \
+      on_call(                                                                                   \
+        reflector(*this),                                                                        \
+        derived(MOVE_FUNCTION(*this)),                                                           \
+        utils::type_list<>{}                                                                     \
+      )                                                                                          \
+    )                                                                                            \
 
-// TODO: -cmaster Get rid of code duplication
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member) \
   template<typename Derived>                                                                          \
   class ReflectorClassName                                                                            \
@@ -79,23 +78,23 @@ using detect_is_member_type = decltype(
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member())                                              \
                                                                                                       \
   public:                                                                                             \
-    MEMBER3(member,      , & ,          )                                                             \
-    MEMBER3(member,      , &&, std::move)                                                             \
-    MEMBER3(member, const, & ,          )                                                             \
-    MEMBER3(member, const, &&, std::move)                                                             \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , & ,          )                                   \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , &&, std::move)                                   \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, & ,          )                                   \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, &&, std::move)                                   \
   }                                                                                                   \
 
-#define MEMBER2(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)          \
-  template<typename Arg>                                                        \
-  auto member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                          \
-    SFINAEABLE_RETURN(                                                          \
-      on_call(                                                                  \
-        reflector(utils::delayed(*this, utils::type_list<Arg>{})),              \
-        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))), \
-        utils::type_list<>{},                                                   \
-        std::forward<Arg>(arg)                                                  \
-      )                                                                         \
-    )                                                                           \
+#define REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)  \
+  template<typename Arg>                                                                              \
+  auto member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                                \
+    SFINAEABLE_RETURN(                                                                                \
+      on_call(                                                                                        \
+        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                    \
+        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                       \
+        utils::type_list<>{},                                                                         \
+        std::forward<Arg>(arg)                                                                        \
+      )                                                                                               \
+    )                                                                                                 \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR(ReflectorClassName, member)  \
   template<typename Derived>                                                                                  \
@@ -114,23 +113,23 @@ using detect_is_member_type = decltype(
     ReflectorClassName &operator=(const ReflectorClassName &) = default;                                      \
     ReflectorClassName &operator=(ReflectorClassName &&) = default;                                           \
                                                                                                               \
-    MEMBER2(member,      , & ,          )                                                                     \
-    MEMBER2(member,      , &&, std::move)                                                                     \
-    MEMBER2(member, const, & ,          )                                                                     \
-    MEMBER2(member, const, &&, std::move)                                                                     \
+    REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member,      , & ,          )                                       \
+    REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member,      , &&, std::move)                                       \
+    REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member, const, & ,          )                                       \
+    REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member, const, &&, std::move)                                       \
   }                                                                                                           \
 
-#define MEMBER1(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)                      \
-  template<typename... ExplicitArgs, typename... Args>                                      \
-  auto member(Args &&... args) CONST_QUALIFIER REF_QUALIFIER                                \
-    SFINAEABLE_RETURN(                                                                      \
-      on_call(                                                                              \
-        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),              \
-        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))), \
-        utils::type_list<ExplicitArgs...>{},                                                \
-        std::forward<Args>(args)...                                                         \
-      )                                                                                     \
-    )                                                                                       \
+#define REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
+  template<typename... ExplicitArgs, typename... Args>                                                    \
+  auto member(Args &&... args) CONST_QUALIFIER REF_QUALIFIER                                              \
+    SFINAEABLE_RETURN(                                                                                    \
+      on_call(                                                                                            \
+        reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                            \
+        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),               \
+        utils::type_list<ExplicitArgs...>{},                                                              \
+        std::forward<Args>(args)...                                                                       \
+      )                                                                                                   \
+    )                                                                                                     \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
   template<typename Derived>                                                                            \
@@ -158,8 +157,8 @@ using detect_is_member_type = decltype(
     }                                                                                                   \
                                                                                                         \
   public:                                                                                               \
-    MEMBER1(member, const, & ,          )                                                               \
-    MEMBER1(member, const, &&, std::move)                                                               \
-    MEMBER1(member,      , & ,          )                                                               \
-    MEMBER1(member,      , &&, std::move)                                                               \
+    REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, const, & ,          )                            \
+    REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, const, &&, std::move)                            \
+    REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member,      , & ,          )                            \
+    REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member,      , &&, std::move)                            \
   }                                                                                                     \
