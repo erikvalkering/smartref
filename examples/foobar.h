@@ -176,6 +176,9 @@ public:
   }
 };
 
+class Derived : public Foo {};
+class MoreDerived : public Derived {};
+
 } // namespace foobar
 
 REFLECTABLE(foobar::Foo, foo);

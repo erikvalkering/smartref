@@ -75,6 +75,11 @@ private:
 };
 */
 
+void asdf(Foo)              { cout << "asdf(Foo)"              << endl; }
+void asdf(Derived)          { cout << "asdf(Derived)"          << endl; }
+template<typename T>
+void asdf(ClassTemplate<T>) { cout << "asdf(ClassTemplate<T>)" << endl; }
+
 int main()
 {
 /*
@@ -195,5 +200,17 @@ int main()
     move(obj).foo(); // "RefClass::foo() &&"
     cobj.foo(); // "RefClass::foo() const &"
     move(cobj).foo(); // "RefClass::foo() const &&"
+  }
+
+  {
+    Property<Foo> foo;
+    Property<Derived> derived;
+    Property<MoreDerived> moreDerived;
+    Property<ClassTemplate<int>> tmpl;
+
+    asdf(foo);          // "asdf(Foo)"
+    asdf(derived);      // "asdf(Derived)"
+    asdf(moreDerived);  // "asdf(Derived)"
+    asdf(tmpl);         // "asdf(ClassTemplate<T>)"
   }
 }
