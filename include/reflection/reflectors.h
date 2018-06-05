@@ -159,3 +159,38 @@ using detect_is_member_type = decltype(
     REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member,      , & ,          )                            \
     REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member,      , &&, std::move)                            \
   }                                                                                                     \
+
+#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_REFLECTOR(ReflectorClassName, member)                  \
+  template<typename Derived>                                                                            \
+  class ReflectorClassName                                                                              \
+    : public reflection::reflector_base<Derived>                                                        \
+  {                                                                                                     \
+  private:                                                                                              \
+    template<typename Obj, typename... Args>                                                            \
+    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Args &&... args)        \
+      SFINAEABLE_RETURN(member(std::forward<Obj>(obj), std::forward<Args>(args)...))                    \
+                                                                                                        \
+    template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
+    friend auto call(                                                                                   \
+      const ReflectorClassName &,                                                                       \
+      Obj &&obj,                                                                                        \
+      utils::type_list<ExplicitArgs...>,                                                                \
+      Args &&... args                                                                                   \
+    )                                                                                                   \
+      CONSTRAINED_SFINAEABLE_RETURN(                                                                    \
+        sizeof...(ExplicitArgs) != 0,                                                                   \
+        member<ExplicitArgs...>(std::forward<Obj>(obj), std::forward<Args>(args)...)                    \
+      )                                                                                                 \
+                                                                                                        \
+  public:                                                                                               \
+    template<typename... ExplicitArgs, typename Self, typename... Args>                                 \
+    friend auto member(Self &&self, Args &&... args)                                                    \
+      SFINAEABLE_RETURN(                                                                                \
+        on_call(                                                                                        \
+          reflector(utils::delayed(self, utils::type_list<ExplicitArgs...>{})),                         \
+          derived(MOVE_FUNCTION(utils::delayed(self, utils::type_list<ExplicitArgs...>{}))),            \
+          utils::type_list<ExplicitArgs...>{},                                                          \
+          std::forward<Args>(args)...                                                                   \
+        )                                                                                               \
+      )                                                                                                 \
+  }                                                                                                     \
