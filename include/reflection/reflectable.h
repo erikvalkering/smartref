@@ -84,7 +84,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     member,                                               \
     REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR,     \
     REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR, \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR            \
+    REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_REFLECTOR    \
   )                                                       \
 
 #define REFLECTION_REFLECTABLE1(member) \
