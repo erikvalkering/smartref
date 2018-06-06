@@ -80,6 +80,8 @@ void asdf(Derived)          { cout << "asdf(Derived)"          << endl; }
 template<typename T>
 void asdf(ClassTemplate<T>) { cout << "asdf(ClassTemplate<T>)" << endl; }
 
+REFLECTABLE(auto, asdf);
+
 int main()
 {
 /*
