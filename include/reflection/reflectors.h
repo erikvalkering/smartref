@@ -166,12 +166,12 @@ using detect_is_member_type = decltype(
   {                                                                                                     \
   public:                                                                                               \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
-    friend auto call(const ReflectorClassName##2 &, Obj &obj, utils::type_list<ExplicitArgs...>, Args &&... args)      \
+    friend auto call(const ReflectorClassName##2 &, Obj &&obj, utils::type_list<ExplicitArgs...>, Args &&... args)      \
     /*friend auto call(const ReflectorClassName##2 &, Obj &obj)*/                                       \
      /* -> decltype(member(obj)) */                                                                     \
     {                                                                                                   \
       /* TODO: Support for explicit args */                                                             \
-      return member(obj, std::forward<Args>(args)...);                                                  \
+      return member(std::forward<Obj>(obj), std::forward<Args>(args)...);                               \
     }                                                                                                   \
   };                                                                                                    \
                                                                                                         \
@@ -184,7 +184,7 @@ using detect_is_member_type = decltype(
     {                                                                                                   \
     public:                                                                                             \
       template<typename... ExplicitArgs, typename Self, typename... Args>                               \
-      friend auto member(Self &self, Args &&... args)                                                   \
+      friend auto member(Self &&self, Args &&... args)                                                  \
         /*-> decltype(                                                                                */\
         /*  on_call(                                                                                  */\
         /*    reflector(self),                                                                        */\
@@ -194,7 +194,7 @@ using detect_is_member_type = decltype(
       {                                                                                                 \
         return on_call(                                                                                 \
             reflector(self),                                                                            \
-            derived(self),                                                                              \
+            derived(std::forward<Self>(self)),                                                          \
             utils::type_list<ExplicitArgs...>{},                                                        \
             std::forward<Args>(args)...                                                                 \
         );                                                                                              \
