@@ -192,12 +192,14 @@ using detect_is_member_type = decltype(
     public:                                                                                             \
       template<typename... ExplicitArgs, typename Self, typename... Args>                               \
       friend auto member(Self &&self, Args &&... args)                                                  \
-        /*-> decltype(                                                                                */\
-        /*  on_call(                                                                                  */\
-        /*    reflector(self),                                                                        */\
-        /*    derived(self)                                                                           */\
-        /*  )                                                                                         */\
-        /*)                                                                                           */\
+        -> decltype(                                                                                    \
+          on_call(                                                                                      \
+            reflector(self),                                                                            \
+            derived(std::forward<Self>(self)),                                                          \
+            utils::type_list<ExplicitArgs...>{},                                                        \
+            std::forward<Args>(args)...                                                                 \
+          )                                                                                             \
+        )                                                                                               \
       {                                                                                                 \
         return on_call(                                                                                 \
             reflector(self),                                                                            \
