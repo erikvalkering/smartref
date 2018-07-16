@@ -45,6 +45,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 
 // TODO: -cmaster Have a quick look whether we can simplify these macros.
 // TODO: -cmaster We can replace the using type = ... with a simple boolean, such that we can inline the reflectors
+// TODO: Rename 'member' to more general 'name' (for free function 'member' is nonsense)
 #define REFLECTION_REFLECTABLE_UNIFIED(Class, member,                         \
   MEMBER_TYPE_REFLECTOR, MEMBER_FUNCTION_REFLECTOR, FREE_FUNCTION_REFLECTOR   \
 )                                                                             \
