@@ -166,9 +166,13 @@ using detect_is_member_type = decltype(
   {                                                                                                     \
   public:                                                                                               \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
-    friend auto call(const ReflectorClassName##2 &, Obj &&obj, utils::type_list<ExplicitArgs...>, Args &&... args)      \
-    /*friend auto call(const ReflectorClassName##2 &, Obj &obj)*/                                       \
-     /* -> decltype(member(obj)) */                                                                     \
+    friend auto call(                                                                                   \
+      const ReflectorClassName##2 &,                                                                    \
+      Obj &&obj,                                                                                        \
+      utils::type_list<ExplicitArgs...>,                                                                \
+      Args &&... args                                                                                   \
+    )                                                                                                   \
+      -> decltype(member(std::forward<Obj>(obj), std::forward<Args>(args)...))                          \
     {                                                                                                   \
       /* TODO: Support for explicit args */                                                             \
       /* The reason why this needs to be put in a separate class, */                                    \
