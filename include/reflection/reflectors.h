@@ -171,6 +171,9 @@ using detect_is_member_type = decltype(
      /* -> decltype(member(obj)) */                                                                     \
     {                                                                                                   \
       /* TODO: Support for explicit args */                                                             \
+      /* The reason why this needs to be put in a separate class, */                                    \
+      /* is because otherwise the ADL would find the function     */                                    \
+      /* defined in the smart reference itself.                   */                                    \
       return member(std::forward<Obj>(obj), std::forward<Args>(args)...);                               \
     }                                                                                                   \
   };                                                                                                    \
