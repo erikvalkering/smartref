@@ -101,6 +101,7 @@ auto delegate(Using_ &&base)
 
 // TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
+// TODO: SFINAEABLE_RETURN
 template<typename Reflection, typename Using_, typename... ExplicitArgs, typename... Args>
 auto on_call(const Reflection &reflection, Using_ &&self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
   -> decltype(call(reflection, delegate(std::forward<Using_>(self)), explicitArgs, std::forward<Args>(args)...))
