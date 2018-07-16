@@ -165,12 +165,13 @@ using detect_is_member_type = decltype(
   class ReflectorClassName##2                                                                           \
   {                                                                                                     \
   public:                                                                                               \
-    template</*typename... ExplicitArgs, */typename Obj/*, typename... Args*/>                                  \
-    friend auto call(const ReflectorClassName##2 &, Obj &obj/*, utils::type_list<ExplicitArgs...>, Args &&... args*/)      \
+    template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
+    friend auto call(const ReflectorClassName##2 &, Obj &obj, utils::type_list<ExplicitArgs...>, Args &&... args)      \
     /*friend auto call(const ReflectorClassName##2 &, Obj &obj)*/                                       \
      /* -> decltype(member(obj)) */                                                                     \
     {                                                                                                   \
-      return member(obj);                                                                               \
+      /* TODO: Support for explicit args */                                                             \
+      return member(obj, std::forward<Args>(args)...);                                                  \
     }                                                                                                   \
   };                                                                                                    \
                                                                                                         \
@@ -182,8 +183,8 @@ using detect_is_member_type = decltype(
       , public reflection::reflector_base<Derived>                                                      \
     {                                                                                                   \
     public:                                                                                             \
-      template<typename Self>                                                                           \
-      friend auto member(Self &self)                                                                    \
+      template<typename... ExplicitArgs, typename Self, typename... Args>                               \
+      friend auto member(Self &self, Args &&... args)                                                   \
         /*-> decltype(                                                                                */\
         /*  on_call(                                                                                  */\
         /*    reflector(self),                                                                        */\
@@ -193,8 +194,9 @@ using detect_is_member_type = decltype(
       {                                                                                                 \
         return on_call(                                                                                 \
             reflector(self),                                                                            \
-            derived(self)/*,                                                                              */\
-            /*utils::type_list<ExplicitArgs...>{}                                                     */\
+            derived(self),                                                                              \
+            utils::type_list<ExplicitArgs...>{},                                                        \
+            std::forward<Args>(args)...                                                                 \
         );                                                                                              \
       }                                                                                                 \
     };                                                                                                  \
