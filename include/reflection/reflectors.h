@@ -161,24 +161,41 @@ using detect_is_member_type = decltype(
   }                                                                                                     \
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_REFLECTOR(ReflectorClassName, member)                  \
-  template<typename Derived>                                                                            \
-  class ReflectorClassName                                                                              \
-    : public reflection::reflector_base<Derived>                                                        \
+  template<typename Delay>                                                                              \
+  class ReflectorClassName##2                                                                           \
   {                                                                                                     \
   public:                                                                                               \
-    template<typename Obj>                                                                              \
-    friend auto call(const ReflectorClassName &, Obj &&obj)                                             \
+    template</*typename... ExplicitArgs, */typename Obj/*, typename... Args*/>                                  \
+    friend auto call(const ReflectorClassName##2 &, Obj &obj/*, utils::type_list<ExplicitArgs...>, Args &&... args*/)      \
+    /*friend auto call(const ReflectorClassName##2 &, Obj &obj)*/                                       \
+     /* -> decltype(member(obj)) */                                                                     \
     {                                                                                                   \
-      return member(std::forward<Obj>(obj));                                                            \
+      return member(obj);                                                                               \
     }                                                                                                   \
+  };                                                                                                    \
                                                                                                         \
-  public:                                                                                               \
-    template<typename Self>                                                                             \
-    friend auto member(Self &&self)                                                                     \
+  struct ReflectorClassName##3                                                                          \
+  {                                                                                                     \
+    template<typename Derived, typename Delay = void>                                                   \
+    class ReflectorClassName                                                                            \
+      : public ReflectorClassName##2<Delay>                                                             \
+      , public reflection::reflector_base<Derived>                                                      \
     {                                                                                                   \
-      return on_call(                                                                                   \
-          reflector(self),                                                                              \
-          derived(self)                                                                                 \
-      );                                                                                                \
-    }                                                                                                   \
-  }                                                                                                     \
+    public:                                                                                             \
+      template<typename Self>                                                                           \
+      friend auto member(Self &self)                                                                    \
+        /*-> decltype(                                                                                */\
+        /*  on_call(                                                                                  */\
+        /*    reflector(self),                                                                        */\
+        /*    derived(self)                                                                           */\
+        /*  )                                                                                         */\
+        /*)                                                                                           */\
+      {                                                                                                 \
+        return on_call(                                                                                 \
+            reflector(self),                                                                            \
+            derived(self)/*,                                                                              */\
+            /*utils::type_list<ExplicitArgs...>{}                                                     */\
+        );                                                                                              \
+      }                                                                                                 \
+    };                                                                                                  \
+  } /* struct ReflectorClassName##3 */                                                                  \
