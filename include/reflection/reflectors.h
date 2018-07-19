@@ -186,8 +186,8 @@ using detect_is_member_type = decltype(
   {                                                                                                     \
     template<typename Derived, typename Delay = void>                                                   \
     class ReflectorClassName                                                                            \
-      : public ReflectorClassName##2<Delay>                                                             \
-      , public reflection::reflector_base<Derived>                                                      \
+      : public reflection::reflector_base<Derived>                                                      \
+      , public ReflectorClassName##2<Delay>                                                             \
     {                                                                                                   \
     public:                                                                                             \
       template<typename... ExplicitArgs, typename Self, typename... Args>                               \
