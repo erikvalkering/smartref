@@ -166,20 +166,35 @@ using detect_is_member_type = decltype(
   class ReflectorClassName##2                                                                           \
   {                                                                                                     \
   public:                                                                                               \
-    template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
+    template<typename Obj, typename... Args>                                  \
+    friend auto call(                                                                                   \
+      const ReflectorClassName##2 &,                                                                    \
+      Obj &&obj,                                                                                        \
+      utils::type_list<>,                                                                \
+      Args &&... args                                                                                   \
+    )                                                                                                   \
+      -> decltype(member(std::forward<Obj>(obj), std::forward<Args>(args)...))                          \
+    {                                                                                                   \
+      /* The reason why this needs to be put in a separate class,                                    */ \
+      /* is because otherwise the ADL would find the function                                        */ \
+      /* defined in the smart reference itself.                                                      */ \
+      return member(std::forward<Obj>(obj), std::forward<Args>(args)...);                               \
+    }                                                                                                   \
+                                                                                                        \
+    template<typename... ExplicitArgs, typename Obj, typename... Args>            \
     friend auto call(                                                                                   \
       const ReflectorClassName##2 &,                                                                    \
       Obj &&obj,                                                                                        \
       utils::type_list<ExplicitArgs...>,                                                                \
       Args &&... args                                                                                   \
     )                                                                                                   \
-      -> decltype(member(std::forward<Obj>(obj), std::forward<Args>(args)...))                          \
+      -> decltype(member<ExplicitArgs...>(std::forward<Obj>(obj), std::forward<Args>(args)...))>        \
     {                                                                                                   \
-      /* TODO: Support for explicit args */                                                             \
       /* The reason why this needs to be put in a separate class, */                                    \
       /* is because otherwise the ADL would find the function     */                                    \
       /* defined in the smart reference itself.                   */                                    \
-      return member(std::forward<Obj>(obj), std::forward<Args>(args)...);                               \
+      using reflectable::member;                                                                        \
+      return member<ExplicitArgs...>(std::forward<Obj>(obj), std::forward<Args>(args)...);              \
     }                                                                                                   \
   };                                                                                                    \
                                                                                                         \
