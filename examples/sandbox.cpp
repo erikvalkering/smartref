@@ -77,10 +77,37 @@ private:
 
 void asdf(Foo)              { cout << "asdf(Foo)"              << endl; }
 void asdf(Derived)          { cout << "asdf(Derived)"          << endl; }
+
 template<typename T>
 void asdf(ClassTemplate<T>) { cout << "asdf(ClassTemplate<T>)" << endl; }
 
+namespace foobar2 {
+
+struct A {};
+struct B {};
+
+template<typename>
+void qwerty(A)
+{
+  cout << "foobar2::qwerty<T>(A)" << endl;
+}
+
+template<typename>
+void qwerty(foobar::ClassTemplate<A>)
+{
+  cout << "foobar2::qwerty<T>(foobar::ClassTemplate<A>)" << endl;
+}
+
+template<typename, typename U>
+void qwerty(foobar::ClassTemplate<U>)
+{
+  cout << "foobar2::qwerty<T>(foobar::ClassTemplate<U>)" << endl;
+}
+
+} // namespace foobar2
+
 REFLECTABLE(auto, asdf);
+REFLECTABLE(auto, qwerty);
 
 int main()
 {
@@ -210,9 +237,24 @@ int main()
     Property<MoreDerived> moreDerived;
     Property<ClassTemplate<int>> tmpl;
 
+                           foobar::A   tmpl1;
+             ClassTemplate<foobar::A > tmpl2;
+             ClassTemplate<foobar::B > tmpl3;
+    Property<              foobar::A > tmpl4;
+    Property<ClassTemplate<foobar::A>> tmpl5;
+    Property<ClassTemplate<foobar::B>> tmpl6;
+
     asdf(foo);          // "asdf(Foo)"
     asdf(derived);      // "asdf(Derived)"
     asdf(moreDerived);  // "asdf(Derived)"
     asdf(tmpl);         // "asdf(ClassTemplate<T>)"
+
+    using reflectable::qwerty;
+    qwerty<int>(tmpl1);
+    qwerty<int>(tmpl2);
+    qwerty<int>(tmpl3);
+    qwerty<int>(tmpl4);
+    qwerty<int>(tmpl5);
+    qwerty<int>(tmpl6);
   }
 }
