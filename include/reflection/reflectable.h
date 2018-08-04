@@ -49,6 +49,16 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 #define REFLECTION_REFLECTABLE_UNIFIED(Class, member,                         \
   MEMBER_TYPE_REFLECTOR, MEMBER_FUNCTION_REFLECTOR, FREE_FUNCTION_REFLECTOR   \
 )                                                                             \
+  namespace reflectable {                                                     \
+                                                                              \
+  /* This member is there purely to allow for doing e.g.                   */ \
+  /* 'using reflection::foo', which will import 'foo' as                   */ \
+  /* a function template.                                                  */ \
+  template<typename... Args>                                                  \
+  auto member(...) -> std::enable_if_t<utils::always_false<Args...>>;         \
+                                                                              \
+  } /* namespace reflectable */                                               \
+                                                                              \
   constexpr auto CONCAT(reflection, __LINE__) =                               \
     REFLECTION_REFLECT_AUTO(Class);                                           \
                                                                               \
