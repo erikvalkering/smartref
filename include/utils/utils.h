@@ -44,6 +44,9 @@ decltype(auto) delayed(Obj &&obj, ...)
 template<typename... Ts>
 constexpr auto always_true = true;
 
+template<typename... Ts>
+constexpr auto always_false = false;
+
 template<template<typename...> class T, typename... Us>
 constexpr auto pack_size(T<Us...>)
 {
