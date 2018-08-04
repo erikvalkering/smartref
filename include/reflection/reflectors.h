@@ -137,6 +137,7 @@ using detect_is_member_type = decltype(
     : public reflection::reflector_base<Derived>                                                        \
   {                                                                                                     \
   private:                                                                                              \
+    /* TODO: See if we can merge the two call functions using if constexpr */                           \
     template<typename Obj, typename... Args>                                                            \
     friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Args &&... args)        \
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                     \
