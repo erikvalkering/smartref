@@ -131,8 +131,8 @@ The implementation has been tested using the following compilers:
     - [x] Non-const rvalue-reference member-functions
     - [x] const lvalue-reference member-functions
     - [x] const rvalue-reference member-functions
-- [ ] Support for data members
 - [ ] Support for non-member functions
+- [ ] Support for data members
 
 ## How to use
 
