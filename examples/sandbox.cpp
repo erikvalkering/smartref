@@ -246,17 +246,19 @@ int main()
     Property<MoreDerived> moreDerived;
     Property<ClassTemplate<int>> tmpl;
 
-                           foobar::A   tmpl1;
-             ClassTemplate<foobar::A > tmpl2;
-             ClassTemplate<foobar::B > tmpl3;
-    Property<              foobar::A > tmpl4;
-    Property<ClassTemplate<foobar::A>> tmpl5;
-    Property<ClassTemplate<foobar::B>> tmpl6;
-
     asdf(foo);          // "asdf(Foo)"
     asdf(derived);      // "asdf(Derived)"
     asdf(moreDerived);  // "asdf(Derived)"
     asdf(tmpl);         // "asdf(ClassTemplate<T>)"
+  }
+
+  {
+                           foobar2::A   tmpl1;
+             ClassTemplate<foobar2::A > tmpl2;
+             ClassTemplate<foobar2::B > tmpl3;
+    Property<              foobar2::A > tmpl4;
+    Property<ClassTemplate<foobar2::A>> tmpl5;
+    Property<ClassTemplate<foobar2::B>> tmpl6;
 
     using reflectable::qwerty;
     qwerty<int>(tmpl1);
