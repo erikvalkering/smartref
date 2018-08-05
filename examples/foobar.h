@@ -212,3 +212,4 @@ REFLECTABLE(foobar::RefClass, foo);
 
 //! Free functions (defined much later)
 REFLECTABLE(auto, asdf);
+REFLECTABLE(auto, qwerty);
