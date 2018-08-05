@@ -59,6 +59,19 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
                                                                               \
   } /* namespace reflectable */                                               \
                                                                               \
+  namespace adl_tricks {                                                      \
+                                                                              \
+  using reflectable::member;                                                  \
+                                                                              \
+  /* This function template can be used within trailing return types,      */ \
+  /* in combination with SFINAE, such that ADL still works if in the       */ \
+  /* function's body a 'using directive' was used.                         */ \
+  template<typename... ExplicitArgs, typename... Args>                        \
+  auto member(Args &&... args)                                                \
+    -> decltype(member<ExplicitArgs...>(std::forward<Args>(args)...));        \
+                                                                              \
+  } /* namespace adl_tricks */                                                \
+                                                                              \
   constexpr auto CONCAT(reflection, __LINE__) =                               \
     REFLECTION_REFLECT_AUTO(Class);                                           \
                                                                               \

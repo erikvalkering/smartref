@@ -188,7 +188,9 @@ using detect_is_member_type = decltype(
       utils::type_list<ExplicitArgs...>,                                                                \
       Args &&... args                                                                                   \
     )                                                                                                   \
-      -> decltype(member<ExplicitArgs...>(std::forward<Obj>(obj), std::forward<Args>(args)...))>        \
+      -> decltype(                                                                                      \
+           adl_tricks::member<ExplicitArgs...>(std::forward<Obj>(obj), std::forward<Args>(args)...)     \
+         )                                                                                              \
     {                                                                                                   \
       /* The reason why this needs to be put in a separate class, */                                    \
       /* is because otherwise the ADL would find the function     */                                    \
