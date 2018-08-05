@@ -1,6 +1,5 @@
 #pragma once
 
-#include <smartref/smartref.h>
 #include <reflection/reflection.h>
 #include <utils/utils.h>
 
@@ -213,4 +212,3 @@ REFLECTABLE(foobar::RefClass, foo);
 
 //! Free functions (defined much later)
 REFLECTABLE(auto, asdf);
-REFLECTABLE(auto, qwerty);
