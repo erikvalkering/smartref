@@ -105,9 +105,8 @@ auto delegate(Using_ &&base)
 // TODO: Maybe pass ExplicitArgs... as-is (i.e. not as a parameter pack, but single type_list parameter)
 template<typename Reflection, typename Using_, typename... ExplicitArgs, typename... Args>
 auto on_call(const Reflection &reflection, Using_ &&self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
-  -> decltype(call(reflection, delegate(std::forward<Using_>(self)), explicitArgs, std::forward<Args>(args)...))
-{
-  return call(reflection, delegate(std::forward<Using_>(self)), explicitArgs, std::forward<Args>(args)...);
-}
+  SFINAEABLE_RETURN(
+    call(reflection, delegate(std::forward<Using_>(self)), explicitArgs, std::forward<Args>(args)...)
+  )
 
 } // namespace smartref
