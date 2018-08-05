@@ -166,11 +166,11 @@ using detect_is_member_type = decltype(
   class ReflectorClassName##2                                                                           \
   {                                                                                                     \
   public:                                                                                               \
-    template<typename Obj, typename... Args>                                  \
+    template<typename Obj, typename... Args>                                                            \
     friend auto call(                                                                                   \
       const ReflectorClassName##2 &,                                                                    \
       Obj &&obj,                                                                                        \
-      utils::type_list<>,                                                                \
+      utils::type_list<>,                                                                               \
       Args &&... args                                                                                   \
     )                                                                                                   \
       -> decltype(member(std::forward<Obj>(obj), std::forward<Args>(args)...))                          \
@@ -181,7 +181,7 @@ using detect_is_member_type = decltype(
       return member(std::forward<Obj>(obj), std::forward<Args>(args)...);                               \
     }                                                                                                   \
                                                                                                         \
-    template<typename... ExplicitArgs, typename Obj, typename... Args>            \
+    template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
     friend auto call(                                                                                   \
       const ReflectorClassName##2 &,                                                                    \
       Obj &&obj,                                                                                        \
