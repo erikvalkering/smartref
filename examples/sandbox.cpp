@@ -117,6 +117,7 @@ int main()
   json["asdf"] = 1.0;
   json[123456] = nullptr;
   json.DOT(qwerty) = "the other (third) operator dot proposal";
+  json.qwerty = "__getattr__ for C++";
 */
 
   cout << "Hello, Wandbox!" << endl;
