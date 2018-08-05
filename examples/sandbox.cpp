@@ -1,3 +1,10 @@
+//! These includes are put here, such that in the preprocessed file
+//! they end up first, making debugging a bit more easy.
+#include <typeinfo>
+#include <cstddef>
+#include <iostream>
+#include <vector>
+
 #include "foobar.h"
 
 #include <smartref/smartref.h>
