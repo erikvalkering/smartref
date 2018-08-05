@@ -82,11 +82,15 @@ private:
 };
 */
 
+namespace foobar {
+
 void asdf(Foo)              { cout << "asdf(Foo)"              << endl; }
 void asdf(Derived)          { cout << "asdf(Derived)"          << endl; }
 
 template<typename T>
 void asdf(ClassTemplate<T>) { cout << "asdf(ClassTemplate<T>)" << endl; }
+
+} // namespace foobar
 
 namespace foobar2 {
 
@@ -112,9 +116,6 @@ void qwerty(foobar::ClassTemplate<U>)
 }
 
 } // namespace foobar2
-
-REFLECTABLE(auto, asdf);
-REFLECTABLE(auto, qwerty);
 
 int main()
 {
