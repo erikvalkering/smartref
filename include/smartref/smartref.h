@@ -101,7 +101,6 @@ auto delegate(Using_ &&base)
 
 // TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
-// TODO: SFINAEABLE_RETURN
 // TODO: Maybe pass ExplicitArgs... as-is (i.e. not as a parameter pack, but single type_list parameter)
 template<typename Reflection, typename Using_, typename... ExplicitArgs, typename... Args>
 auto on_call(const Reflection &reflection, Using_ &&self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
