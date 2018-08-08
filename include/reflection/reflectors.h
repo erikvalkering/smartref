@@ -186,12 +186,12 @@ using detect_is_member_type = decltype(
       utils::type_list<>,                                                                               \
       Args &&... args                                                                                   \
     )                                                                                                   \
-      -> decltype(member(std::forward<Obj>(obj), std::forward<Args>(args)...))                          \
+      -> decltype(adl_tricks::member(std::forward<Obj>(obj), std::forward<Args>(args)...))              \
     {                                                                                                   \
       /* The reason why this needs to be put in a separate class,                                    */ \
       /* is because otherwise the ADL would find the function                                        */ \
       /* defined in the smart reference itself.                                                      */ \
-      return member(std::forward<Obj>(obj), std::forward<Args>(args)...);                               \
+      return adl_tricks::member(std::forward<Obj>(obj), std::forward<Args>(args)...);                   \
     }                                                                                                   \
                                                                                                         \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
