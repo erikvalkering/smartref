@@ -35,6 +35,8 @@ using detect_is_member_type = decltype(
 
 } // namespace reflection
 
+#define REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR_PREAMBLE(...)
+
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR(ReflectorClassName, ...) \
   template<class>                                                           \
   struct ReflectorClassName {}                                              \
@@ -234,3 +236,27 @@ using detect_is_member_type = decltype(
     : public FreeFunctionExposer<Derived, Delay>                                                        \
   {                                                                                                     \
   }                                                                                                     \
+
+#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_PREAMBLE(member)        \
+  namespace reflectable {                                                \
+                                                                         \
+  /* This member is there purely to allow for doing e.g. */              \
+  /* 'using reflection::foo', which will import 'foo' as */              \
+  /* a function template.                                */              \
+  template<typename... Args>                                             \
+  auto member(...) -> std::enable_if_t<utils::always_false<Args...>>;    \
+                                                                         \
+  } /* namespace reflectable */                                          \
+                                                                         \
+  namespace adl_tricks {                                                 \
+                                                                         \
+  using reflectable::member;                                             \
+                                                                         \
+  /* This function template can be used within trailing return types, */ \
+  /* in combination with SFINAE, such that ADL still works if in the  */ \
+  /* function's body a 'using declaration' was used.                  */ \
+  template<typename... ExplicitArgs, typename... Args>                   \
+  auto member(Args &&... args)                                           \
+    -> decltype(member<ExplicitArgs...>(std::forward<Args>(args)...));   \
+                                                                         \
+  } /* namespace adl_tricks */                                           \

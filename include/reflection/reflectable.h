@@ -46,31 +46,10 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 // TODO: -cmaster Have a quick look whether we can simplify these macros.
 // TODO: -cmaster We can replace the using type = ... with a simple boolean, such that we can inline the reflectors
 // TODO: Rename 'member' to more general 'name' (for free function 'member' is nonsense)
-#define REFLECTION_REFLECTABLE_UNIFIED(Class, member,                         \
+#define REFLECTION_REFLECTABLE_UNIFIED(Class, member, PREAMBLE,               \
   MEMBER_TYPE_REFLECTOR, MEMBER_FUNCTION_REFLECTOR, FREE_FUNCTION_REFLECTOR   \
 )                                                                             \
-  namespace reflectable {                                                     \
-                                                                              \
-  /* This member is there purely to allow for doing e.g.                   */ \
-  /* 'using reflection::foo', which will import 'foo' as                   */ \
-  /* a function template.                                                  */ \
-  template<typename... Args>                                                  \
-  auto member(...) -> std::enable_if_t<utils::always_false<Args...>>;         \
-                                                                              \
-  } /* namespace reflectable */                                               \
-                                                                              \
-  namespace adl_tricks {                                                      \
-                                                                              \
-  using reflectable::member;                                                  \
-                                                                              \
-  /* This function template can be used within trailing return types,      */ \
-  /* in combination with SFINAE, such that ADL still works if in the       */ \
-  /* function's body a 'using declaration' was used.                       */ \
-  template<typename... ExplicitArgs, typename... Args>                        \
-  auto member(Args &&... args)                                                \
-    -> decltype(member<ExplicitArgs...>(std::forward<Args>(args)...));        \
-                                                                              \
-  } /* namespace adl_tricks */                                                \
+  PREAMBLE(member);                                                           \
                                                                               \
   constexpr auto CONCAT(reflection, __LINE__) =                               \
     REFLECTION_REFLECT_AUTO(Class);                                           \
@@ -106,6 +85,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
   REFLECTION_REFLECTABLE_UNIFIED(                         \
     Class,                                                \
     member,                                               \
+    REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_PREAMBLE,    \
     REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR,     \
     REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR, \
     REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_REFLECTOR    \
@@ -118,6 +98,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
   REFLECTION_REFLECTABLE_UNIFIED(                         \
     Class,                                                \
     member,                                               \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,            \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,           \
     REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR, \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR            \
@@ -130,6 +111,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
   REFLECTION_REFLECTABLE_UNIFIED(                                       \
     Class,                                                              \
     member,                                                             \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                          \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                         \
     REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE,  \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR                          \
@@ -142,6 +124,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
   REFLECTION_REFLECTABLE_UNIFIED(                                             \
     Class,                                                                    \
     member,                                                                   \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                                \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                               \
     REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR, \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR                                \
