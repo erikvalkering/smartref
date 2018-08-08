@@ -132,19 +132,18 @@ using detect_is_member_type = decltype(
     )                                                                                                     \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR(ReflectorClassName, member)                \
-  template<typename Derived>                                                                            \
-  class ReflectorClassName                                                                              \
-    : public reflection::reflector_base<Derived>                                                        \
+  template<typename Delay>                                                                              \
+  class MemberFunctionInvoker                                                                           \
   {                                                                                                     \
   private:                                                                                              \
     /* TODO: See if we can merge the two call functions using if constexpr */                           \
     template<typename Obj, typename... Args>                                                            \
-    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Args &&... args)        \
+    friend auto call(const MemberFunctionInvoker &, Obj &&obj, utils::type_list<>, Args &&... args)     \
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                     \
                                                                                                         \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
     friend auto call(                                                                                   \
-      const ReflectorClassName &,                                                                       \
+      const MemberFunctionInvoker &,                                                                    \
       Obj &&obj,                                                                                        \
       utils::type_list<ExplicitArgs...>,                                                                \
       Args &&... args                                                                                   \
@@ -153,22 +152,34 @@ using detect_is_member_type = decltype(
         sizeof...(ExplicitArgs) != 0,                                                                   \
         std::forward<Obj>(obj).template member<ExplicitArgs...>(std::forward<Args>(args)...)            \
       )                                                                                                 \
+  };                                                                                                    \
                                                                                                         \
+  template<typename Derived>                                                                            \
+  class MemberFunctionExposer                                                                           \
+    : public reflection::reflector_base<Derived>                                                        \
+    , public MemberFunctionInvoker<Derived>                                                             \
+  {                                                                                                     \
   public:                                                                                               \
     REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, const, & ,          )                            \
     REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, const, &&, std::move)                            \
     REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member,      , & ,          )                            \
     REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member,      , &&, std::move)                            \
+  };                                                                                                    \
+                                                                                                        \
+  template<typename Derived>                                                                            \
+  class ReflectorClassName                                                                              \
+    : public MemberFunctionExposer<Derived>                                                             \
+  {                                                                                                     \
   }                                                                                                     \
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_REFLECTOR(ReflectorClassName, member)                  \
   template<typename Delay>                                                                              \
-  class ReflectorClassName##2                                                                           \
+  class FreeFunctionInvoker                                                                             \
   {                                                                                                     \
   public:                                                                                               \
     template<typename Obj, typename... Args>                                                            \
     friend auto call(                                                                                   \
-      const ReflectorClassName##2 &,                                                                    \
+      const FreeFunctionInvoker &,                                                                      \
       Obj &&obj,                                                                                        \
       utils::type_list<>,                                                                               \
       Args &&... args                                                                                   \
@@ -183,7 +194,7 @@ using detect_is_member_type = decltype(
                                                                                                         \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
     friend auto call(                                                                                   \
-      const ReflectorClassName##2 &,                                                                    \
+      const FreeFunctionInvoker &,                                                                      \
       Obj &&obj,                                                                                        \
       utils::type_list<ExplicitArgs...>,                                                                \
       Args &&... args                                                                                   \
@@ -200,23 +211,26 @@ using detect_is_member_type = decltype(
     }                                                                                                   \
   };                                                                                                    \
                                                                                                         \
-  struct ReflectorClassName##3                                                                          \
+  template<typename Derived, typename Delay = void>                                                     \
+  class FreeFunctionExposer                                                                             \
+    : public reflection::reflector_base<Derived>                                                        \
+    , public FreeFunctionInvoker<Delay>                                                                 \
   {                                                                                                     \
-    template<typename Derived, typename Delay = void>                                                   \
-    class ReflectorClassName                                                                            \
-      : public reflection::reflector_base<Derived>                                                      \
-      , public ReflectorClassName##2<Delay>                                                             \
-    {                                                                                                   \
-    public:                                                                                             \
-      template<typename... ExplicitArgs, typename Self, typename... Args>                               \
-      friend auto member(Self &&self, Args &&... args)                                                  \
-        SFINAEABLE_RETURN(                                                                              \
-          on_call(                                                                                      \
-            reflector(self),                                                                            \
-            derived(std::forward<Self>(self)),                                                          \
-            utils::type_list<ExplicitArgs...>{},                                                        \
-            std::forward<Args>(args)...                                                                 \
-          )                                                                                             \
+  public:                                                                                               \
+    template<typename... ExplicitArgs, typename Self, typename... Args>                                 \
+    friend auto member(Self &&self, Args &&... args)                                                    \
+      SFINAEABLE_RETURN(                                                                                \
+        on_call(                                                                                        \
+          reflector(self),                                                                              \
+          derived(std::forward<Self>(self)),                                                            \
+          utils::type_list<ExplicitArgs...>{},                                                          \
+          std::forward<Args>(args)...                                                                   \
         )                                                                                               \
-    };                                                                                                  \
-  } /* struct ReflectorClassName##3 */                                                                  \
+      )                                                                                                 \
+  };                                                                                                    \
+                                                                                                        \
+  template<typename Derived, typename Delay = void>                                                     \
+  class ReflectorClassName                                                                              \
+    : public FreeFunctionExposer<Derived, Delay>                                                        \
+  {                                                                                                     \
+  }                                                                                                     \

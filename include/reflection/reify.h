@@ -42,13 +42,15 @@ constexpr static auto reify(Reflection<T>) -> T;
 template<class Derived, class Reflection>
 constexpr static auto reify(Reflection refl)
 {
-  if constexpr (detail::is_member_type<Reflection, Derived>())
+  // if constexpr (detail::is_member_type<Reflection, Derived>())
+  // {
+  //   return typename Reflection::template reflector_member_type<Derived>{};
+  // }
+  // else if constexpr (detail::is_member_function<Reflection>())
   {
-    return typename Reflection::template reflector_member_type<Derived>{};
-  }
-  else if constexpr (detail::is_member_function<Reflection>())
-  {
-    return typename Reflection::template reflector_member_function<Derived>{};
+    //return typename Reflection::reflector_free_function3::template reflector_free_function<Derived>{};
+    return typename Reflection::template reflector_free_function<Derived>{};
+    //return typename Reflection::template reflector_member_function<Derived>{};
   }
 }
 
