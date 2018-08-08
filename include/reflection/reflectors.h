@@ -35,7 +35,7 @@ using detect_is_member_type = decltype(
 
 } // namespace reflection
 
-#define REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR_PREAMBLE(...)
+#define REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE(...)
 
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR(ReflectorClassName, ...) \
   template<class>                                                           \
