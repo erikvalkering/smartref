@@ -26,6 +26,9 @@ constexpr auto make_combiner(L1 &&l1, L2 &&l2)
   return Combiner<std::decay_t<L1>, std::decay_t<L2>>{std::forward<L1>(l1), std::forward<L2>(l2)};
 }
 
+template<class... Bases>
+struct Compose : Bases... {};
+
 template<class Class, typename... T>
 struct DelayedImpl
 {

@@ -40,7 +40,7 @@ template<typename T>
 constexpr static auto reify(Reflection<T>) -> T;
 
 template<class Derived, class Reflection>
-constexpr static auto reify(Reflection refl)
+constexpr static auto reify_members(Reflection refl)
 {
   // if constexpr (detail::is_member_type<Reflection, Derived>())
   // {
@@ -48,10 +48,17 @@ constexpr static auto reify(Reflection refl)
   // }
   // else if constexpr (detail::is_member_function<Reflection>())
   {
-    //return typename Reflection::reflector_free_function3::template reflector_free_function<Derived>{};
-    return typename Reflection::template reflector_free_function<Derived>{};
-    //return typename Reflection::template reflector_member_function<Derived>{};
+    return typename Reflection::template reflector_member_function<Derived>{};
   }
+}
+
+template<class Derived, class Reflection>
+constexpr static auto reify(Reflection refl)
+{
+  return utils::Compose<
+    decltype(reify_members<Derived>(refl)),
+    typename Reflection::template reflector_free_function<Derived>
+  >{};
 }
 
 } // namespace reflection
