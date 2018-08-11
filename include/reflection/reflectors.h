@@ -223,7 +223,7 @@ using detect_is_member_type = decltype(
     friend auto member(Self &&self, Args &&... args)                                                    \
       SFINAEABLE_RETURN(                                                                                \
         on_call(                                                                                        \
-          reflector(self),                                                                              \
+          utils::Delayed<FreeFunctionExposer, Args...>{},                                               \
           derived(std::forward<Self>(self)),                                                            \
           utils::type_list<ExplicitArgs...>{},                                                          \
           std::forward<Args>(args)...                                                                   \
