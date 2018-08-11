@@ -19,6 +19,8 @@ using smartref::using_;
 template<typename T>
 class Property : public using_<T>
 {
+// TODO: Add proper reference-leaking control by allowing
+//       the user-defined conversion functions to be private.
 public:
   operator T &() &
   {
@@ -146,6 +148,8 @@ int main()
   Property<int> x{};
   Property<int> y{};
 
+  // TODO: Proper reference leaking control
+  //       i.e. {x + y} -> Property<decltype(delegate(x)+delegate(y))>
   auto z = x + y;
 
   cout << z << endl;
