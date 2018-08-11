@@ -83,13 +83,12 @@ auto delegate(Using_ &&base)
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
 
-// TODO: -cmaster Instead of passing the reflector, pass a Reflection, such that we can also reify that directly
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 // TODO: Maybe pass ExplicitArgs... as-is (i.e. not as a parameter pack, but single type_list parameter)
-template<typename Reflection, typename Using_, typename... ExplicitArgs, typename... Args>
-auto on_call(const Reflection &reflection, Using_ &&self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
+template<typename Invoker, typename Using_, typename... ExplicitArgs, typename... Args>
+auto on_call(const Invoker &invoker, Using_ &&self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
   SFINAEABLE_RETURN(
-    call(reflection, delegate(std::forward<Using_>(self)), explicitArgs, std::forward<Args>(args)...)
+    call(invoker, delegate(std::forward<Using_>(self)), explicitArgs, std::forward<Args>(args)...)
   )
 
 } // namespace smartref
