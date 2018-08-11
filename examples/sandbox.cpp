@@ -137,7 +137,6 @@ int main()
   v.push_back(2);
   v.push_back(3);
 
-#if 0
   //v.push_back(1, 2, 3);
 
   for (auto x : v)
@@ -244,7 +243,6 @@ int main()
     cobj.foo(); // "RefClass::foo() const &"
     move(cobj).foo(); // "RefClass::foo() const &&"
   }
-#endif
 
   {
     Property<Foo> foo;
