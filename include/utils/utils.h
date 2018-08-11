@@ -27,7 +27,16 @@ constexpr auto make_combiner(L1 &&l1, L2 &&l2)
 }
 
 template<class... Bases>
-struct Compose : Bases... {};
+struct Compose : Bases...
+{
+  using Bases::operator=...;
+
+  Compose() = default;
+  Compose(const Compose &) = default;
+  Compose(Compose &&) = default;
+  Compose &operator=(const Compose &) = default;
+  Compose &operator=(Compose &&) = default;
+};
 
 template<class Class, typename... T>
 struct DelayedImpl
