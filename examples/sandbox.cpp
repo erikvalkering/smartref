@@ -19,7 +19,7 @@ using smartref::using_;
 template<typename T>
 class Property : public using_<T>
 {
-private:
+public:
   operator T &() &
   {
     return data;
