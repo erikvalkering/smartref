@@ -186,7 +186,7 @@ using detect_is_member_type = decltype(
       utils::type_list<>,                                                                               \
       Args &&... args                                                                                   \
     )                                                                                                   \
-      -> decltype(adl_tricks::member(std::forward<Obj>(obj), std::forward<Args>(args)...))              \
+      -> decltype(adl_tricks::member(std::forward<Obj>(obj), std::forward<Args>(args)...))             \
     {                                                                                                   \
       /* The reason why this needs to be put in a separate class,                                    */ \
       /* is because otherwise the ADL would find the function                                        */ \
@@ -253,11 +253,18 @@ using detect_is_member_type = decltype(
                                                                          \
   using reflectable::member;                                             \
                                                                          \
+  template<typename... Args>                                             \
+  auto member(Args &&... args)                                           \
+    -> decltype(member(std::forward<Args>(args)...));                    \
+                                                                         \
   /* This function template can be used within trailing return types, */ \
   /* in combination with SFINAE, such that ADL still works if in the  */ \
   /* function's body a 'using declaration' was used.                  */ \
   template<typename... ExplicitArgs, typename... Args>                   \
   auto member(Args &&... args)                                           \
-    -> decltype(member<ExplicitArgs...>(std::forward<Args>(args)...));   \
+    -> std::enable_if_t<                                                 \
+         sizeof...(ExplicitArgs) != 0,                                   \
+         decltype(member<ExplicitArgs...>(std::forward<Args>(args)...))  \
+       >;                                                                \
                                                                          \
   } /* namespace adl_tricks */                                           \
