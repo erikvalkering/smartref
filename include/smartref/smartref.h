@@ -44,28 +44,12 @@ struct using_base<Delegate, void>
   virtual operator const Delegate &&() const && = 0;
 };
 
-// TODO: -cmaster rename the non_void stuff. And maybe it can go to utils?
-template<typename Derived, typename Fallback>
-struct non_void
-{
-  using type = Derived;
-};
-
-template<typename Fallback>
-struct non_void<void, Fallback>
-{
-  using type = Fallback;
-};
-
-template<typename Derived, typename Fallback>
-using non_void_t = typename non_void<Derived, Fallback>::type;
-
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
-             , public Members<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>
+             , public Members<Delegate, utils::non_void_t<Derived, using_<Delegate, Derived>>>
 {
 public:
-  using Members<Delegate, non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
+  using Members<Delegate, utils::non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
 
   using_() = default;
 

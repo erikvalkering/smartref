@@ -44,6 +44,21 @@ decltype(auto) delayed(Obj &&obj, ...)
   return std::forward<Obj>(obj);
 }
 
+template<typename Derived, typename Fallback>
+struct non_void
+{
+  using type = Derived;
+};
+
+template<typename Fallback>
+struct non_void<void, Fallback>
+{
+  using type = Fallback;
+};
+
+template<typename Derived, typename Fallback>
+using non_void_t = typename non_void<Derived, Fallback>::type;
+
 template<typename... Ts>
 constexpr auto always_true = true;
 
