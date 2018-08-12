@@ -114,8 +114,8 @@ The implementation has been tested using the following compilers:
 - [x] Generic support
 - [x] Fully uncoupled reflection emulation library
 - [x] Order-independence of REFLECTABLE macro
-- [x] Delayed lookup of member-functions
-- [x] Reference-leaking control
+- [x] Delayed lookup of free- and member-functions
+- [ ] Reference-leaking control
 - [x] Support for typedefs / nested classes
 - [x] Support for member-functions
   - [x] Non-templates
