@@ -26,6 +26,18 @@ constexpr auto make_combiner(L1 &&l1, L2 &&l2)
   return Combiner<std::decay_t<L1>, std::decay_t<L2>>{std::forward<L1>(l1), std::forward<L2>(l2)};
 }
 
+template<class... Bases>
+struct Compose : Bases...
+{
+  using Bases::operator=...;
+
+  Compose() = default;
+  Compose(const Compose &) = default;
+  Compose(Compose &&) = default;
+  Compose &operator=(const Compose &) = default;
+  Compose &operator=(Compose &&) = default;
+};
+
 template<class Class, typename... T>
 struct DelayedImpl
 {
@@ -41,8 +53,26 @@ decltype(auto) delayed(Obj &&obj, ...)
   return std::forward<Obj>(obj);
 }
 
+template<typename Derived, typename Fallback>
+struct non_void
+{
+  using type = Derived;
+};
+
+template<typename Fallback>
+struct non_void<void, Fallback>
+{
+  using type = Fallback;
+};
+
+template<typename Derived, typename Fallback>
+using non_void_t = typename non_void<Derived, Fallback>::type;
+
 template<typename... Ts>
 constexpr auto always_true = true;
+
+template<typename... Ts>
+constexpr auto always_false = false;
 
 template<template<typename...> class T, typename... Us>
 constexpr auto pack_size(T<Us...>)
@@ -85,3 +115,18 @@ using like_t = typename like<T, U>::type;
 
 #define CONCAT2(x, y) x ## y
 #define CONCAT(x, y) CONCAT2(x, y)
+
+#define SFINAEABLE_RETURN(expression) \
+    -> decltype(expression)           \
+  {                                   \
+    return expression;                \
+  }                                   \
+
+#define CONSTRAINED_SFINAEABLE_RETURN(constraint, expression) \
+    -> std::enable_if_t<                                      \
+      constraint,                                             \
+      decltype(expression)                                    \
+    >                                                         \
+  {                                                           \
+    return expression;                                        \
+  }                                                           \

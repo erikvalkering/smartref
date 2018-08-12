@@ -1,8 +1,6 @@
 #pragma once
 
-#include <smartref/smartref.h>
 #include <reflection/reflection.h>
-#include <utils/utils.h>
 
 #include <iostream>
 #include <typeinfo>
@@ -152,6 +150,33 @@ public:
   }
 };
 
+class RefClass
+{
+public:
+  void foo() &
+  {
+    std::cout << "RefClass::foo() &" << std::endl;
+  }
+
+  void foo() &&
+  {
+    std::cout << "RefClass::foo() &&" << std::endl;
+  }
+
+  void foo() const &
+  {
+    std::cout << "RefClass::foo() const &" << std::endl;
+  }
+
+  void foo() const &&
+  {
+    std::cout << "RefClass::foo() const &&" << std::endl;
+  }
+};
+
+class Derived : public Foo {};
+class MoreDerived : public Derived {};
+
 } // namespace foobar
 
 REFLECTABLE(foobar::Foo, foo);
@@ -181,3 +206,9 @@ REFLECTABLE(auto, some_foo_type);
 
 REFLECTABLE(foobar::ConstClass, foo);
 REFLECTABLE(foobar::ConstClass, bar);
+
+REFLECTABLE(foobar::RefClass, foo);
+
+//! Free functions (defined much later)
+REFLECTABLE(auto, asdf);
+REFLECTABLE(auto, qwerty);

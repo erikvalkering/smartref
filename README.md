@@ -108,9 +108,14 @@ The implementation has been tested using the following compilers:
 ## Features
 - [x] Zero-overhead
 - [x] Header-only
+- [x] No dependencies
+- [x] Out-of-the-box support for the STL
 - [x] Non-intrusive support for user-defined types
 - [x] Generic support
 - [x] Fully uncoupled reflection emulation library
+- [x] Order-independence of REFLECTABLE macro
+- [x] Delayed lookup of free- and member-functions
+- [ ] Reference-leaking control
 - [x] Support for typedefs / nested classes
 - [x] Support for member-functions
   - [x] Non-templates
@@ -122,13 +127,20 @@ The implementation has been tested using the following compilers:
     - [x] Unary
     - [x] Binary
     - [x] Assignment
+      - [x] From lvalue reference
+      - [ ] From rvalue reference
   - [x] Qualifiers
-    - [x] Non-const member-functions
-    - [x] const member-functions
-    - [ ] rvalue member-functions
-    - [ ] const rvalue member-functions
+    - [x] Non-const lvalue-reference member-functions
+    - [x] Non-const rvalue-reference member-functions
+    - [x] const lvalue-reference member-functions
+    - [x] const rvalue-reference member-functions
+- [x] Support for non-member functions
+  - [x] Non-templates
+  - [x] Overloads
+  - [x] Templates
+    - [x] Deducible
+    - [x] Non-deducible
 - [ ] Support for data members
-- [ ] Support for non-member functions
 
 ## How to use
 

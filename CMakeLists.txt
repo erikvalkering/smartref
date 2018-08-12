@@ -84,6 +84,7 @@ add_test(smartref test_smartref)
 # Examples
 add_executable(sandbox examples/sandbox.cpp)
 target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/foobar.h)
+target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/stdlibs_for_debugging.h)
 target_link_libraries(sandbox PRIVATE libreflection)
 target_link_libraries(sandbox PRIVATE libsmartref)
 add_test(examples sandbox)
