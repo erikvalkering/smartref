@@ -28,8 +28,8 @@ template<class Reflection, class Derived>
 using detect_is_member_type = decltype(
   on_call(
     std::declval<const Reflection &>(),
-    std::declval<Derived &>(),
-    utils::type_list<>{}
+    utils::type_list<>{},
+    std::declval<Derived &>()
   )
 );
 
@@ -48,7 +48,7 @@ using detect_is_member_type = decltype(
   {                                                                                   \
   private:                                                                            \
     template<typename Obj, typename... Args>                                          \
-    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>)       \
+    friend auto call(const ReflectorClassName &, utils::type_list<>, Obj &&obj)       \
       -> typename utils::remove_cvref_t<Obj>::member;                                 \
                                                                                       \
   public:                                                                             \
@@ -64,8 +64,8 @@ using detect_is_member_type = decltype(
     SFINAEABLE_RETURN(                                                                           \
       on_call(                                                                                   \
         reflector(*this),                                                                        \
-        derived(MOVE_FUNCTION(*this)),                                                           \
-        utils::type_list<>{}                                                                     \
+        utils::type_list<>{},                                                                    \
+        derived(MOVE_FUNCTION(*this))                                                            \
       )                                                                                          \
     )                                                                                            \
 
@@ -76,7 +76,7 @@ using detect_is_member_type = decltype(
   {                                                                                                   \
   private:                                                                                            \
     template<typename Obj>                                                                            \
-    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>)                       \
+    friend auto call(const ReflectorClassName &, utils::type_list<>, Obj &&obj)                       \
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member())                                              \
                                                                                                       \
   public:                                                                                             \
@@ -92,8 +92,8 @@ using detect_is_member_type = decltype(
     SFINAEABLE_RETURN(                                                                                \
       on_call(                                                                                        \
         reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                    \
-        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                       \
         utils::type_list<>{},                                                                         \
+        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                       \
         std::forward<Arg>(arg)                                                                        \
       )                                                                                               \
     )                                                                                                 \
@@ -105,7 +105,7 @@ using detect_is_member_type = decltype(
   {                                                                                                           \
   private:                                                                                                    \
     template<typename Obj, typename Arg>                                                                      \
-    friend auto call(const ReflectorClassName &, Obj &&obj, utils::type_list<>, Arg &&arg)                    \
+    friend auto call(const ReflectorClassName &, utils::type_list<>, Obj &&obj, Arg &&arg)                    \
       SFINAEABLE_RETURN(std::forward<Obj>(obj) = std::forward<Arg>(arg))                                      \
                                                                                                               \
   public:                                                                                                     \
@@ -127,8 +127,8 @@ using detect_is_member_type = decltype(
     SFINAEABLE_RETURN(                                                                                    \
       on_call(                                                                                            \
         reflector(utils::delayed(*this, utils::type_list<ExplicitArgs...>{})),                            \
-        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),               \
         utils::type_list<ExplicitArgs...>{},                                                              \
+        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),               \
         std::forward<Args>(args)...                                                                       \
       )                                                                                                   \
     )                                                                                                     \
@@ -140,14 +140,14 @@ using detect_is_member_type = decltype(
   private:                                                                                              \
     /* TODO: See if we can merge the two call functions using if constexpr */                           \
     template<typename Obj, typename... Args>                                                            \
-    friend auto call(const MemberFunctionInvoker &, Obj &&obj, utils::type_list<>, Args &&... args)     \
+    friend auto call(const MemberFunctionInvoker &, utils::type_list<>, Obj &&obj, Args &&... args)     \
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                     \
                                                                                                         \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
     friend auto call(                                                                                   \
       const MemberFunctionInvoker &,                                                                    \
-      Obj &&obj,                                                                                        \
       utils::type_list<ExplicitArgs...>,                                                                \
+      Obj &&obj,                                                                                        \
       Args &&... args                                                                                   \
     )                                                                                                   \
       CONSTRAINED_SFINAEABLE_RETURN(                                                                    \
@@ -182,11 +182,11 @@ using detect_is_member_type = decltype(
     template<typename Obj, typename... Args>                                                            \
     friend auto call(                                                                                   \
       const FreeFunctionInvoker &,                                                                      \
-      Obj &&obj,                                                                                        \
       utils::type_list<>,                                                                               \
+      Obj &&obj,                                                                                        \
       Args &&... args                                                                                   \
     )                                                                                                   \
-      -> decltype(adl_tricks::member(std::forward<Obj>(obj), std::forward<Args>(args)...))             \
+      -> decltype(adl_tricks::member(std::forward<Obj>(obj), std::forward<Args>(args)...))              \
     {                                                                                                   \
       /* The reason why this needs to be put in a separate class,                                    */ \
       /* is because otherwise the ADL would find the function                                        */ \
@@ -198,8 +198,8 @@ using detect_is_member_type = decltype(
     template<typename... ExplicitArgs, typename Obj, typename... Args>                                  \
     friend auto call(                                                                                   \
       const FreeFunctionInvoker &,                                                                      \
-      Obj &&obj,                                                                                        \
       utils::type_list<ExplicitArgs...>,                                                                \
+      Obj &&obj,                                                                                        \
       Args &&... args                                                                                   \
     )                                                                                                   \
       -> decltype(                                                                                      \
@@ -225,8 +225,8 @@ using detect_is_member_type = decltype(
       SFINAEABLE_RETURN(                                                                                \
         on_call(                                                                                        \
           utils::Delayed<FreeFunctionExposer, Args...>{},                                               \
-          derived(std::forward<Self>(self)),                                                            \
           utils::type_list<ExplicitArgs...>{},                                                          \
+          derived(std::forward<Self>(self)),                                                            \
           std::forward<Args>(args)...                                                                   \
         )                                                                                               \
       )                                                                                                 \

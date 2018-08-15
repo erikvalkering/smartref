@@ -85,10 +85,10 @@ auto delegate(Using_ &&base)
 
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 // TODO: Maybe pass ExplicitArgs... as-is (i.e. not as a parameter pack, but single type_list parameter)
-template<typename Invoker, typename Using_, typename... ExplicitArgs, typename... Args>
-auto on_call(const Invoker &invoker, Using_ &&self, utils::type_list<ExplicitArgs...> explicitArgs, Args &&... args)
+template<typename Invoker, typename... ExplicitArgs, typename Using_, typename... Args>
+auto on_call(const Invoker &invoker, utils::type_list<ExplicitArgs...> explicitArgs, Using_ &&self, Args &&... args)
   SFINAEABLE_RETURN(
-    call(invoker, delegate(std::forward<Using_>(self)), explicitArgs, std::forward<Args>(args)...)
+    call(invoker, explicitArgs, delegate(std::forward<Using_>(self)), std::forward<Args>(args)...)
   )
 
 } // namespace smartref
