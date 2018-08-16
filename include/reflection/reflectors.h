@@ -63,17 +63,17 @@ constexpr auto is_reflector(...)                             { return false; }
       Derived>;                                                                       \
   }                                                                                   \
 
-#define REFLECTION_INJECT_MEMBER_FUNCTION(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
-  auto member() CONST_QUALIFIER REF_QUALIFIER                                                    \
-    SFINAEABLE_RETURN(                                                                           \
-      on_call(                                                                                   \
-        reflector(*this),                                                                        \
-        utils::type_list<>{},                                                                    \
-        derived(MOVE_FUNCTION(*this))                                                            \
-      )                                                                                          \
-    )                                                                                            \
+#define REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
+  auto member() CONST_QUALIFIER REF_QUALIFIER                                                                 \
+    SFINAEABLE_RETURN(                                                                                        \
+      on_call(                                                                                                \
+        reflector(*this),                                                                                     \
+        utils::type_list<>{},                                                                                 \
+        derived(MOVE_FUNCTION(*this))                                                                         \
+      )                                                                                                       \
+    )                                                                                                         \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE(ReflectorClassName, member) \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_REFLECTOR(ReflectorClassName, member) \
   template<typename Derived>                                                                          \
   class ReflectorClassName                                                                            \
     : public reflection::reflector_base<Derived>                                                      \
@@ -84,10 +84,10 @@ constexpr auto is_reflector(...)                             { return false; }
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member())                                              \
                                                                                                       \
   public:                                                                                             \
-    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , & ,          )                                   \
-    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , &&, std::move)                                   \
-    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, & ,          )                                   \
-    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, &&, std::move)                                   \
+    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , & ,          )                      \
+    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , &&, std::move)                      \
+    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, & ,          )                      \
+    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, &&, std::move)                      \
   }                                                                                                   \
 
 #define REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)  \
@@ -102,7 +102,7 @@ constexpr auto is_reflector(...)                             { return false; }
       )                                                                                               \
     )                                                                                                 \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR(ReflectorClassName, member)  \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_ASSIGNMENT_OPERATOR_REFLECTOR(ReflectorClassName, member)  \
   template<typename Derived>                                                                                  \
   class ReflectorClassName                                                                                    \
     : public reflection::reflector_base<Derived>                                                              \
@@ -125,7 +125,7 @@ constexpr auto is_reflector(...)                             { return false; }
     REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member, const, &&, std::move)                                       \
   }                                                                                                           \
 
-#define REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
+#define REFLECTION_INJECT_MEMBER_FUNCTION(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)          \
   template<typename... ExplicitArgs, typename... Args>                                                    \
   auto member(Args &&... args) CONST_QUALIFIER REF_QUALIFIER                                              \
     SFINAEABLE_RETURN(                                                                                    \
@@ -166,10 +166,10 @@ constexpr auto is_reflector(...)                             { return false; }
     , public MemberFunctionInvoker<Derived>                                                             \
   {                                                                                                     \
   public:                                                                                               \
-    REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, const, & ,          )                            \
-    REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member, const, &&, std::move)                            \
-    REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member,      , & ,          )                            \
-    REFLECTION_INJECT_MEMBER_FUNCTION_TEMPLATE(member,      , &&, std::move)                            \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, & ,          )                                     \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, &&, std::move)                                     \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , & ,          )                                     \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , &&, std::move)                                     \
   };                                                                                                    \
                                                                                                         \
   template<typename Derived>                                                                            \

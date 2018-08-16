@@ -113,7 +113,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     member,                                                             \
     REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                          \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                         \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_NON_TEMPLATE,  \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_REFLECTOR,  \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR                          \
   )                                                                     \
 
@@ -126,7 +126,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     member,                                                                   \
     REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                                \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                               \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR_ASSIGNMENT_OPERATOR, \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_ASSIGNMENT_OPERATOR_REFLECTOR, \
     REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR                                \
   )                                                                           \
 
