@@ -9,13 +9,26 @@ namespace reflection {
 
 namespace detail {
 
+template<class Reflection, typename Derived, typename reflector>
+constexpr static auto is_member_type_impl(std::true_type)
+{
+  return utils::is_detected_v<reflection::detect_is_member_type, reflector, Derived>;
+}
+
+template<typename...>
+constexpr static auto is_member_type_impl(std::false_type)
+{
+  return false;
+}
+
 template<class Reflection, typename Derived>
 constexpr static auto is_member_type()
 {
   using reflector = typename Reflection::template reflector_member_type<Derived>;
 
-  return is_reflector(reflector{}) &&
-         utils::is_detected_v<reflection::detect_is_member_type, reflector, Derived>;
+  auto tag = std::integral_constant<bool, is_reflector(reflector{})>{};
+
+  return is_member_type_impl<Reflection, Derived, reflector>(tag);
 }
 
 template<class Reflection>
