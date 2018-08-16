@@ -33,6 +33,10 @@ using detect_is_member_type = decltype(
   )
 );
 
+template<typename Derived>
+constexpr auto is_reflector(const reflector_base<Derived> &) { return true;  }
+constexpr auto is_reflector(...)                             { return false; }
+
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE(...)
