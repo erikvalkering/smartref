@@ -114,7 +114,7 @@ constexpr auto is_reflector(...)                             { return false; }
 
 #define REFLECTION_INJECT_OPERATOR_INFIX(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
   template<typename Arg>                                                                        \
-  auto operator##member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                \
+  auto operator member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                          \
     SFINAEABLE_RETURN(                                                                          \
       on_call(                                                                                  \
         reflector(utils::delayed(*this, utils::type_list<Arg>{})),                              \
