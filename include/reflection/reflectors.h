@@ -143,27 +143,27 @@ constexpr auto is_reflector(...)                             { return false; }
     REFLECTION_INJECT_OPERATOR_INFIX(member, const, &&, std::move)                                    \
   }                                                                                                   \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_INVOKER(ReflectorClassName, member)              \
-  template<typename Delay>                                                                          \
-  class MemberFunctionInvoker                                                                       \
-  {                                                                                                 \
-  private:                                                                                          \
-    template<typename Obj, typename... Args>                                                        \
-    friend auto call(const MemberFunctionInvoker &, utils::type_list<>, Obj &&obj, Args &&... args) \
-      SFINAEABLE_RETURN(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                 \
-                                                                                                    \
-    template<typename... ExplicitArgs, typename Obj, typename... Args>                              \
-    friend auto call(                                                                               \
-      const MemberFunctionInvoker &,                                                                \
-      utils::type_list<ExplicitArgs...>,                                                            \
-      Obj &&obj,                                                                                    \
-      Args &&... args                                                                               \
-    )                                                                                               \
-      CONSTRAINED_SFINAEABLE_RETURN(                                                                \
-        sizeof...(ExplicitArgs) != 0,                                                               \
-        std::forward<Obj>(obj).template member<ExplicitArgs...>(std::forward<Args>(args)...)        \
-      )                                                                                             \
-  }                                                                                                 \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_INVOKER(ReflectorClassName, member)                    \
+  template<typename Delay>                                                                                \
+  class ReflectorClassName##Invoker                                                                       \
+  {                                                                                                       \
+  private:                                                                                                \
+    template<typename Obj, typename... Args>                                                              \
+    friend auto call(const ReflectorClassName##Invoker &, utils::type_list<>, Obj &&obj, Args &&... args) \
+      SFINAEABLE_RETURN(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                       \
+                                                                                                          \
+    template<typename... ExplicitArgs, typename Obj, typename... Args>                                    \
+    friend auto call(                                                                                     \
+      const ReflectorClassName##Invoker &,                                                                \
+      utils::type_list<ExplicitArgs...>,                                                                  \
+      Obj &&obj,                                                                                          \
+      Args &&... args                                                                                     \
+    )                                                                                                     \
+      CONSTRAINED_SFINAEABLE_RETURN(                                                                      \
+        sizeof...(ExplicitArgs) != 0,                                                                     \
+        std::forward<Obj>(obj).template member<ExplicitArgs...>(std::forward<Args>(args)...)              \
+      )                                                                                                   \
+  }                                                                                                       \
 
 #define REFLECTION_INJECT_MEMBER_FUNCTION(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)  \
   template<typename... ExplicitArgs, typename... Args>                                            \
@@ -181,7 +181,7 @@ constexpr auto is_reflector(...)                             { return false; }
   template<typename Derived>                                                            \
   class ReflectorClassName                                                              \
     : public reflection::reflector_base<Derived>                                        \
-    , public MemberFunctionInvoker<Derived>                                             \
+    , public ReflectorClassName##Invoker<Derived>                                       \
   {                                                                                     \
   public:                                                                               \
     REFLECTION_INJECT_MEMBER_FUNCTION(member, const, & ,          )                     \
@@ -192,12 +192,12 @@ constexpr auto is_reflector(...)                             { return false; }
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_INVOKER(ReflectorClassName, member)                \
   template<typename Delay>                                                                          \
-  class FreeFunctionInvoker                                                                         \
+  class ReflectorClassName##Invoker                                                                 \
   {                                                                                                 \
   public:                                                                                           \
     template<typename Obj, typename... Args>                                                        \
     friend auto call(                                                                               \
-      const FreeFunctionInvoker &,                                                                  \
+      const ReflectorClassName##Invoker &,                                                          \
       utils::type_list<>,                                                                           \
       Obj &&obj,                                                                                    \
       Args &&... args                                                                               \
@@ -210,7 +210,7 @@ constexpr auto is_reflector(...)                             { return false; }
                                                                                                     \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                              \
     friend auto call(                                                                               \
-      const FreeFunctionInvoker &,                                                                  \
+      const ReflectorClassName##Invoker &,                                                          \
       utils::type_list<ExplicitArgs...>,                                                            \
       Obj &&obj,                                                                                    \
       Args &&... args                                                                               \
@@ -226,16 +226,16 @@ constexpr auto is_reflector(...)                             { return false; }
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(ReflectorClassName, member)  \
   template<typename Derived, typename Delay = void>                                   \
-  class FreeFunctionExposer                                                           \
+  class ReflectorClassName                                                            \
     : public reflection::reflector_base<Derived>                                      \
-    , public FreeFunctionInvoker<Delay>                                               \
+    , public ReflectorClassName##Invoker<Delay>                                       \
   {                                                                                   \
   public:                                                                             \
     template<typename... ExplicitArgs, typename Self, typename... Args>               \
     friend auto member(Self &&self, Args &&... args)                                  \
       SFINAEABLE_RETURN(                                                              \
         on_call(                                                                      \
-          utils::Delayed<FreeFunctionExposer, Args...>{},                             \
+          utils::Delayed<ReflectorClassName, Args...>{},                              \
           utils::type_list<ExplicitArgs...>{},                                        \
           derived(std::forward<Self>(self)),                                          \
           std::forward<Args>(args)...                                                 \
