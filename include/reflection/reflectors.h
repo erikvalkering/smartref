@@ -90,40 +90,40 @@ constexpr auto is_reflector(...)                             { return false; }
     REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, &&, std::move)                      \
   }                                                                                                   \
 
-#define REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)  \
-  template<typename Arg>                                                                              \
-  auto member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                                \
-    SFINAEABLE_RETURN(                                                                                \
-      on_call(                                                                                        \
-        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                                    \
-        utils::type_list<>{},                                                                         \
-        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                       \
-        std::forward<Arg>(arg)                                                                        \
-      )                                                                                               \
-    )                                                                                                 \
+#define REFLECTION_INJECT_OPERATOR_INFIX(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
+  template<typename Arg>                                                                        \
+  auto operator##member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                \
+    SFINAEABLE_RETURN(                                                                          \
+      on_call(                                                                                  \
+        reflector(utils::delayed(*this, utils::type_list<Arg>{})),                              \
+        utils::type_list<>{},                                                                   \
+        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                 \
+        std::forward<Arg>(arg)                                                                  \
+      )                                                                                         \
+    )                                                                                           \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_ASSIGNMENT_OPERATOR_REFLECTOR(ReflectorClassName, member)  \
-  template<typename Derived>                                                                                  \
-  class ReflectorClassName                                                                                    \
-    : public reflection::reflector_base<Derived>                                                              \
-  {                                                                                                           \
-  private:                                                                                                    \
-    template<typename Obj, typename Arg>                                                                      \
-    friend auto call(const ReflectorClassName &, utils::type_list<>, Obj &&obj, Arg &&arg)                    \
-      SFINAEABLE_RETURN(std::forward<Obj>(obj) = std::forward<Arg>(arg))                                      \
-                                                                                                              \
-  public:                                                                                                     \
-    ReflectorClassName() = default;                                                                           \
-    ReflectorClassName(const ReflectorClassName &) = default;                                                 \
-    ReflectorClassName(ReflectorClassName &&) = default;                                                      \
-    ReflectorClassName &operator=(const ReflectorClassName &) = default;                                      \
-    ReflectorClassName &operator=(ReflectorClassName &&) = default;                                           \
-                                                                                                              \
-    REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member,      , & ,          )                                       \
-    REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member,      , &&, std::move)                                       \
-    REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member, const, & ,          )                                       \
-    REFLECTION_INJECT_ASSIGNMENT_OPERATOR(member, const, &&, std::move)                                       \
-  }                                                                                                           \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_REFLECTOR(ReflectorClassName, member) \
+  template<typename Derived>                                                                            \
+  class ReflectorClassName                                                                              \
+    : public reflection::reflector_base<Derived>                                                        \
+  {                                                                                                     \
+  private:                                                                                              \
+    template<typename Obj, typename Arg>                                                                \
+    friend auto call(const ReflectorClassName &, utils::type_list<>, Obj &&obj, Arg &&arg)              \
+      SFINAEABLE_RETURN(std::forward<Obj>(obj) member std::forward<Arg>(arg))                           \
+                                                                                                        \
+  public:                                                                                               \
+    ReflectorClassName() = default;                                                                     \
+    ReflectorClassName(const ReflectorClassName &) = default;                                           \
+    ReflectorClassName(ReflectorClassName &&) = default;                                                \
+    ReflectorClassName &operator=(const ReflectorClassName &) = default;                                \
+    ReflectorClassName &operator=(ReflectorClassName &&) = default;                                     \
+                                                                                                        \
+    REFLECTION_INJECT_OPERATOR_INFIX(member,      , & ,          )                                      \
+    REFLECTION_INJECT_OPERATOR_INFIX(member,      , &&, std::move)                                      \
+    REFLECTION_INJECT_OPERATOR_INFIX(member, const, & ,          )                                      \
+    REFLECTION_INJECT_OPERATOR_INFIX(member, const, &&, std::move)                                      \
+  }                                                                                                     \
 
 #define REFLECTION_INJECT_MEMBER_FUNCTION(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION)          \
   template<typename... ExplicitArgs, typename... Args>                                                    \
