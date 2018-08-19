@@ -142,7 +142,6 @@ constexpr auto is_reflector(...)                             { return false; }
   class MemberFunctionInvoker                                                                           \
   {                                                                                                     \
   private:                                                                                              \
-    /* TODO: See if we can merge the two call functions using if constexpr */                           \
     template<typename Obj, typename... Args>                                                            \
     friend auto call(const MemberFunctionInvoker &, utils::type_list<>, Obj &&obj, Args &&... args)     \
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                     \
@@ -192,9 +191,6 @@ constexpr auto is_reflector(...)                             { return false; }
     )                                                                                                   \
       -> decltype(adl_tricks::member(std::forward<Obj>(obj), std::forward<Args>(args)...))              \
     {                                                                                                   \
-      /* The reason why this needs to be put in a separate class,                                    */ \
-      /* is because otherwise the ADL would find the function                                        */ \
-      /* defined in the smart reference itself.                                                      */ \
       using reflectable::member;                                                                        \
       return member(std::forward<Obj>(obj), std::forward<Args>(args)...);                               \
     }                                                                                                   \
@@ -210,9 +206,6 @@ constexpr auto is_reflector(...)                             { return false; }
            adl_tricks::member<ExplicitArgs...>(std::forward<Obj>(obj), std::forward<Args>(args)...)     \
          )                                                                                              \
     {                                                                                                   \
-      /* The reason why this needs to be put in a separate class, */                                    \
-      /* is because otherwise the ADL would find the function     */                                    \
-      /* defined in the smart reference itself.                   */                                    \
       using reflectable::member;                                                                        \
       return member<ExplicitArgs...>(std::forward<Obj>(obj), std::forward<Args>(args)...);              \
     }                                                                                                   \
@@ -246,7 +239,7 @@ constexpr auto is_reflector(...)                             { return false; }
   namespace reflectable {                                                \
                                                                          \
   /* This member is there purely to allow for doing e.g. */              \
-  /* 'using reflection::foo', which will import 'foo' as */              \
+  /* 'using reflection::foo', which will treat 'foo' as */               \
   /* a function template.                                */              \
   template<typename... Args>                                             \
   auto member(...) -> std::enable_if_t<utils::always_false<Args...>>;    \
