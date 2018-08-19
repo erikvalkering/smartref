@@ -47,7 +47,9 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 // TODO: -cmaster We can replace the using type = ... with a simple boolean, such that we can inline the reflectors
 // TODO: Rename 'member' to more general 'name' (for free function 'member' is nonsense)
 #define REFLECTION_REFLECTABLE_UNIFIED(Class, member, PREAMBLE,               \
-  MEMBER_TYPE_REFLECTOR, MEMBER_FUNCTION_REFLECTOR, FREE_FUNCTION_REFLECTOR   \
+  MEMBER_TYPE_INVOKER, MEMBER_TYPE_EXPOSER,                                   \
+  MEMBER_FUNCTION_INVOKER, MEMBER_FUNCTION_EXPOSER,                           \
+  FREE_FUNCTION_INVOKER, FREE_FUNCTION_EXPOSER                                \
 )                                                                             \
   PREAMBLE(member);                                                           \
                                                                               \
@@ -65,15 +67,27 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
   {                                                                           \
     using type = struct                                                       \
     {                                                                         \
-      MEMBER_TYPE_REFLECTOR(                                                  \
+      MEMBER_TYPE_INVOKER(                                                    \
         reflector_member_type,                                                \
         member);                                                              \
                                                                               \
-      MEMBER_FUNCTION_REFLECTOR(                                              \
+      MEMBER_TYPE_EXPOSER(                                                    \
+        reflector_member_type,                                                \
+        member);                                                              \
+                                                                              \
+      MEMBER_FUNCTION_INVOKER(                                                \
         reflector_member_function,                                            \
         member);                                                              \
                                                                               \
-      FREE_FUNCTION_REFLECTOR(                                                \
+      MEMBER_FUNCTION_EXPOSER(                                                \
+        reflector_member_function,                                            \
+        member);                                                              \
+                                                                              \
+      FREE_FUNCTION_INVOKER(                                                  \
+        reflector_free_function,                                              \
+        member);                                                              \
+                                                                              \
+      FREE_FUNCTION_EXPOSER(                                                  \
         reflector_free_function,                                              \
         member);                                                              \
     };                                                                        \
@@ -86,9 +100,12 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     Class,                                                \
     member,                                               \
     REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_PREAMBLE,    \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_REFLECTOR,     \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR, \
-    REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_REFLECTOR    \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_INVOKER,       \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_EXPOSER,       \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_INVOKER,   \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_EXPOSER,   \
+    REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_INVOKER,     \
+    REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER      \
   )                                                       \
 
 #define REFLECTION_REFLECTABLE1(member) \
@@ -99,9 +116,12 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     Class,                                                \
     member,                                               \
     REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,            \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,           \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_REFLECTOR, \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR            \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,             \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER,             \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_INVOKER,   \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_EXPOSER,   \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,             \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER              \
   )                                                       \
 
 #define REFLECTION_REFLECTABLE_OPERATOR1(member)  \
@@ -112,9 +132,12 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     Class,                                                              \
     member,                                                             \
     REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                          \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                         \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_REFLECTOR,  \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR                          \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER,                           \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_INVOKER,    \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_EXPOSER,    \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER                            \
   )                                                                     \
 
 #define REFLECTION_REFLECTABLE_OPERATOR_UNARY1(member)  \
@@ -125,9 +148,12 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     Class,                                                                \
     member,                                                               \
     REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                            \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR,                           \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_REFLECTOR,  \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_REFLECTOR                            \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                             \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER,                             \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER,    \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_EXPOSER,    \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                             \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER                              \
   )                                                                       \
 
 #define REFLECTION_REFLECTABLE_OPERATOR_INFIX1(member) \
