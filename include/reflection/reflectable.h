@@ -143,18 +143,18 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 #define REFLECTION_REFLECTABLE_OPERATOR_UNARY1(member)  \
   REFLECTION_REFLECTABLE_OPERATOR_UNARY2(auto, member)  \
 
-#define REFLECTION_REFLECTABLE_OPERATOR_INFIX2(Class, member)             \
-  REFLECTION_REFLECTABLE_UNIFIED(                                         \
-    Class,                                                                \
-    member,                                                               \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                            \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                             \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER,                             \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER,    \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_EXPOSER,    \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                             \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER                              \
-  )                                                                       \
+#define REFLECTION_REFLECTABLE_OPERATOR_INFIX2(Class, member)           \
+  REFLECTION_REFLECTABLE_UNIFIED(                                       \
+    Class,                                                              \
+    member,                                                             \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                          \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER,                           \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER,  \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_EXPOSER,  \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER,  \
+    REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_OPERATOR_EXPOSER           \
+  )                                                                     \
 
 #define REFLECTION_REFLECTABLE_OPERATOR_INFIX1(member) \
   REFLECTION_REFLECTABLE_OPERATOR_INFIX2(auto, member) \

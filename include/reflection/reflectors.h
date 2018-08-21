@@ -256,6 +256,9 @@ constexpr auto is_reflector(...)                             { return false; }
       )                                                                                 \
   }                                                                                     \
 
+#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_OPERATOR_EXPOSER(ReflectorClassName, member) \
+  REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(ReflectorClassName, operator member)       \
+
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_PREAMBLE(member)        \
   namespace reflectable {                                                \
                                                                          \
