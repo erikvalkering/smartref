@@ -88,7 +88,12 @@ auto delegate(Using_ &&base)
 template<typename Invoker, typename... ExplicitArgs, typename Using_, typename... Args>
 auto on_call(const Invoker &invoker, utils::type_list<ExplicitArgs...> explicitArgs, Using_ &&self, Args &&... args)
   SFINAEABLE_RETURN(
-    call(invoker, explicitArgs, delegate(std::forward<Using_>(self)), std::forward<Args>(args)...)
+    call(
+      invoker,
+      explicitArgs,
+      delegate(std::forward<Using_>(self)),
+      std::forward<Args>(args)...
+    )
   )
 
 } // namespace smartref
