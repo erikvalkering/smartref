@@ -79,6 +79,18 @@ auto delegate(Using_ &&base)
   return static_cast<utils::like_t<Using_, DelegateType<Using_>>>(std::forward<Using_>(base));
 }
 
+template<typename Using_>
+auto delegate_if_is_using_impl(Using_ &&base, int)
+  SFINAEABLE_RETURN((static_cast<utils::like_t<Using_, DelegateType<Using_>>>(std::forward<Using_>(base))))
+
+template<typename Obj>
+auto delegate_if_is_using_impl(Obj &&obj, ...)
+  SFINAEABLE_RETURN(std::forward<Obj>(obj))
+
+template<typename Obj>
+auto delegate_if_is_using(Obj &&obj)
+  SFINAEABLE_RETURN(delegate_if_is_using_impl(std::forward<Obj>(obj), 0))
+
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
@@ -91,8 +103,8 @@ auto on_call(const Invoker &invoker, utils::type_list<ExplicitArgs...> explicitA
     call(
       invoker,
       explicitArgs,
-      delegate(std::forward<Using_>(self)),
-      std::forward<Args>(args)...
+      delegate_if_is_using(std::forward<Using_>(self)),
+      delegate_if_is_using(std::forward<Args>(args)...)
     )
   )
 
