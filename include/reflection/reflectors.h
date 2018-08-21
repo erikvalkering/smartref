@@ -11,16 +11,16 @@ class reflector_base
 {
 private:
   template<typename Self>
+  friend auto reflector(Self &&self)
+  {
+    return std::add_const_t<utils::remove_cvref_t<Self>>{};
+  }
+
+  template<typename Self>
   friend auto derived(Self &&self)
     -> utils::Delayed<utils::like_t<Self, Derived>, Self>
   {
     return static_cast<utils::like_t<Self, Derived>>(std::forward<Self>(self));
-  }
-
-  template<typename Self>
-  friend auto reflector(Self &&self)
-  {
-    return std::add_const_t<utils::remove_cvref_t<Self>>{};
   }
 };
 
@@ -224,24 +224,24 @@ constexpr auto is_reflector(...)                             { return false; }
     }                                                                                               \
   }                                                                                                 \
 
-#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(ReflectorClassName, member)  \
-  template<typename Derived, typename Delay = void>                                   \
-  class ReflectorClassName                                                            \
-    : public reflection::reflector_base<Derived>                                      \
-    , public ReflectorClassName##Invoker<Delay>                                       \
-  {                                                                                   \
-  public:                                                                             \
-    template<typename... ExplicitArgs, typename Self, typename... Args>               \
-    friend auto member(Self &&self, Args &&... args)                                  \
-      SFINAEABLE_RETURN(                                                              \
-        on_call(                                                                      \
-          utils::Delayed<ReflectorClassName, Args...>{},                              \
-          utils::type_list<ExplicitArgs...>{},                                        \
+#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(ReflectorClassName, member)    \
+  template<typename Derived, typename Delay = void>                                     \
+  class ReflectorClassName                                                              \
+    : public reflection::reflector_base<Derived>                                        \
+    , public ReflectorClassName##Invoker<Delay>                                         \
+  {                                                                                     \
+  public:                                                                               \
+    template<typename... ExplicitArgs, typename Self, typename... Args>                 \
+    friend auto member(Self &&self, Args &&... args)                                    \
+      SFINAEABLE_RETURN(                                                                \
+        on_call(                                                                        \
+          utils::Delayed<ReflectorClassName, Args...>{},                                \
+          utils::type_list<ExplicitArgs...>{},                                          \
           derived(std::forward<Self>(self)),                                          \
           std::forward<Args>(args)...                                                 \
-        )                                                                             \
-      )                                                                               \
-  }                                                                                   \
+        )                                                                               \
+      )                                                                                 \
+  }                                                                                     \
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_PREAMBLE(member)        \
   namespace reflectable {                                                \
