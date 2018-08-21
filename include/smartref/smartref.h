@@ -96,9 +96,8 @@ auto delegate_if_is_using(Obj &&obj)
 //       which requires a runtime double dispatch mechanism.
 
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
-// TODO: Maybe pass ExplicitArgs... as-is (i.e. not as a parameter pack, but single type_list parameter)
-template<typename Invoker, typename... ExplicitArgs, typename Using_, typename... Args>
-auto on_call(const Invoker &invoker, utils::type_list<ExplicitArgs...> explicitArgs, Using_ &&self, Args &&... args)
+template<typename Invoker, typename ExplicitArgs, typename Using_, typename... Args>
+auto on_call(const Invoker &invoker, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
   SFINAEABLE_RETURN(
     call(
       invoker,
