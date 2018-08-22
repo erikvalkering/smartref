@@ -2,6 +2,9 @@
 
 #include <type_traits>
 
+
+
+// TODO: Fix the issue that causes conflicts when using REFLECTABLE from within two separate files on the same line.
 REFLECTABLE(member);
 
 namespace tests {
