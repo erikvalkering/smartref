@@ -50,7 +50,7 @@ constexpr auto is_reflector(...)                             { return false; }
   class ReflectorClassName##Invoker                                                       \
   {                                                                                       \
   private:                                                                                \
-    template<typename Obj, typename... Args>                                              \
+    template<typename Obj>                                                                \
     friend auto call(const ReflectorClassName##Invoker &, utils::type_list<>, Obj &&obj)  \
       -> typename utils::remove_cvref_t<Obj>::member;                                     \
   }                                                                                       \
