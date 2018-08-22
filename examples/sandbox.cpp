@@ -122,7 +122,6 @@ void qwerty(foobar::ClassTemplate<U>)
 
 // TODO: Move this to fundamental operator support of library
 REFLECTABLE_OPERATOR_INFIX(+);
-REFLECTABLE_OPERATOR_ASSIGNMENT(=);
 
 int main()
 {
