@@ -44,7 +44,7 @@ public:
     return move(data);
   }
 
-private:
+public:
   T data;
 };
 
