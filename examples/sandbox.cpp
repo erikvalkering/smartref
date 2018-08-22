@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <typeinfo>
+#include <iterator>
 
 using namespace std;
 using namespace foobar;
@@ -150,6 +151,11 @@ int main()
   {
     cout << x << endl;
   }
+
+  Property<vector<float>> v2;
+  copy(begin(v), end(v), back_inserter(v2));
+  copy(begin(v2), end(v2), ostream_iterator<double>(cout, " "));
+  cout << endl;
 
   Property<int> x{};
   Property<int> y{};
