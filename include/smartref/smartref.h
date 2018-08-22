@@ -103,7 +103,7 @@ auto on_call(const Invoker &invoker, ExplicitArgs explicitArgs, Using_ &&self, A
       invoker,
       explicitArgs,
       delegate_if_is_using(std::forward<Using_>(self)),
-      delegate_if_is_using(std::forward<Args>(args)...)
+      delegate_if_is_using(std::forward<Args>(args))...
     )
   )
 
