@@ -37,6 +37,15 @@ template<typename Derived>
 constexpr auto is_reflector(const reflector_base<Derived> &) { return true;  }
 constexpr auto is_reflector(...)                             { return false; }
 
+template<typename Reflector>
+struct InvokerImpl
+{
+  using type = typename Reflector::Invoker;
+};
+
+template<typename Reflector>
+using Invoker = typename InvokerImpl<Reflector>::type;
+
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE(...)
@@ -59,13 +68,18 @@ constexpr auto is_reflector(...)                             { return false; }
   template<class Derived>                                                           \
   class ReflectorClassName                                                          \
     : public reflection::reflector_base<Derived>                                    \
-    , public ReflectorClassName##Invoker<Derived>                                   \
   {                                                                                 \
+  private:                                                                          \
+    template<typename Reflector>                                                    \
+    friend class reflection::InvokerImpl;                                           \
+                                                                                    \
+    using Invoker = ReflectorClassName##Invoker<Derived>;                           \
+                                                                                    \
   public:                                                                           \
     using member = utils::detected_or_t<                                            \
       void,                                                                         \
       detect_is_member_type,                                                        \
-      ReflectorClassName,                                                           \
+      Invoker,                                                                      \
       Derived>;                                                                     \
   }                                                                                 \
 

@@ -12,7 +12,11 @@ namespace detail {
 template<class Reflection, typename Derived, typename reflector>
 constexpr static auto is_member_type_impl(std::true_type)
 {
-  return utils::is_detected_v<reflection::detect_is_member_type, reflector, Derived>;
+  return utils::is_detected_v<
+    reflection::detect_is_member_type,
+    reflection::Invoker<reflector>,
+    Derived
+  >;
 }
 
 template<typename...>
