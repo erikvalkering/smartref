@@ -159,16 +159,18 @@ int main()
 
   // TODO: Proper reference leaking control
   //       i.e. {x + y} -> Property<decltype(delegate(x)+delegate(y))>
-  auto u = x + 1;
-  auto v = 1 + y;
-  auto w = x + y;
+  {
+    auto u = x + 1;
+    auto v = 1 + y;
+    auto w = x + y;
 
-  cout << u << endl;
-  cout << typeid(u).name() << endl;
-  cout << v << endl;
-  cout << typeid(v).name() << endl;
-  cout << w << endl;
-  cout << typeid(w).name() << endl;
+    cout << u << endl;
+    cout << typeid(u).name() << endl;
+    cout << v << endl;
+    cout << typeid(v).name() << endl;
+    cout << w << endl;
+    cout << typeid(w).name() << endl;
+  }
 
   Property<Foo> foo;
   foo.foo();
