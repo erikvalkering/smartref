@@ -120,6 +120,9 @@ void qwerty(foobar::ClassTemplate<U>)
 
 } // namespace foobar2
 
+// TODO: Move this to fundamental operator support of library
+REFLECTABLE_OPERATOR_ASSIGNMENT(=);
+
 int main()
 {
 /*
@@ -147,6 +150,11 @@ int main()
 
   Property<int> x{};
   Property<int> y{};
+
+  x = 5;
+
+  cout << x.data << endl;
+  cout << (x = 9) << endl;
 
   // TODO: Proper reference leaking control
   //       i.e. {x + y} -> Property<decltype(delegate(x)+delegate(y))>
