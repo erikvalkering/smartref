@@ -22,19 +22,6 @@ private:
   {
     return static_cast<utils::like_t<Self, Derived>>(std::forward<Self>(self));
   }
-
-  template<typename Self>
-  static auto derived_if_impl(Self &&self, int)
-    SFINAEABLE_RETURN((static_cast<utils::like_t<Self, Derived>>(std::forward<Self>(self))))
-
-  template<typename Self>
-  static auto derived_if_impl(Self &&self, ...)
-    SFINAEABLE_RETURN(std::forward<Self>(self))
-
-public:
-  template<typename Self>
-  static auto derived_if(Self &&self)
-    SFINAEABLE_RETURN(derived_if_impl(std::forward<Self>(self), 0))
 };
 
 template<class Reflection, class Derived>
@@ -126,16 +113,16 @@ constexpr auto is_reflector(...)                             { return false; }
   }                                                                                                   \
 
 #define REFLECTION_INJECT_OPERATOR_INFIX(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
-  template<typename Arg>                                                                        \
-  auto operator member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                          \
-    SFINAEABLE_RETURN(                                                                          \
-      on_call(                                                                                  \
+  template<typename Arg>                                                                                            \
+  auto operator member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                                     \
+    SFINAEABLE_RETURN(                                                                                              \
+      on_call(                                                                                                      \
         reflector(utils::delayed(*this, utils::type_list<Arg>{})),                              \
-        utils::type_list<>{},                                                                   \
-        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                 \
-        std::forward<Arg>(arg)                                                                  \
-      )                                                                                         \
-    )                                                                                           \
+        utils::type_list<>{},                                                                                       \
+        derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                                     \
+        std::forward<Arg>(arg)                                                                                      \
+      )                                                                                                             \
+    )                                                                                                               \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_EXPOSER(ReflectorClassName, member) \
   template<typename Derived>                                                                          \
@@ -250,8 +237,8 @@ constexpr auto is_reflector(...)                             { return false; }
         on_call(                                                                        \
           utils::Delayed<ReflectorClassName, Args...>{},                                \
           utils::type_list<ExplicitArgs...>{},                                          \
-          reflection::reflector_base<Derived>::derived_if(std::forward<Self>(self)),    \
-          reflection::reflector_base<Derived>::derived_if(std::forward<Args>(args))...  \
+          utils::static_cast_if_possible<utils::like_t<Self, Derived>>(std::forward<Self>(self)),    \
+          utils::static_cast_if_possible<utils::like_t<Args, Derived>>(std::forward<Args>(args))...  \
         )                                                                               \
       )                                                                                 \
   }                                                                                     \

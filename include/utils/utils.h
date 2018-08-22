@@ -5,6 +5,29 @@
 #include <utility>
 #include <type_traits>
 
+#define CONCAT2(x, y) x ## y
+#define CONCAT(x, y) CONCAT2(x, y)
+
+#define SFINAEABLE_RETURN(...)  \
+    -> decltype(__VA_ARGS__)    \
+  {                             \
+    return __VA_ARGS__;         \
+  }                             \
+
+#define RETURN(expression) \
+  {                                   \
+    return expression;                \
+  }                                   \
+
+#define CONSTRAINED_SFINAEABLE_RETURN(constraint, expression) \
+    -> std::enable_if_t<                                      \
+      constraint,                                             \
+      decltype(expression)                                    \
+    >                                                         \
+  {                                                           \
+    return expression;                                        \
+  }                                                           \
+
 namespace utils {
 
 template<typename...>
@@ -19,12 +42,20 @@ struct Combiner : L1, L2
   using L2::operator();
 };
 
-// TODO: Replace with C++17 class template deduction
 template<typename L1, typename L2>
 constexpr auto make_combiner(L1 &&l1, L2 &&l2)
 {
   return Combiner<std::decay_t<L1>, std::decay_t<L2>>{std::forward<L1>(l1), std::forward<L2>(l2)};
 }
+
+// template<typename... Callables>
+// struct overload : Callables...
+// {
+//   using Callables::operator()...;
+// };
+
+// template<typename... Callables>
+// overload(Callables...) -> overload<Callables...>;
 
 template<class... Bases>
 struct Compose : Bases...
@@ -51,6 +82,27 @@ template<typename... T, typename Obj>
 decltype(auto) delayed(Obj &&obj, ...)
 {
   return std::forward<Obj>(obj);
+}
+
+template<typename Target, typename Source, typename = std::enable_if_t<std::is_convertible<Source, Target>::value>>
+auto static_cast_if_possible_impl(Source &&source, int)
+  -> Target
+{
+  return static_cast<Target>(std::forward<Source>(source));
+}
+
+template<typename Target, typename Source>
+auto static_cast_if_possible_impl(Source &&source, ...)
+  -> decltype(std::forward<Source>(source))
+{
+  return std::forward<Source>(source);
+}
+
+template<typename Target, typename Source>
+auto static_cast_if_possible(Source &&source)
+  -> decltype(static_cast_if_possible_impl<Target>(std::forward<Source>(source), 0))
+{
+  return static_cast_if_possible_impl<Target>(std::forward<Source>(source), 0);
 }
 
 template<typename Derived, typename Fallback>
@@ -113,20 +165,5 @@ using like_t = typename like<T, U>::type;
 
 } // namespace utils
 
-#define CONCAT2(x, y) x ## y
-#define CONCAT(x, y) CONCAT2(x, y)
-
-#define SFINAEABLE_RETURN(expression) \
-    -> decltype(expression)           \
-  {                                   \
-    return expression;                \
-  }                                   \
-
-#define CONSTRAINED_SFINAEABLE_RETURN(constraint, expression) \
-    -> std::enable_if_t<                                      \
-      constraint,                                             \
-      decltype(expression)                                    \
-    >                                                         \
-  {                                                           \
-    return expression;                                        \
-  }                                                           \
+template<typename T>
+using name = typename T::asdf;
