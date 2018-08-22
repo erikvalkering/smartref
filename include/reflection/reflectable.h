@@ -159,6 +159,22 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 #define REFLECTION_REFLECTABLE_OPERATOR_INFIX1(member) \
   REFLECTION_REFLECTABLE_OPERATOR_INFIX2(auto, member) \
 
+#define REFLECTION_REFLECTABLE_OPERATOR_ASSIGNMENT2(Class, member)      \
+  REFLECTION_REFLECTABLE_UNIFIED(                                       \
+    Class,                                                              \
+    member,                                                             \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                          \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER,                           \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER,  \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_EXPOSER,  \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER                            \
+  )                                                                     \
+
+#define REFLECTION_REFLECTABLE_OPERATOR_ASSIGNMENT1(member) \
+  REFLECTION_REFLECTABLE_OPERATOR_ASSIGNMENT2(auto, member) \
+
 #define REFLECTION_REFLECTABLE_MAKE_OVERLOAD(_1, _2, NAME, ...) NAME
 
 //! Define a set of overloads such that we can use REFLECT both with and without
@@ -188,10 +204,17 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
   )(__VA_ARGS__)                                    \
 
 #define REFLECTION_REFLECTABLE_OPERATOR_INFIX(...) \
-  REFLECTION_REFLECTABLE_MAKE_OVERLOAD(                 \
-    __VA_ARGS__,                                        \
+  REFLECTION_REFLECTABLE_MAKE_OVERLOAD(            \
+    __VA_ARGS__,                                   \
     REFLECTION_REFLECTABLE_OPERATOR_INFIX2,        \
     REFLECTION_REFLECTABLE_OPERATOR_INFIX1         \
+  )(__VA_ARGS__)                                   \
+
+#define REFLECTION_REFLECTABLE_OPERATOR_ASSIGNMENT(...) \
+  REFLECTION_REFLECTABLE_MAKE_OVERLOAD(                 \
+    __VA_ARGS__,                                        \
+    REFLECTION_REFLECTABLE_OPERATOR_ASSIGNMENT2,        \
+    REFLECTION_REFLECTABLE_OPERATOR_ASSIGNMENT1         \
   )(__VA_ARGS__)                                        \
 
 #ifndef REFLECTION_USE_PREFIX
@@ -199,4 +222,5 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
 #define REFLECTABLE_OPERATOR(...) REFLECTION_REFLECTABLE_OPERATOR(__VA_ARGS__)
 #define REFLECTABLE_OPERATOR_UNARY(...) REFLECTION_REFLECTABLE_OPERATOR_UNARY(__VA_ARGS__)
 #define REFLECTABLE_OPERATOR_INFIX(...) REFLECTION_REFLECTABLE_OPERATOR_INFIX(__VA_ARGS__)
+#define REFLECTABLE_OPERATOR_ASSIGNMENT(...) REFLECTION_REFLECTABLE_OPERATOR_ASSIGNMENT(__VA_ARGS__)
 #endif
