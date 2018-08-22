@@ -1,5 +1,7 @@
 #pragma once
 
+#include "operators.h"
+
 #include <reflection/reflection.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +53,3 @@ REFLECTABLE(emplace_back);
 REFLECTABLE(pop_back);
 REFLECTABLE(resize);
 REFLECTABLE(swap);
-
-//! operators
-REFLECTABLE_OPERATOR(operator[]);
-REFLECTABLE_OPERATOR_ASSIGNMENT(=);

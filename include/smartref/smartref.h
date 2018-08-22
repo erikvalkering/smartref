@@ -1,7 +1,9 @@
 #pragma once
 
-#include "members.h"
+#include "operators.h"
 #include "stl.h"
+
+#include "members.h"
 
 #include <utils/utils.h>
 
