@@ -79,9 +79,12 @@ auto delegate(Using_ &&base)
   return static_cast<utils::like_t<Using_, DelegateType<Using_>>>(std::forward<Using_>(base));
 }
 
-template<typename Using_>
+template<typename Using_, typename = DelegateType<Using_>>
 auto delegate_if_is_using_impl(Using_ &&base, int)
-  SFINAEABLE_RETURN((static_cast<utils::like_t<Using_, DelegateType<Using_>>>(std::forward<Using_>(base))))
+  -> utils::like_t<Using_, DelegateType<Using_>>
+{
+  return static_cast<utils::like_t<Using_, DelegateType<Using_>>>(std::forward<Using_>(base));
+}
 
 template<typename Obj>
 auto delegate_if_is_using_impl(Obj &&obj, ...)
