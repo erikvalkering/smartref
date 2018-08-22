@@ -142,7 +142,10 @@ int main()
   v.push_back(1);
   v.push_back(2);
   v.push_back(3);
+
+  // The following statements should *not* compile
   // v.push_back(1, 2, 3);
+  // push_back(v, 1);
 
   for (auto x : v)
   {
