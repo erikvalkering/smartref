@@ -22,6 +22,8 @@ class Property : public using_<T>
 // TODO: Add proper reference-leaking control by allowing
 //       the user-defined conversion functions to be private.
 public:
+  using using_<T>::operator=;
+
   operator T &() &
   {
     return data;
@@ -136,7 +138,7 @@ int main()
   v.push_back(1);
   v.push_back(2);
   v.push_back(3);
-  //v.push_back(1, 2, 3);
+  // v.push_back(1, 2, 3);
 
   for (auto x : v)
   {
