@@ -263,7 +263,8 @@ using Invoker = typename InvokerImpl<Reflector>::type;
   /* 'using reflection::foo', which will treat 'foo' as */               \
   /* a function template.                                */              \
   template<typename... Args>                                             \
-  auto member(...) -> std::enable_if_t<utils::always_false<Args...>>;    \
+  auto member(Args...)                                                   \
+    -> std::enable_if_t<utils::always_false<Args...>>;                   \
                                                                          \
   } /* namespace reflectable */                                          \
                                                                          \
