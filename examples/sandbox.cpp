@@ -24,6 +24,9 @@ class Property : public using_<T>
 public:
   using using_<T>::operator=;
 
+  Property() = default;
+  Property(T value) : data{value} {}
+
   operator T &() &
   {
     return data;
@@ -162,6 +165,7 @@ int main()
     auto u = x + 1;
     auto v = 1 + y;
     auto w = x + y;
+    auto z = Property<int>{x + y};
 
     cout << u << endl;
     cout << typeid(u).name() << endl;
@@ -169,6 +173,8 @@ int main()
     cout << typeid(v).name() << endl;
     cout << w << endl;
     cout << typeid(w).name() << endl;
+    cout << z << endl;
+    cout << typeid(z).name() << endl;
   }
 
   Property<Foo> foo;
