@@ -19,6 +19,9 @@ def singlify(filename, search_paths, cache=set()):
             # Strip off newline
             line = line[:-1]
 
+            if '#pragma once' in line:
+                continue
+
             m = re.match('.*#include.*[<"]([^>"]*)[>"].*', line)
 
             if not m:
