@@ -22,6 +22,10 @@ def singlify(filename, search_paths, cache=set()):
             if '#pragma once' in line:
                 continue
 
+            if line.strip().startswith('//'):
+                yield line
+                continue
+
             m = re.match('.*#include.*[<"]([^>"]*)[>"].*', line)
 
             if not m:
