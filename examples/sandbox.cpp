@@ -152,6 +152,21 @@ int main()
     cout << x << endl;
   }
 
+  // This is a great example of a fully-encapsulated smart reference:
+  // back_inserter requires:
+  // - push_back() member function
+  // - value_type member type
+  //
+  // Furthermore, because of the full encapsulation of Property<T>,
+  // begin(v) returns a Property<vector<int>::iterator_type>
+  // Which in turn requires the following:
+  // - operator* for dereferencing
+  // - operator++ for incrementing
+  // - operator!= for comparing begin() and end()
+  //
+  // And after being referenced, it returns again a Property<vector<int>::iterator &>
+  // which requires:
+  // - operator= for assigning the value (via push_back())
   Property<vector<float>> v2;
   copy(begin(v), end(v), back_inserter(v2));
   copy(begin(v2), end(v2), ostream_iterator<double>(cout, " "));
