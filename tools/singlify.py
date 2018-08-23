@@ -1,4 +1,5 @@
 import sys
+import re
 
 
 def singlify(filename):
@@ -8,10 +9,15 @@ def singlify(filename):
             line = line[:-1]
 
             if '#include' in line:
-                # TODO
-                continue
+                m = re.match('.*"([^"]*)".*', line)
 
-            yield line
+                if not m:
+                    continue
+
+                for x in singlify(m.group(1)):
+                    yield x
+            else:
+                yield line
 
 
 def main():
