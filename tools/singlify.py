@@ -17,6 +17,7 @@ def singlify(filename, cache=set()):
                 m = re.match('.*"([^"]*)".*', line)
 
                 if not m:
+                    yield line
                     continue
 
                 for x in singlify(m.group(1), cache):
