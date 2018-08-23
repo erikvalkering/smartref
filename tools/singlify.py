@@ -20,7 +20,9 @@ def singlify(filename, cache=set()):
                     yield line
                     continue
 
-                for x in singlify(m.group(1), cache):
+                include_file = m.group(1)
+
+                for x in singlify(include_file, cache):
                     yield x
             else:
                 yield line
