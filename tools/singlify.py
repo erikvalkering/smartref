@@ -1,5 +1,6 @@
 import sys
 import re
+import pathlib
 
 
 def singlify(filename, cache=set()):
@@ -8,7 +9,7 @@ def singlify(filename, cache=set()):
 
     cache.add(filename)
 
-    with open(filename) as f:
+    with filename.open() as f:
         for line in f.readlines():
             # Strip off newline
             line = line[:-1]
@@ -20,7 +21,7 @@ def singlify(filename, cache=set()):
                     yield line
                     continue
 
-                include_file = m.group(1)
+                include_file = pathlib.Path(m.group(1))
 
                 for x in singlify(include_file, cache):
                     yield x
@@ -29,7 +30,7 @@ def singlify(filename, cache=set()):
 
 
 def main():
-    filename = sys.argv[1]
+    filename = pathlib.Path(sys.argv[1])
     for line in singlify(filename):
         print(line)
 
