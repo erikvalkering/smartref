@@ -62,17 +62,11 @@ public:
   using_ &operator=(using_ &&) = default;
 };
 
-template<typename>
-struct DelegateTypeImpl;
-
 template<typename Delegate, typename Derived>
-struct DelegateTypeImpl<using_<Delegate, Derived>>
-{
-  using type = Delegate;
-};
+auto delegate_type_impl(const using_<Delegate, Derived> &) -> Delegate;
 
 template<typename Using_>
-using DelegateType = typename DelegateTypeImpl<utils::remove_cvref_t<Using_>>::type;
+using DelegateType = decltype(delegate_type_impl(std::declval<utils::remove_cvref_t<Using_>>()));
 
 template<typename Using_>
 auto delegate(Using_ &&base)
