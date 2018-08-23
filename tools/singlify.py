@@ -14,19 +14,16 @@ def singlify(filename, cache=set()):
             # Strip off newline
             line = line[:-1]
 
-            if '#include' in line:
-                m = re.match('.*"([^"]*)".*', line)
+            m = re.match('.*#include.*"([^"]*)".*', line)
 
-                if not m:
-                    yield line
-                    continue
-
-                include_file = pathlib.Path(m.group(1))
-
-                for x in singlify(include_file, cache):
-                    yield x
-            else:
+            if not m:
                 yield line
+                continue
+
+            include_file = pathlib.Path(m.group(1))
+
+            for x in singlify(include_file, cache):
+                yield x
 
 
 def main():
