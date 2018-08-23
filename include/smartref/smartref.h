@@ -68,12 +68,19 @@ auto delegate_type_impl(const using_<Delegate, Derived> &) -> Delegate;
 template<typename Using_>
 using DelegateType = decltype(delegate_type_impl(std::declval<utils::remove_cvref_t<Using_>>()));
 
+struct access
+{
+  template<typename Using_>
+  static auto delegate(Using_ &&base)
+    -> utils::like_t<Using_, DelegateType<Using_>>
+  {
+    return static_cast<utils::like_t<Using_, DelegateType<Using_>>>(std::forward<Using_>(base));
+  }
+};
+
 template<typename Using_>
 auto delegate(Using_ &&base)
-  -> utils::like_t<Using_, DelegateType<Using_>>
-{
-  return static_cast<utils::like_t<Using_, DelegateType<Using_>>>(std::forward<Using_>(base));
-}
+  SFINAEABLE_RETURN(access::delegate(std::forward<Using_>(base)))
 
 template<typename Using_, typename = DelegateType<Using_>>
 auto delegate_if_is_using_impl(Using_ &&base, int)
