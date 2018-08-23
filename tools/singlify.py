@@ -2,7 +2,12 @@ import sys
 import re
 
 
-def singlify(filename):
+def singlify(filename, cache=set()):
+    if filename in cache:
+        return
+
+    cache.add(filename)
+
     with open(filename) as f:
         for line in f.readlines():
             # Strip off newline
@@ -14,7 +19,7 @@ def singlify(filename):
                 if not m:
                     continue
 
-                for x in singlify(m.group(1)):
+                for x in singlify(m.group(1), cache):
                     yield x
             else:
                 yield line
