@@ -20,13 +20,14 @@ using smartref::using_;
 template<typename T>
 class Property : public using_<T>
 {
-// TODO: Add proper reference-leaking control by allowing
-//       the user-defined conversion functions to be private.
 public:
   using using_<T>::operator=;
 
   Property() = default;
   Property(T value) : data{value} {}
+
+private:
+  friend class smartref::access;
 
   operator T &() &
   {
