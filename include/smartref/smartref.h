@@ -51,15 +51,13 @@ class using_ : public using_base<Delegate, Derived>
              , public Members<Delegate, utils::non_void_t<Derived, using_<Delegate, Derived>>>
 {
 public:
-  using Members<Delegate, utils::non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
-
   using_() = default;
-
   using_(const using_ &) = default;
-  using_ &operator=(const using_ &) = default;
-
   using_(using_ &&) = default;
+  using_ &operator=(const using_ &) = default;
   using_ &operator=(using_ &&) = default;
+
+  using Members<Delegate, utils::non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
 };
 
 template<typename Delegate, typename Derived>
