@@ -46,12 +46,21 @@ struct InvokerImpl
 template<typename Reflector>
 using Invoker = typename InvokerImpl<Reflector>::type;
 
+template<typename T, typename... Hierarchy>
+using fail_if_in_hierarchy = std::enable_if_t<
+  utils::none_of<
+    utils::remove_cvref_t<T>,
+    Hierarchy...
+  >,
+  T
+>;
+
 } // namespace reflection
 
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE(...)
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER(...)
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER(ReflectorClassName, ...) \
-  template<class>                                                         \
+  template<typename...>                                                   \
   struct ReflectorClassName {}                                            \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_INVOKER(ReflectorClassName, member)        \
@@ -65,7 +74,7 @@ using Invoker = typename InvokerImpl<Reflector>::type;
   }                                                                                       \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_EXPOSER(ReflectorClassName, member)  \
-  template<class Derived>                                                           \
+  template<class Derived, typename...>                                              \
   class ReflectorClassName                                                          \
     : public reflection::reflector_base<Derived>                                    \
   {                                                                                 \
@@ -104,7 +113,7 @@ using Invoker = typename InvokerImpl<Reflector>::type;
     )                                                                                                                             \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_EXPOSER(ReflectorClassName, member)   \
-  template<typename Derived>                                                                          \
+  template<typename Derived, typename...>                                                             \
   class ReflectorClassName                                                                            \
     : public reflection::reflector_base<Derived>                                                      \
   {                                                                                                   \
@@ -133,12 +142,12 @@ using Invoker = typename InvokerImpl<Reflector>::type;
         ReflectorClassName##Invoker<Arg>{},                                                                         \
         utils::type_list<>{},                                                                                       \
         derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                                     \
-        std::forward<Arg>(arg)                                                                                      \
+        std::forward<fail_if_in_hierarchy<Arg, ReflectorClassName, Hierarchy...>>(arg)                              \
       )                                                                                                             \
     )                                                                                                               \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_EXPOSER(ReflectorClassName, member) \
-  template<typename Derived>                                                                          \
+  template<typename Derived, typename... Hierarchy>                                                   \
   class ReflectorClassName                                                                            \
     : public reflection::reflector_base<Derived>                                                      \
   {                                                                                                   \
@@ -190,7 +199,7 @@ using Invoker = typename InvokerImpl<Reflector>::type;
     )                                                                                                                 \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_EXPOSER(ReflectorClassName, member)  \
-  template<typename Derived>                                                            \
+  template<typename Derived, typename...>                                               \
   class ReflectorClassName                                                              \
     : public reflection::reflector_base<Derived>                                        \
   {                                                                                     \
@@ -235,23 +244,23 @@ using Invoker = typename InvokerImpl<Reflector>::type;
     }                                                                                               \
   }                                                                                                 \
 
-#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(ReflectorClassName, member)    \
-  template<typename Derived, typename Delay = void>                                     \
-  class ReflectorClassName                                                              \
-    : public reflection::reflector_base<Derived>                                        \
-  {                                                                                     \
-  public:                                                                               \
-    template<typename... ExplicitArgs, typename Self, typename... Args>                 \
-    friend auto member(Self &&self, Args &&... args)                                    \
-      SFINAEABLE_RETURN(                                                                \
-        on_call(                                                                        \
-          ReflectorClassName##Invoker<Delay>{},                                \
-          utils::type_list<ExplicitArgs...>{},                                          \
-          utils::static_cast_if_possible<utils::like_t<Self, Derived>>(std::forward<Self>(self)),    \
-          utils::static_cast_if_possible<utils::like_t<Args, Derived>>(std::forward<Args>(args))...  \
-        )                                                                               \
-      )                                                                                 \
-  }                                                                                     \
+#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(ReflectorClassName, member)                  \
+  template<typename Derived, typename Delay = void, typename...>                                      \
+  class ReflectorClassName                                                                            \
+    : public reflection::reflector_base<Derived>                                                      \
+  {                                                                                                   \
+  public:                                                                                             \
+    template<typename... ExplicitArgs, typename Self, typename... Args>                               \
+    friend auto member(Self &&self, Args &&... args)                                                  \
+      SFINAEABLE_RETURN(                                                                              \
+        on_call(                                                                                      \
+          ReflectorClassName##Invoker<Delay>{},                                                       \
+          utils::type_list<ExplicitArgs...>{},                                                        \
+          utils::static_cast_if_possible<utils::like_t<Self, Derived>>(std::forward<Self>(self)),     \
+          utils::static_cast_if_possible<utils::like_t<Args, Derived>>(std::forward<Args>(args))...   \
+        )                                                                                             \
+      )                                                                                               \
+  }                                                                                                   \
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_OPERATOR_EXPOSER(ReflectorClassName, member) \
   REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(ReflectorClassName, operator member)       \

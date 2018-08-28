@@ -48,7 +48,12 @@ struct using_base<Delegate, void>
 
 template<typename Delegate, class Derived = void>
 class using_ : public using_base<Delegate, Derived>
-             , public Members<Delegate, utils::non_void_t<Derived, using_<Delegate, Derived>>>
+             , public Members<
+                        Delegate,
+                        utils::non_void_t<Derived, using_<Delegate, Derived>>,
+                        Derived,
+                        using_<Delegate, Derived>
+                      >
 {
 public:
   using_() = default;
@@ -57,7 +62,13 @@ public:
   using_ &operator=(const using_ &) = default;
   using_ &operator=(using_ &&) = default;
 
-  using Members<Delegate, utils::non_void_t<Derived, using_<Delegate, Derived>>>::operator=;
+  using
+    Members<
+      Delegate,
+      utils::non_void_t<Derived, using_<Delegate, Derived>>,
+      Derived,
+      using_<Delegate, Derived>
+    >::operator=;
 };
 
 template<typename Delegate, typename Derived>

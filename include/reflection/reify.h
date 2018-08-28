@@ -55,25 +55,26 @@ constexpr static auto is_member_function()
 template<typename T>
 constexpr static auto reify(Reflection<T>) -> T;
 
-template<class Derived, class Reflection>
+template<class Derived, typename... Hierarchy, class Reflection>
 constexpr static auto reify_members(Reflection refl)
 {
   if constexpr (detail::is_member_type<Reflection, Derived>())
   {
-    return typename Reflection::template reflector_member_type<Derived>{};
+    return typename Reflection::template reflector_member_type<Derived, Hierarchy...>{};
   }
   else if constexpr (detail::is_member_function<Reflection>())
   {
-    return typename Reflection::template reflector_member_function<Derived>{};
+    return typename Reflection::template reflector_member_function<Derived, Hierarchy...>{};
   }
 }
 
-template<class Derived, class Reflection>
+template<class Derived, typename... Hierarchy, class Reflection>
 constexpr static auto reify(Reflection refl)
 {
+  // TODO: Compose doesn't yet keep track of the inheritance hierarchy
   return utils::Compose<
-    decltype(reify_members<Derived>(refl)),
-    typename Reflection::template reflector_free_function<Derived>
+    decltype(reify_members<Derived, Hierarchy...>(refl)),
+    typename Reflection::template reflector_free_function<Derived, Hierarchy...>
   >{};
 }
 
