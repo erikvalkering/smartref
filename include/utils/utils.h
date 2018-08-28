@@ -132,6 +132,9 @@ constexpr auto pack_size(T<Us...>)
   return sizeof...(Us);
 }
 
+template<typename T, typename... Ts>
+constexpr auto none_of = (!std::is_same<T, Ts>::value && ...);
+
 //! C++20 type trait (from cppreference.com)
 template<typename T>
 struct remove_cvref
