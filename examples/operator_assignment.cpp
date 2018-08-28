@@ -49,7 +49,8 @@ using DelegateType = decltype(
   delegate_type_impl(
     std::declval<
       // utils::Delayed<
-        utils::remove_cvref_t<utils::Delayed<Using_, Args...>> &,
+        utils::Delayed<utils::remove_cvref_t<Using_>, Args...> &,
+        // utils::remove_cvref_t<utils::Delayed<Using_, Args...>> &,
         // utils::remove_cvref_t<Using_> &,
         Args...
       // >
@@ -129,8 +130,8 @@ struct Derived : smartref::using_<T, Derived<T>, Derived<T>>
   Derived &operator=(const Derived &) = default;
   Derived &operator=(Derived &&) = default;
 
-  // Derived(const T &value) : data{value} {}
-  // Derived(char name) : data{}, name{name} {}
+  Derived(const T &value) : data{value} {}
+  Derived(char name) : data{}, name{name} {}
 
 private:
   friend class smartref::access;
@@ -209,8 +210,8 @@ struct x : Derived<int> {};
 
 int main()
 {
-  Derived<int> x;
-  Derived<float> y{};
+  Derived<int> x{'x'};
+  Derived<float> y{'y'};
 
   x = 1;
   y = 2.1;
