@@ -69,6 +69,28 @@ struct Compose : Bases...
   using Bases::operator=...;
 };
 
+template<typename MetaFunction, typename Arg>
+using apply = typename MetaFunction::template type<Arg>;
+
+template<template<typename> class MetaFunction>
+struct metafunction
+{
+  template<typename Arg>
+  using type = MetaFunction<Arg>;
+};
+
+template<typename... BaseConstructors>
+struct ClassConstructor : apply<BaseConstructors, ClassConstructor<BaseConstructors...>>...
+{
+  ClassConstructor() = default;
+  ClassConstructor(const ClassConstructor &) = default;
+  ClassConstructor(ClassConstructor &&) = default;
+  ClassConstructor &operator=(const ClassConstructor &) = default;
+  ClassConstructor &operator=(ClassConstructor &&) = default;
+
+  using apply<BaseConstructors, ClassConstructor<BaseConstructors...>>::operator=...;
+};
+
 template<class Class, typename... T>
 struct DelayedImpl
 {
@@ -135,6 +157,7 @@ constexpr auto pack_size(T<Us...>)
 template<typename T, typename... Ts>
 constexpr auto none_of = (!std::is_same<T, Ts>::value && ...);
 
+// TODO: Move to cpp20.h
 //! C++20 type trait (from cppreference.com)
 template<typename T>
 struct remove_cvref

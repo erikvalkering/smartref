@@ -68,14 +68,32 @@ constexpr static auto reify_members(Reflection refl)
   }
 }
 
+template<class Derived, class Reflection, typename... Hierarchy>
+struct CreateMemberBaseConstructor
+{
+  template<typename CRTP>
+  using BaseConstructor = decltype(reify_members<Derived, CRTP, Hierarchy...>(Reflection{}));
+
+  using type = utils::metafunction<BaseConstructor>;
+};
+
+template<class Derived, class Reflection, typename... Hierarchy>
+struct CreateFreeFunctionBaseConstructor
+{
+  template<typename CRTP>
+  using BaseConstructor = typename Reflection::template reflector_free_function<Derived, CRTP, Hierarchy...>;
+
+  using type = utils::metafunction<BaseConstructor>;
+};
+
 template<class Derived, typename... Hierarchy, class Reflection>
 constexpr static auto reify(Reflection refl)
 {
-  // TODO: Compose doesn't yet keep track of the inheritance hierarchy
-  return utils::Compose<
-    decltype(reify_members<Derived, Hierarchy...>(refl)),
-    typename Reflection::template reflector_free_function<Derived, Hierarchy...>
-  >{};
+  return
+    utils::ClassConstructor<
+      typename CreateMemberBaseConstructor<Derived, Reflection, Hierarchy...>::type,
+      typename CreateFreeFunctionBaseConstructor<Derived, Reflection, Hierarchy...>::type
+    >{};
 }
 
 } // namespace reflection
