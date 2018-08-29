@@ -14,9 +14,9 @@
     return __VA_ARGS__;         \
   }                             \
 
-#define RETURN(expression) \
+#define RETURN(...) \
   {                                   \
-    return expression;                \
+    return __VA_ARGS__;                \
   }                                   \
 
 #define CONSTRAINED_SFINAEABLE_RETURN(constraint, expression) \
