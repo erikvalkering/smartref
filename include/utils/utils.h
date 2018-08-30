@@ -157,6 +157,31 @@ constexpr auto pack_size(T<Us...>)
 template<typename T, typename... Ts>
 constexpr auto none_of = (!std::is_same<T, Ts>::value && ...);
 
+template<typename T, typename... Ts>
+constexpr auto any_of = !none_of<T, Ts...>;
+
+template<template<typename> class, typename...>
+struct FindImpl;
+
+template<template<typename> class Predicate>
+struct FindImpl<Predicate>
+{
+  using type = void;
+};
+
+template<template<typename> class Predicate, typename T, typename... Ts>
+struct FindImpl<Predicate, T, Ts...>
+{
+  using type = std::conditional_t<
+    Predicate<T>::value,
+    T,
+    typename FindImpl<Predicate, Ts...>::type
+  >;
+};
+
+template<template<typename> class Predicate, typename... Ts>
+using find = typename FindImpl<Predicate, Ts...>::type;
+
 // TODO: Move to cpp20.h
 //! C++20 type trait (from cppreference.com)
 template<typename T>
