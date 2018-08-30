@@ -24,10 +24,11 @@ private:
   }
 };
 
-template<class Reflection, class Derived>
+template<class Reflection, class Derived, typename... Hierarchy>
 using detect_is_member_type = decltype(
   on_call(
     std::declval<const Reflection &>(),
+    utils::type_list<Hierarchy...>{},
     utils::type_list<>{},
     std::declval<Derived &>()
   )
@@ -74,7 +75,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
   }                                                                                       \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_EXPOSER(ReflectorClassName, member)  \
-  template<class Derived, typename...>                                              \
+  template<class Derived, typename... Hierarchy>                                    \
   class ReflectorClassName                                                          \
     : public reflection::reflector_base<Derived>                                    \
   {                                                                                 \
@@ -89,7 +90,8 @@ using fail_if_in_hierarchy = std::enable_if_t<
       void,                                                                         \
       detect_is_member_type,                                                        \
       Invoker,                                                                      \
-      Derived>;                                                                     \
+      Derived,                                                                      \
+      Hierarchy...>;                                                                \
   }                                                                                 \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_INVOKER(ReflectorClassName, member) \
@@ -107,13 +109,14 @@ using fail_if_in_hierarchy = std::enable_if_t<
     SFINAEABLE_RETURN(                                                                                                            \
       on_call(                                                                                                                    \
         ReflectorClassName##Invoker<Derived>{},                                                                                   \
+        utils::type_list<Hierarchy...>{},                                                                                         \
         utils::type_list<>{},                                                                                                     \
         derived(MOVE_FUNCTION(*this))                                                                                             \
       )                                                                                                                           \
     )                                                                                                                             \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_EXPOSER(ReflectorClassName, member)   \
-  template<typename Derived, typename...>                                                             \
+  template<typename Derived, typename... Hierarchy>                                                   \
   class ReflectorClassName                                                                            \
     : public reflection::reflector_base<Derived>                                                      \
   {                                                                                                   \
@@ -140,6 +143,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     SFINAEABLE_RETURN(                                                                                              \
       on_call(                                                                                                      \
         ReflectorClassName##Invoker<Arg>{},                                                                         \
+        utils::type_list<Hierarchy...>{},                                                                           \
         utils::type_list<>{},                                                                                       \
         derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                                     \
         std::forward<fail_if_in_hierarchy<Arg, ReflectorClassName, Hierarchy...>>(arg)                              \
@@ -192,6 +196,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     SFINAEABLE_RETURN(                                                                                                \
       on_call(                                                                                                        \
         ReflectorClassName##Invoker<Derived>{},                                                                       \
+        utils::type_list<Hierarchy...>{},                                                                             \
         utils::type_list<ExplicitArgs...>{},                                                                          \
         derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),                           \
         std::forward<Args>(args)...                                                                                   \
@@ -199,7 +204,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     )                                                                                                                 \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_EXPOSER(ReflectorClassName, member)  \
-  template<typename Derived, typename...>                                               \
+  template<typename Derived, typename... Hierarchy>                                     \
   class ReflectorClassName                                                              \
     : public reflection::reflector_base<Derived>                                        \
   {                                                                                     \
@@ -245,7 +250,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
   }                                                                                                 \
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(ReflectorClassName, member)                  \
-  template<typename Derived, typename Delay = void, typename...>                                      \
+  template<typename Derived, typename Delay = void, typename... Hierarchy>                            \
   class ReflectorClassName                                                                            \
     : public reflection::reflector_base<Derived>                                                      \
   {                                                                                                   \
@@ -255,6 +260,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
       SFINAEABLE_RETURN(                                                                              \
         on_call(                                                                                      \
           ReflectorClassName##Invoker<Delay>{},                                                       \
+          utils::type_list<Hierarchy...>{},                                                           \
           utils::type_list<ExplicitArgs...>{},                                                        \
           utils::static_cast_if_possible<utils::like_t<Self, Derived>>(std::forward<Self>(self)),     \
           utils::static_cast_if_possible<utils::like_t<Args, Derived>>(std::forward<Args>(args))...   \

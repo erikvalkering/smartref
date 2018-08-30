@@ -91,31 +91,50 @@ template<typename Using_>
 auto delegate(Using_ &&base)
   SFINAEABLE_RETURN(access::delegate(std::forward<Using_>(base)))
 
-template<typename Using_, typename = DelegateType<Using_>>
-auto delegate_if_is_using_impl(Using_ &&base, int)
+template<typename... Hierarchy, typename Using_, typename = DelegateType<Using_>>
+auto delegate_if_is_using_impl(Using_ &&base, int, int)
   SFINAEABLE_RETURN(access::delegate(std::forward<Using_>(base)))
 
-template<typename Obj>
+template<typename>
+struct IsUsingType : std::false_type {};
+
+template<typename Delegate, typename Derived>
+struct IsUsingType<using_<Delegate, Derived>> : std::true_type {};
+
+template<typename>
+struct DelegateType2;
+
+template<typename Delegate, typename Derived>
+struct DelegateType2<using_<Delegate, Derived>>
+{
+  using type = Delegate;
+};
+
+template<typename... Hierarchy, typename Using_, typename = std::enable_if_t<utils::any_of<utils::remove_cvref_t<Using_>, Hierarchy...>>>
+auto delegate_if_is_using_impl(Using_ &&base, int, ...)
+  -> typename DelegateType2<utils::find<IsUsingType, Hierarchy...>>::type;
+
+template<typename... Hierarchy, typename Obj>
 auto delegate_if_is_using_impl(Obj &&obj, ...)
   SFINAEABLE_RETURN(std::forward<Obj>(obj))
 
-template<typename Obj>
+template<typename... Hierarchy, typename Obj>
 auto delegate_if_is_using(Obj &&obj)
-  SFINAEABLE_RETURN(delegate_if_is_using_impl(std::forward<Obj>(obj), 0))
+  SFINAEABLE_RETURN(delegate_if_is_using_impl<Hierarchy...>(std::forward<Obj>(obj), 0, 0))
 
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
 
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
-template<typename Invoker, typename ExplicitArgs, typename Using_, typename... Args>
-auto on_call(const Invoker &invoker, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
+template<typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
+auto on_call(const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
   SFINAEABLE_RETURN(
     call(
       invoker,
       explicitArgs,
-      delegate_if_is_using(std::forward<Using_>(self)),
-      delegate_if_is_using(std::forward<Args>(args))...
+      delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self)),
+      delegate_if_is_using<Hierarchy...>(std::forward<Args>(args))...
     )
   )
 

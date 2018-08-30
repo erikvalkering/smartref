@@ -9,13 +9,14 @@ namespace reflection {
 
 namespace detail {
 
-template<class Reflection, typename Derived, typename reflector>
+template<class Reflection, typename Derived, typename reflector, typename... Hierarchy>
 constexpr static auto is_member_type_impl(std::true_type)
 {
   return utils::is_detected_v<
     reflection::detect_is_member_type,
     reflection::Invoker<reflector>,
-    Derived
+    Derived,
+    Hierarchy...
   >;
 }
 
@@ -25,17 +26,17 @@ constexpr static auto is_member_type_impl(std::false_type)
   return false;
 }
 
-template<class Reflection, typename Derived>
+template<class Reflection, typename Derived, typename... Hierarchy>
 constexpr static auto is_member_type()
 {
   using reflector = typename Reflection::template reflector_member_type<Derived>;
 
   auto tag = std::integral_constant<bool, is_reflector(reflector{})>{};
 
-  return is_member_type_impl<Reflection, Derived, reflector>(tag);
+  return is_member_type_impl<Reflection, Derived, reflector, Hierarchy...>(tag);
 }
 
-template<class Reflection>
+template<class Reflection, typename... Hierarchy>
 constexpr static auto is_member_function()
 {
   //! Member-functions currently cannot be detected (yet).
@@ -58,7 +59,7 @@ constexpr static auto reify(Reflection<T>) -> T;
 template<class Derived, typename... Hierarchy, class Reflection>
 constexpr static auto reify_members(Reflection refl)
 {
-  if constexpr (detail::is_member_type<Reflection, Derived>())
+  if constexpr (detail::is_member_type<Reflection, Derived, Hierarchy...>())
   {
     return typename Reflection::template reflector_member_type<Derived, Hierarchy...>{};
   }
