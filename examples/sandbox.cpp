@@ -178,8 +178,9 @@ int main()
 
   x = 5;
 
-  cout << x.data << endl;
-  cout << (x = 9) << endl;
+  cout << "x.data:  " << x.data  << " [5]" << endl;
+  cout << "x:       " << x       << " [5]" << endl;
+  cout << "(x = 9): " << (x = 9) << " [9]" << endl;
 
   // TODO: Proper reference leaking control
   //       i.e. {x + y} -> Property<decltype(delegate(x)+delegate(y))>
@@ -189,14 +190,31 @@ int main()
     auto w = x + y;
     auto z = Property<int>{x + y};
 
-    cout << u << endl;
-    cout << typeid(u).name() << endl;
-    cout << v << endl;
-    cout << typeid(v).name() << endl;
-    cout << w << endl;
-    cout << typeid(w).name() << endl;
-    cout << z << endl;
-    cout << typeid(z).name() << endl;
+    assert(u == 10);
+    cout << "u: " << u << " [10]" << endl;
+    cout << "typeid(u).name(): " << typeid(u).name() << endl;
+
+    assert(v == 1);
+    cout << "v: " << v << " [1]" << endl;
+    cout << "typeid(v).name(): " << typeid(v).name() << endl;
+
+    assert(w == 9);
+    cout << "w: " << w << " [9]" << endl;
+    cout << "typeid(w).name(): " << typeid(w).name() << endl;
+
+    assert(z == 9);
+    cout << "z: " << z << " [9]" << endl;
+    cout << "typeid(z).name(): " << typeid(z).name() << endl;
+  }
+
+  {
+    Property<int>   x{};
+    Property<float> y{};
+
+    x = 1;
+    y = 2.1;
+    y = 3.1;
+    y = x;
   }
 
   Property<Foo> foo;
