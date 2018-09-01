@@ -262,8 +262,8 @@ using fail_if_in_hierarchy = std::enable_if_t<
           ReflectorClassName##Invoker<Delay>{},                                                       \
           utils::type_list<Hierarchy...>{},                                                           \
           utils::type_list<ExplicitArgs...>{},                                                        \
-          utils::static_cast_if_possible<utils::like_t<Self, Derived>>(std::forward<Self>(self)),     \
-          utils::static_cast_if_possible<utils::like_t<Args, Derived>>(std::forward<Args>(args))...   \
+          std::forward<Self>(self),                                                                   \
+          std::forward<Args>(args)...                                                                 \
         )                                                                                             \
       )                                                                                               \
   }                                                                                                   \
