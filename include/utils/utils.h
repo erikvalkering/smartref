@@ -106,27 +106,6 @@ decltype(auto) delayed(Obj &&obj, ...)
   return std::forward<Obj>(obj);
 }
 
-template<typename Target, typename Source, typename = std::enable_if_t<std::is_convertible<Source, Target>::value>>
-auto static_cast_if_possible_impl(Source &&source, int)
-  -> Target
-{
-  return static_cast<Target>(std::forward<Source>(source));
-}
-
-template<typename Target, typename Source>
-auto static_cast_if_possible_impl(Source &&source, ...)
-  -> decltype(std::forward<Source>(source))
-{
-  return std::forward<Source>(source);
-}
-
-template<typename Target, typename Source>
-auto static_cast_if_possible(Source &&source)
-  -> decltype(static_cast_if_possible_impl<Target>(std::forward<Source>(source), 0))
-{
-  return static_cast_if_possible_impl<Target>(std::forward<Source>(source), 0);
-}
-
 template<typename Derived, typename Fallback>
 struct non_void
 {
