@@ -17,13 +17,13 @@ using namespace std;
 using smartref::using_;
 
 template<typename T>
-class Property : public using_<T>
+class Property : public using_<T, Property<T>>
 {
 public:
   Property() = default;
   Property(T value) : data{value} {}
 
-  using using_<T>::operator=;
+  using using_<T, Property<T>>::operator=;
 
 private:
   friend class smartref::access;
@@ -51,6 +51,17 @@ private:
 public:
   T data;
 };
+
+template<typename T, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
+auto on_call(Property<T> *, const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
+  SFINAEABLE_RETURN(
+    call(
+      invoker,
+      explicitArgs,
+      smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self)),
+      smartref::delegate_if_is_using<Hierarchy...>(std::forward<Args>(args))...
+    )
+  )
 
 namespace foobar {
 
