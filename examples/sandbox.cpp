@@ -14,17 +14,16 @@
 #include <iterator>
 
 using namespace std;
-using namespace foobar;
 using smartref::using_;
 
 template<typename T>
 class Property : public using_<T>
 {
 public:
-  using using_<T>::operator=;
-
   Property() = default;
   Property(T value) : data{value} {}
+
+  using using_<T>::operator=;
 
 private:
   friend class smartref::access;
@@ -87,6 +86,8 @@ void qwerty(foobar::ClassTemplate<U>)
 }
 
 } // namespace foobar2
+
+using namespace foobar;
 
 int main()
 {
