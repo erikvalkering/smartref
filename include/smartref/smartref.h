@@ -127,8 +127,8 @@ auto delegate_if_is_using(Obj &&obj)
 //       which requires a runtime double dispatch mechanism.
 
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
-template<typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
-auto on_call(const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
+template<typename ADLTag, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
+auto on_call(ADLTag *, const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
   SFINAEABLE_RETURN(
     call(
       invoker,

@@ -27,6 +27,7 @@ private:
 template<class Reflection, class Derived, typename... Hierarchy>
 using detect_is_member_type = decltype(
   on_call(
+    std::declval<const Derived *>(),
     std::declval<const Reflection &>(),
     utils::type_list<Hierarchy...>{},
     utils::type_list<>{},
@@ -108,6 +109,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
   auto member() CONST_QUALIFIER REF_QUALIFIER                                                                                     \
     SFINAEABLE_RETURN(                                                                                                            \
       on_call(                                                                                                                    \
+        static_cast<utils::Delayed<Derived, Args...> *>(nullptr),                                                                 \
         ReflectorClassName##Invoker<Derived>{},                                                                                   \
         utils::type_list<Hierarchy...>{},                                                                                         \
         utils::type_list<>{},                                                                                                     \
@@ -142,6 +144,12 @@ using fail_if_in_hierarchy = std::enable_if_t<
   auto operator member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                                     \
     SFINAEABLE_RETURN(                                                                                              \
       on_call(                                                                                                      \
+        static_cast<                                                                                                \
+          utils::Delayed<                                                                                           \
+            Derived,                                                                                                \
+            fail_if_in_hierarchy<Arg, ReflectorClassName, Hierarchy...>                                             \
+          > *                                                                                                       \
+        >(nullptr),                                                                                                 \
         ReflectorClassName##Invoker<Arg>{},                                                                         \
         utils::type_list<Hierarchy...>{},                                                                           \
         utils::type_list<>{},                                                                                       \
@@ -195,6 +203,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
   auto member(Args &&... args) CONST_QUALIFIER REF_QUALIFIER                                                          \
     SFINAEABLE_RETURN(                                                                                                \
       on_call(                                                                                                        \
+        static_cast<utils::Delayed<Derived, Args...> *>(nullptr),                                                     \
         ReflectorClassName##Invoker<Derived>{},                                                                       \
         utils::type_list<Hierarchy...>{},                                                                             \
         utils::type_list<ExplicitArgs...>{},                                                                          \
@@ -259,6 +268,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     friend auto member(Self &&self, Args &&... args)                                                  \
       SFINAEABLE_RETURN(                                                                              \
         on_call(                                                                                      \
+          static_cast<utils::Delayed<Derived, Args...> *>(nullptr),                                   \
           ReflectorClassName##Invoker<Delay>{},                                                       \
           utils::type_list<Hierarchy...>{},                                                           \
           utils::type_list<ExplicitArgs...>{},                                                        \
