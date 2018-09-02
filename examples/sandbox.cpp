@@ -124,6 +124,7 @@ int main()
   // which requires:
   // - operator= for assigning the value (via push_back())
   Property<vector<float>> v2;
+  cout << "type of begin(v): " << typeid(begin(v)).name() << endl;
   copy(begin(v), end(v), back_inserter(v2));
   copy(begin(v2), end(v2), ostream_iterator<double>(cout, " "));
   cout << endl;
