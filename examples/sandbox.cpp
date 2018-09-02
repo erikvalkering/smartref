@@ -11,17 +11,23 @@
 #include <iostream>
 #include <vector>
 #include <typeinfo>
+#include <iterator>
 
 using namespace std;
-using namespace foobar;
 using smartref::using_;
 
 template<typename T>
-class Property : public using_<T>
+class Property : public using_<T, Property<T>>
 {
-// TODO: Add proper reference-leaking control by allowing
-//       the user-defined conversion functions to be private.
 public:
+  Property() = default;
+  Property(T value) : data{value} {}
+
+  using using_<T, Property<T>>::operator=;
+
+private:
+  friend class smartref::access;
+
   operator T &() &
   {
     return data;
@@ -42,46 +48,37 @@ public:
     return move(data);
   }
 
-private:
+public:
   T data;
 };
 
-/*
-class JSONValue : public using_<JSONValue, double>,
-          public using_<JSONValue, string>,
-          public using_<JSONValue, vector<JSONValue>>,
-          public using_<JSONValue, map<JSONValue, JSONValue>>
-{
-public:
-  operator double &()
-  {
-    return get<double>(data);
-  }
+template<typename T, typename U>
+auto wrap_if_is_delegate_impl(U &&value, int)
+  CONSTRAINED_SFINAEABLE_RETURN(
+    (std::is_same<utils::remove_cvref_t<U>, T>::value),
+    Property<utils::remove_cvref_t<U>>{std::forward<U>(value)}
+  )
 
-  operator double &()
-  {
-    return get<string>(data);
-  }
+template<typename T, typename U>
+auto wrap_if_is_delegate_impl(U &&value, ...)
+  SFINAEABLE_RETURN(std::forward<U>(value))
 
-  operator double &()
-  {
-    return get<vector<JSONValue>>(data);
-  }
+template<typename T, typename U>
+auto wrap_if_is_delegate(U &&value)
+  SFINAEABLE_RETURN(wrap_if_is_delegate_impl<T>(std::forward<U>(value), 0))
 
-  operator double &()
-  {
-    return get<map<JSONValue, JSONValue>>(data);
-  }
-
-private:
-  variant<
-    double,
-    string,
-    vector<JSONValue>,
-    map<JSONValue, JSONValue>
-  > data;
-};
-*/
+template<typename T, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
+auto on_call(Property<T> *, const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
+  SFINAEABLE_RETURN(
+    wrap_if_is_delegate<T>(
+      call(
+        invoker,
+        explicitArgs,
+        smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self)),
+        smartref::delegate_if_is_using<Hierarchy...>(std::forward<Args>(args))...
+      )
+    )
+  )
 
 namespace foobar {
 
@@ -118,17 +115,10 @@ void qwerty(foobar::ClassTemplate<U>)
 
 } // namespace foobar2
 
+using namespace foobar;
+
 int main()
 {
-/*
-  JSONValue json = {};
-
-  json["asdf"] = 1.0;
-  json[123456] = nullptr;
-  json.DOT(qwerty) = "the other (third) operator dot proposal";
-  json.qwerty = "__getattr__ for C++";
-*/
-
   cout << "Hello, Wandbox!" << endl;
 
   Property<vector<int>> v;
@@ -136,22 +126,78 @@ int main()
   v.push_back(1);
   v.push_back(2);
   v.push_back(3);
-  //v.push_back(1, 2, 3);
+
+  // The following statements should *not* compile
+  // v.push_back(1, 2, 3);
+  // push_back(v, 1);
 
   for (auto x : v)
   {
     cout << x << endl;
   }
 
+  // This is a great example of a fully-encapsulated smart reference:
+  // back_inserter requires:
+  // - push_back() member function
+  // - value_type member type
+  //
+  // Furthermore, because of the full encapsulation of Property<T>,
+  // begin(v) returns a Property<vector<int>::iterator_type>
+  // Which in turn requires the following:
+  // - operator* for dereferencing
+  // - operator++ for incrementing
+  // - operator!= for comparing begin() and end()
+  //
+  // And after being referenced, it returns again a Property<vector<int>::iterator &>
+  // which requires:
+  // - operator= for assigning the value (via push_back())
+  Property<vector<float>> v2;
+  cout << "type of begin(v): " << typeid(begin(v)).name() << endl;
+  copy(begin(v), end(v), back_inserter(v2));
+  copy(begin(v2), end(v2), ostream_iterator<double>(cout, " "));
+  cout << endl;
+
   Property<int> x{};
   Property<int> y{};
 
-  // TODO: Proper reference leaking control
-  //       i.e. {x + y} -> Property<decltype(delegate(x)+delegate(y))>
-  auto z = x + y;
+  x = 5;
 
-  cout << z << endl;
-  cout << typeid(z).name() << endl;
+  cout << "x.data:  " << x.data  << " [5]" << endl;
+  cout << "x:       " << x       << " [5]" << endl;
+  cout << "(x = 9): " << (x = 9) << " [9]" << endl;
+
+  {
+    auto u = x + 1;
+    auto v = 1 + y;
+    auto w = x + y;
+    auto z = Property<int>{x + y};
+
+    assert(u == 10);
+    cout << "u: " << u << " [10]" << endl;
+    cout << "typeid(u).name(): " << typeid(u).name() << endl;
+
+    assert(v == 1);
+    cout << "v: " << v << " [1]" << endl;
+    cout << "typeid(v).name(): " << typeid(v).name() << endl;
+
+    assert(w == 9);
+    cout << "w: " << w << " [9]" << endl;
+    cout << "typeid(w).name(): " << typeid(w).name() << endl;
+
+    assert(z == 9);
+    cout << "z: " << z << " [9]" << endl;
+    cout << "typeid(z).name(): " << typeid(z).name() << endl;
+  }
+
+  {
+    Property<int>   x{};
+    Property<float> y{};
+
+    x = 1;
+    y = 2.1;
+    y = 3.1;
+    y = x;
+  }
 
   Property<Foo> foo;
   foo.foo();

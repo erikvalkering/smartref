@@ -9,18 +9,35 @@ namespace reflection {
 
 namespace detail {
 
-template<class Reflection, typename Derived>
-constexpr static auto is_member_type()
+template<class Reflection, typename Derived, typename reflector, typename... Hierarchy>
+constexpr auto is_member_type_impl(std::true_type)
 {
   return utils::is_detected_v<
     reflection::detect_is_member_type,
-    typename Reflection::template reflector_member_type<Derived>,
-    Derived
+    reflection::Invoker<reflector>,
+    Derived,
+    Hierarchy...
   >;
 }
 
-template<class Reflection>
-constexpr static auto is_member_function()
+template<typename...>
+constexpr auto is_member_type_impl(std::false_type)
+{
+  return false;
+}
+
+template<class Reflection, typename Derived, typename... Hierarchy>
+constexpr auto is_member_type()
+{
+  using reflector = typename Reflection::template reflector_member_type<Derived>;
+
+  auto tag = std::integral_constant<bool, is_reflector(reflector{})>{};
+
+  return is_member_type_impl<Reflection, Derived, reflector, Hierarchy...>(tag);
+}
+
+template<class Reflection, typename... Hierarchy>
+constexpr auto is_member_function()
 {
   //! Member-functions currently cannot be detected (yet).
   //! However, that is not a problem, because they will be SFINAE'ed away,
@@ -37,28 +54,51 @@ constexpr static auto is_member_function()
 } // namespace detail
 
 template<typename T>
-constexpr static auto reify(Reflection<T>) -> T;
+constexpr auto reify(Reflection<T>) -> T;
 
-template<class Derived, class Reflection>
-constexpr static auto reify_members(Reflection refl)
+// TODO: reify_members does not belong to reflection, because it is smartref-specific.
+//       Solution: move it to smartref/members.h, make it return a Reflection, and
+//                 have a single reify function to turn it back into a type.
+
+template<class Derived, typename... Hierarchy, class Reflection>
+constexpr auto reify_members(Reflection refl)
 {
-  if constexpr (detail::is_member_type<Reflection, Derived>())
+  if constexpr (detail::is_member_type<Reflection, Derived, Hierarchy...>())
   {
-    return typename Reflection::template reflector_member_type<Derived>{};
+    return typename Reflection::template reflector_member_type<Derived, Hierarchy...>{};
   }
   else if constexpr (detail::is_member_function<Reflection>())
   {
-    return typename Reflection::template reflector_member_function<Derived>{};
+    return typename Reflection::template reflector_member_function<Derived, Hierarchy...>{};
   }
 }
 
-template<class Derived, class Reflection>
-constexpr static auto reify(Reflection refl)
+template<class Derived, class Reflection, typename... Hierarchy>
+struct CreateMemberBaseConstructor
 {
-  return utils::Compose<
-    decltype(reify_members<Derived>(refl)),
-    typename Reflection::template reflector_free_function<Derived>
-  >{};
+  template<typename CRTP>
+  using BaseConstructor = decltype(reify_members<Derived, Hierarchy..., CRTP>(Reflection{}));
+
+  using type = utils::metafunction<BaseConstructor>;
+};
+
+template<class Derived, class Reflection, typename... Hierarchy>
+struct CreateFreeFunctionBaseConstructor
+{
+  template<typename CRTP>
+  using BaseConstructor = typename Reflection::template reflector_free_function<Derived, Hierarchy..., CRTP>;
+
+  using type = utils::metafunction<BaseConstructor>;
+};
+
+template<class Derived, typename... Hierarchy, class Reflection>
+constexpr auto reify(Reflection refl)
+{
+  return
+    utils::ClassConstructor<
+      typename CreateMemberBaseConstructor<Derived, Reflection, Hierarchy...>::type,
+      typename CreateFreeFunctionBaseConstructor<Derived, Reflection, Hierarchy...>::type
+    >{};
 }
 
 } // namespace reflection

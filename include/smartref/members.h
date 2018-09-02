@@ -28,29 +28,41 @@ namespace smartref {
 //       template<auto reflection>
 //       using unreflect = decltype(unreflect_impl(reflection));
 
-template<class Derived, typename Reflection>
+template<class Derived, typename Reflection, typename... Hierarchy>
 using using_member_t = decltype(
-  reflection::reify<Derived>(
+  reflection::reify<Derived, Hierarchy...>(
     Reflection{}
   )
 );
 
-template<class Derived, typename Members>
+template<class Derived, typename Reflection, typename... Hierarchy>
+struct CreateBaseConstructor
+{
+  template<class CRTP>
+  using BaseConstructor = using_member_t<Derived, Reflection, Hierarchy..., CRTP>;
+
+  using type = utils::metafunction<BaseConstructor>;
+};
+
+template<class Derived, typename Members, typename... Hierarchy>
 struct MembersImpl;
 
-template<class Derived, typename... Reflections>
-struct MembersImpl<Derived, utils::type_list<Reflections...>>
-  : using_member_t<Derived, Reflections>...
+template<class Derived, typename... Reflections, typename... Hierarchy>
+struct MembersImpl<Derived, utils::type_list<Reflections...>, Hierarchy...>
 {
-  using using_member_t<Derived, Reflections>::operator=...;
+  using type = utils::ClassConstructor<
+    typename CreateBaseConstructor<Derived, Reflections, Hierarchy...>::type...
+  >;
 };
 
 template<
   class Delegate,
-  class Derived>
-using Members = MembersImpl<
+  class Derived,
+  typename... Hierarchy>
+using Members = typename MembersImpl<
   Derived,
-  decltype(members(reflection::reflect<utils::Delayed<Delegate, Derived>>))
->;
+  decltype(members(reflection::reflect<utils::Delayed<Delegate, Derived>>)),
+  Hierarchy...
+>::type;
 
 } // namespace smartref

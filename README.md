@@ -115,7 +115,8 @@ The implementation has been tested using the following compilers:
 - [x] Fully uncoupled reflection emulation library
 - [x] Order-independence of REFLECTABLE macro
 - [x] Delayed lookup of free- and member-functions
-- [ ] Reference-leaking control
+- [x] Reference-leaking control
+- [x] Full customizability of free-function and member hook
 - [x] Support for typedefs / nested classes
 - [x] Support for member-functions
   - [x] Non-templates
