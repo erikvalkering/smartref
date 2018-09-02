@@ -14,19 +14,19 @@
     return __VA_ARGS__;         \
   }                             \
 
-#define RETURN(...) \
-  {                                   \
-    return __VA_ARGS__;                \
-  }                                   \
+#define RETURN(...)     \
+  {                     \
+    return __VA_ARGS__; \
+  }                     \
 
-#define CONSTRAINED_SFINAEABLE_RETURN(constraint, expression) \
-    -> std::enable_if_t<                                      \
-      constraint,                                             \
-      decltype(expression)                                    \
-    >                                                         \
-  {                                                           \
-    return expression;                                        \
-  }                                                           \
+#define CONSTRAINED_SFINAEABLE_RETURN(constraint, ...)  \
+    -> std::enable_if_t<                                \
+      constraint,                                       \
+      decltype(__VA_ARGS__)                             \
+    >                                                   \
+  {                                                     \
+    return __VA_ARGS__;                                 \
+  }                                                     \
 
 namespace utils {
 
