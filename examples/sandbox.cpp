@@ -52,14 +52,31 @@ public:
   T data;
 };
 
+template<typename T, typename U>
+auto wrap_if_is_delegate_impl(U &&value, int)
+  CONSTRAINED_SFINAEABLE_RETURN(
+    (std::is_same<utils::remove_cvref_t<U>, T>::value),
+    Property<utils::remove_cvref_t<U>>{std::forward<U>(value)}
+  )
+
+template<typename T, typename U>
+auto wrap_if_is_delegate_impl(U &&value, ...)
+  SFINAEABLE_RETURN(std::forward<U>(value))
+
+template<typename T, typename U>
+auto wrap_if_is_delegate(U &&value)
+  SFINAEABLE_RETURN(wrap_if_is_delegate_impl<T>(std::forward<U>(value), 0))
+
 template<typename T, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
 auto on_call(Property<T> *, const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
   SFINAEABLE_RETURN(
-    call(
-      invoker,
-      explicitArgs,
-      smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self)),
-      smartref::delegate_if_is_using<Hierarchy...>(std::forward<Args>(args))...
+    wrap_if_is_delegate<T>(
+      call(
+        invoker,
+        explicitArgs,
+        smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self)),
+        smartref::delegate_if_is_using<Hierarchy...>(std::forward<Args>(args))...
+      )
     )
   )
 
@@ -149,8 +166,6 @@ int main()
   cout << "x:       " << x       << " [5]" << endl;
   cout << "(x = 9): " << (x = 9) << " [9]" << endl;
 
-  // TODO: Proper reference leaking control
-  //       i.e. {x + y} -> Property<decltype(delegate(x)+delegate(y))>
   {
     auto u = x + 1;
     auto v = 1 + y;
