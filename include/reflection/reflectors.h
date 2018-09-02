@@ -59,6 +59,12 @@ using fail_if_in_hierarchy = std::enable_if_t<
 
 } // namespace reflection
 
+// TODO: Hard-code class names
+// TODO: Rename 'member'
+// TODO: Use 'struct' where possible
+// TODO: Delay parameter for free function invoker is not necessary I think
+// TODO: Remove more copy-paste
+
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE(...)
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER(...)
 #define REFLECTION_REFLECTABLE_ADD_EMPTY_EXPOSER(ReflectorClassName, ...) \
