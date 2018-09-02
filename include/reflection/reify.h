@@ -77,7 +77,7 @@ template<class Derived, class Reflection, typename... Hierarchy>
 struct CreateMemberBaseConstructor
 {
   template<typename CRTP>
-  using BaseConstructor = decltype(reify_members<Derived, CRTP, Hierarchy...>(Reflection{}));
+  using BaseConstructor = decltype(reify_members<Derived, Hierarchy..., CRTP>(Reflection{}));
 
   using type = utils::metafunction<BaseConstructor>;
 };
@@ -86,7 +86,7 @@ template<class Derived, class Reflection, typename... Hierarchy>
 struct CreateFreeFunctionBaseConstructor
 {
   template<typename CRTP>
-  using BaseConstructor = typename Reflection::template reflector_free_function<Derived, CRTP, Hierarchy...>;
+  using BaseConstructor = typename Reflection::template reflector_free_function<Derived, Hierarchy..., CRTP>;
 
   using type = utils::metafunction<BaseConstructor>;
 };

@@ -155,7 +155,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
         utils::type_list<Hierarchy...>{},                                                                           \
         utils::type_list<>{},                                                                                       \
         derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                                     \
-        std::forward<fail_if_in_hierarchy<Arg, ReflectorClassName, Hierarchy...>>(arg)                              \
+        std::forward<fail_if_in_hierarchy<Arg, Hierarchy..., ReflectorClassName>>(arg)                              \
       )                                                                                                             \
     )                                                                                                               \
 

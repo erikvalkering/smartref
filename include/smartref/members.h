@@ -39,7 +39,7 @@ template<class Derived, typename Reflection, typename... Hierarchy>
 struct CreateBaseConstructor
 {
   template<class CRTP>
-  using BaseConstructor = using_member_t<Derived, Reflection, CRTP, Hierarchy...>;
+  using BaseConstructor = using_member_t<Derived, Reflection, Hierarchy..., CRTP>;
 
   using type = utils::metafunction<BaseConstructor>;
 };
