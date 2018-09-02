@@ -56,6 +56,10 @@ constexpr auto is_member_function()
 template<typename T>
 constexpr auto reify(Reflection<T>) -> T;
 
+// TODO: reify_members does not belong to reflection, because it is smartref-specific.
+//       Solution: move it to smartref/members.h, make it return a Reflection, and
+//                 have a single reify function to turn it back into a type.
+
 template<class Derived, typename... Hierarchy, class Reflection>
 constexpr auto reify_members(Reflection refl)
 {
