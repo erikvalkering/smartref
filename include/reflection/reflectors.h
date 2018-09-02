@@ -150,12 +150,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
   auto operator member(Arg &&arg) CONST_QUALIFIER REF_QUALIFIER                                                     \
     SFINAEABLE_RETURN(                                                                                              \
       on_call(                                                                                                      \
-        static_cast<                                                                                                \
-          utils::Delayed<                                                                                           \
-            Derived,                                                                                                \
-            fail_if_in_hierarchy<Arg, ReflectorClassName, Hierarchy...>                                             \
-          > *                                                                                                       \
-        >(nullptr),                                                                                                 \
+        static_cast<utils::Delayed<Derived, Arg> *>(nullptr),                                                       \
         ReflectorClassName##Invoker<Arg>{},                                                                         \
         utils::type_list<Hierarchy...>{},                                                                           \
         utils::type_list<>{},                                                                                       \
