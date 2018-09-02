@@ -10,7 +10,7 @@ namespace reflection {
 namespace detail {
 
 template<class Reflection, typename Derived, typename reflector, typename... Hierarchy>
-constexpr static auto is_member_type_impl(std::true_type)
+constexpr auto is_member_type_impl(std::true_type)
 {
   return utils::is_detected_v<
     reflection::detect_is_member_type,
@@ -21,13 +21,13 @@ constexpr static auto is_member_type_impl(std::true_type)
 }
 
 template<typename...>
-constexpr static auto is_member_type_impl(std::false_type)
+constexpr auto is_member_type_impl(std::false_type)
 {
   return false;
 }
 
 template<class Reflection, typename Derived, typename... Hierarchy>
-constexpr static auto is_member_type()
+constexpr auto is_member_type()
 {
   using reflector = typename Reflection::template reflector_member_type<Derived>;
 
@@ -37,7 +37,7 @@ constexpr static auto is_member_type()
 }
 
 template<class Reflection, typename... Hierarchy>
-constexpr static auto is_member_function()
+constexpr auto is_member_function()
 {
   //! Member-functions currently cannot be detected (yet).
   //! However, that is not a problem, because they will be SFINAE'ed away,
@@ -54,10 +54,10 @@ constexpr static auto is_member_function()
 } // namespace detail
 
 template<typename T>
-constexpr static auto reify(Reflection<T>) -> T;
+constexpr auto reify(Reflection<T>) -> T;
 
 template<class Derived, typename... Hierarchy, class Reflection>
-constexpr static auto reify_members(Reflection refl)
+constexpr auto reify_members(Reflection refl)
 {
   if constexpr (detail::is_member_type<Reflection, Derived, Hierarchy...>())
   {
@@ -88,7 +88,7 @@ struct CreateFreeFunctionBaseConstructor
 };
 
 template<class Derived, typename... Hierarchy, class Reflection>
-constexpr static auto reify(Reflection refl)
+constexpr auto reify(Reflection refl)
 {
   return
     utils::ClassConstructor<
