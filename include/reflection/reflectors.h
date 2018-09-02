@@ -115,7 +115,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
   auto member() CONST_QUALIFIER REF_QUALIFIER                                                                                     \
     SFINAEABLE_RETURN(                                                                                                            \
       on_call(                                                                                                                    \
-        static_cast<utils::Delayed<Derived, Args...> *>(nullptr),                                                                 \
+        static_cast<Derived *>(nullptr),                                                                                          \
         ReflectorClassName##Invoker<Derived>{},                                                                                   \
         utils::type_list<Hierarchy...>{},                                                                                         \
         utils::type_list<>{},                                                                                                     \
