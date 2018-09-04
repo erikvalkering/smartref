@@ -131,8 +131,8 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     Class,                                                              \
     member,                                                             \
     REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                          \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER,                  \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER,                           \
+    REFLECTION_REFLECTABLE_ADD_OPERATOR_INFIX_INVOKER,                  \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
     REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
     REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_EXPOSER,  \
     REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_OPERATOR_EXPOSER,          \
@@ -147,7 +147,7 @@ constexpr auto reflected_member_count_v = reflected_member_count<reflected_membe
     Class,                                                              \
     member,                                                             \
     REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                          \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER,                  \
+    REFLECTION_REFLECTABLE_ADD_OPERATOR_INFIX_INVOKER,                  \
     REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
     REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
     REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_EXPOSER,  \

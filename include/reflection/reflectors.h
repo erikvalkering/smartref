@@ -143,15 +143,15 @@ using fail_if_in_hierarchy = std::enable_if_t<
     REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, &&, std::move)  \
   }                                                                               \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_INFIX_INVOKER(member)                         \
-  template<typename Delayed>                                                                              \
-  class reflector_member_function_invoker                                                                 \
-  {                                                                                                       \
+#define REFLECTION_REFLECTABLE_ADD_OPERATOR_INFIX_INVOKER(member)                                       \
+  template<typename Delayed>                                                                            \
+  class reflector_free_function_invoker                                                                 \
+  {                                                                                                     \
   private:                                                                                                \
-    template<typename Obj, typename Arg>                                                                  \
-    friend auto call(const reflector_member_function_invoker &, utils::type_list<>, Obj &&obj, Arg &&arg) \
-      SFINAEABLE_RETURN(std::forward<Obj>(obj) member std::forward<Arg>(arg))                             \
-  }                                                                                                       \
+    template<typename Obj, typename Arg>                                                                \
+    friend auto call(const reflector_free_function_invoker &, utils::type_list<>, Obj &&obj, Arg &&arg) \
+      SFINAEABLE_RETURN(std::forward<Obj>(obj) member std::forward<Arg>(arg))                           \
+  }                                                                                                     \
 
 #define REFLECTION_INJECT_OPERATOR_INFIX(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
   template<typename Arg>                                                                        \
@@ -159,7 +159,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     SFINAEABLE_RETURN(                                                                          \
       on_call(                                                                                  \
         static_cast<utils::Delayed<Derived, Arg> *>(nullptr),                                   \
-        reflector_member_function_invoker<Arg>{},                                               \
+        reflector_free_function_invoker<Arg>{},                                                                         \
         utils::type_list<Hierarchy...>{},                                                       \
         utils::type_list<>{},                                                                   \
         derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                 \
@@ -267,25 +267,25 @@ using fail_if_in_hierarchy = std::enable_if_t<
     }                                                                                               \
   }                                                                                                 \
 
-#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(member) \
-  template<typename Derived, typename Delay = void, typename... Hierarchy>                \
-  class reflector_free_function                                                           \
-    : public reflection::reflector_base<Derived>                                          \
-  {                                                                                       \
-  public:                                                                                 \
-    template<typename... ExplicitArgs, typename Self, typename... Args>                   \
-    friend auto member(Self &&self, Args &&... args)                                      \
-      SFINAEABLE_RETURN(                                                                  \
-        on_call(                                                                          \
-          static_cast<utils::Delayed<Derived, Args...> *>(nullptr),                       \
+#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(member)            \
+  template<typename Derived, typename Delay = void, typename... Hierarchy>  \
+  class reflector_free_function                                             \
+    : public reflection::reflector_base<Derived>                            \
+  {                                                                         \
+  public:                                                                   \
+    template<typename... ExplicitArgs, typename Self, typename... Args>     \
+    friend auto member(Self &&self, Args &&... args)                        \
+      SFINAEABLE_RETURN(                                                    \
+        on_call(                                                            \
+          static_cast<utils::Delayed<Derived, Args...> *>(nullptr),         \
           reflector_free_function_invoker<Delay>{},                                       \
-          utils::type_list<Hierarchy...>{},                                               \
-          utils::type_list<ExplicitArgs...>{},                                            \
-          std::forward<Self>(self),                                                       \
-          std::forward<Args>(args)...                                                     \
-        )                                                                                 \
-      )                                                                                   \
-  }                                                                                       \
+          utils::type_list<Hierarchy...>{},                                 \
+          utils::type_list<ExplicitArgs...>{},                              \
+          std::forward<Self>(self),                                         \
+          std::forward<Args>(args)...                                       \
+        )                                                                   \
+      )                                                                     \
+  }                                                                         \
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_OPERATOR_EXPOSER(member) \
   REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(operator member)       \
