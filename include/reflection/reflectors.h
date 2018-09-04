@@ -87,26 +87,30 @@ using fail_if_in_hierarchy = std::enable_if_t<
       -> typename utils::remove_cvref_t<Obj>::member;                                       \
   }                                                                                         \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_EXPOSER(member)  \
-  template<class Derived, typename... Hierarchy>                \
-  class reflector_member_type                                   \
-    : public reflection::reflector_base<Derived>                \
-  {                                                             \
-    struct invoker : reflector_member_type_invoker<Derived> {}; \
-                                                                \
-    template<typename Reflector>                                \
-    friend class reflection::InvokerImpl;                       \
-                                                                \
-    using Invoker = invoker;                                    \
-                                                                \
-  public:                                                       \
-    using member = utils::detected_or_t<                        \
-      void,                                                     \
-      detect_is_member_type,                                    \
-      Invoker,                                                  \
-      Derived,                                                  \
-      Hierarchy...>;                                            \
-  }                                                             \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_TYPE_EXPOSER(member)                  \
+  template<class Derived, typename... Hierarchy>                                \
+  class reflector_member_type                                                   \
+    : public reflection::reflector_base<Derived>                                \
+  {                                                                             \
+    struct invoker : reflector_member_type_invoker<Derived>                     \
+    {                                                                           \
+      auto as_member()    { return reflector_member_type_invoker<Derived>{}; }  \
+      auto as_nonmember() { return reflector_member_type_invoker<Derived>{}; }  \
+    };                                                                          \
+                                                                                \
+    template<typename Reflector>                                                \
+    friend class reflection::InvokerImpl;                                       \
+                                                                                \
+    using Invoker = invoker;                                                    \
+                                                                                \
+  public:                                                                       \
+    using member = utils::detected_or_t<                                        \
+      void,                                                                     \
+      detect_is_member_type,                                                    \
+      Invoker,                                                                  \
+      Derived,                                                                  \
+      Hierarchy...>;                                                            \
+  }                                                                             \
 
 #define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_INVOKER(member)                 \
   template<typename Delayed>                                                                    \
@@ -129,19 +133,23 @@ using fail_if_in_hierarchy = std::enable_if_t<
       )                                                                                                       \
     )                                                                                                         \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_EXPOSER(member)   \
-  template<typename Derived, typename... Hierarchy>                               \
-  class reflector_member_function                                                 \
-    : public reflection::reflector_base<Derived>                                  \
-  {                                                                               \
-    struct invoker : reflector_member_function_invoker<Derived> {};               \
-                                                                                  \
-  public:                                                                         \
-    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , & ,          )  \
-    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , &&, std::move)  \
-    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, & ,          )  \
-    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, &&, std::move)  \
-  }                                                                               \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_EXPOSER(member)     \
+  template<typename Derived, typename... Hierarchy>                                 \
+  class reflector_member_function                                                   \
+    : public reflection::reflector_base<Derived>                                    \
+  {                                                                                 \
+    struct invoker : reflector_member_function_invoker<Derived>                     \
+    {                                                                               \
+      auto as_member()    { return reflector_member_function_invoker<Derived>{}; }  \
+      auto as_nonmember() { return reflector_free_function_invoker<Derived>{};   }  \
+    };                                                                              \
+                                                                                    \
+  public:                                                                           \
+    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , & ,          )    \
+    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , &&, std::move)    \
+    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, & ,          )    \
+    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, &&, std::move)    \
+  }                                                                                 \
 
 #define REFLECTION_REFLECTABLE_ADD_OPERATOR_INFIX_INVOKER(member)                                       \
   template<typename Delayed>                                                                            \
@@ -172,7 +180,11 @@ using fail_if_in_hierarchy = std::enable_if_t<
     : public reflection::reflector_base<Derived>                                        \
   {                                                                                     \
     template<typename T>                                                                \
-    struct invoker : reflector_free_function_invoker<T> {};                             \
+    struct invoker : reflector_free_function_invoker<T>                                 \
+    {                                                                                   \
+      auto as_member()    { return reflector_free_function_invoker<Derived>{}; }        \
+      auto as_nonmember() { return reflector_free_function_invoker<Derived>{}; }        \
+    };                                                                                  \
                                                                                         \
   public:                                                                               \
     reflector_member_function() = default;                                              \
@@ -222,20 +234,24 @@ using fail_if_in_hierarchy = std::enable_if_t<
       )                                                                                           \
     )                                                                                             \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_EXPOSER(member)  \
-  template<typename Derived, typename... Hierarchy>                 \
-  class reflector_member_function                                   \
-    : public reflection::reflector_base<Derived>                    \
-  {                                                                 \
-    template<typename T>                                            \
-    struct invoker : reflector_member_function_invoker<T> {};       \
-                                                                    \
-  public:                                                           \
-    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, & ,          ) \
-    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, &&, std::move) \
-    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , & ,          ) \
-    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , &&, std::move) \
-  }                                                                 \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_EXPOSER(member)                  \
+  template<typename Derived, typename... Hierarchy>                                 \
+  class reflector_member_function                                                   \
+    : public reflection::reflector_base<Derived>                                    \
+  {                                                                                 \
+    template<typename T>                                                            \
+    struct invoker : reflector_member_function_invoker<T>                           \
+    {                                                                               \
+      auto as_member()    { return reflector_member_function_invoker<Derived>{}; }  \
+      auto as_nonmember() { return reflector_free_function_invoker<Derived>{};   }  \
+    };                                                                              \
+                                                                                    \
+  public:                                                                           \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, & ,          )                 \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, &&, std::move)                 \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , & ,          )                 \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , &&, std::move)                 \
+  }                                                                                 \
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_INVOKER(member)                                    \
   template<typename Delay>                                                                          \
@@ -270,31 +286,61 @@ using fail_if_in_hierarchy = std::enable_if_t<
     }                                                                                               \
   }                                                                                                 \
 
-#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(member)            \
-  template<typename Derived, typename Delay = void, typename... Hierarchy>  \
-  class reflector_free_function                                             \
-    : public reflection::reflector_base<Derived>                            \
-  {                                                                         \
-    template<typename T>                                                    \
-    struct invoker : reflector_free_function_invoker<T> {};                 \
-                                                                            \
-  public:                                                                   \
-    template<typename... ExplicitArgs, typename Self, typename... Args>     \
-    friend auto member(Self &&self, Args &&... args)                        \
-      SFINAEABLE_RETURN(                                                    \
-        on_call(                                                            \
-          static_cast<utils::Delayed<Derived, Args...> *>(nullptr),         \
-          invoker<Delay>{},                                                 \
-          utils::type_list<Hierarchy...>{},                                 \
-          utils::type_list<ExplicitArgs...>{},                              \
-          std::forward<Self>(self),                                         \
-          std::forward<Args>(args)...                                       \
-        )                                                                   \
-      )                                                                     \
-  }                                                                         \
+#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(member)                    \
+  template<typename Derived, typename Delay = void, typename... Hierarchy>          \
+  class reflector_free_function                                                     \
+    : public reflection::reflector_base<Derived>                                    \
+  {                                                                                 \
+    template<typename T>                                                            \
+    struct invoker : reflector_free_function_invoker<T>                             \
+    {                                                                               \
+      auto as_member()    { return reflector_member_function_invoker<Derived>{}; }  \
+      auto as_nonmember() { return reflector_free_function_invoker<Derived>{};   }  \
+    };                                                                              \
+                                                                                    \
+  public:                                                                           \
+    template<typename... ExplicitArgs, typename Self, typename... Args>             \
+    friend auto member(Self &&self, Args &&... args)                                \
+      SFINAEABLE_RETURN(                                                            \
+        on_call(                                                                    \
+          static_cast<utils::Delayed<Derived, Args...> *>(nullptr),                 \
+          invoker<Delay>{},                                                         \
+          utils::type_list<Hierarchy...>{},                                         \
+          utils::type_list<ExplicitArgs...>{},                                      \
+          std::forward<Self>(self),                                                 \
+          std::forward<Args>(args)...                                               \
+        )                                                                           \
+      )                                                                             \
+  }                                                                                 \
 
-#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_OPERATOR_EXPOSER(member) \
-  REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_EXPOSER(operator member)       \
+// TODO: Get rid of copy-paste
+
+#define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_OPERATOR_EXPOSER(member)           \
+  template<typename Derived, typename Delay = void, typename... Hierarchy>          \
+  class reflector_free_function                                                     \
+    : public reflection::reflector_base<Derived>                                    \
+  {                                                                                 \
+    template<typename T>                                                            \
+    struct invoker : reflector_free_function_invoker<T>                             \
+    {                                                                               \
+      auto as_member()    { return reflector_free_function_invoker<Derived>{}; }    \
+      auto as_nonmember() { return reflector_free_function_invoker<Derived>{}; }    \
+    };                                                                              \
+                                                                                    \
+  public:                                                                           \
+    template<typename... ExplicitArgs, typename Self, typename... Args>             \
+    friend auto operator member(Self &&self, Args &&... args)                       \
+      SFINAEABLE_RETURN(                                                            \
+        on_call(                                                                    \
+          static_cast<utils::Delayed<Derived, Args...> *>(nullptr),                 \
+          invoker<Delay>{},                                                         \
+          utils::type_list<Hierarchy...>{},                                         \
+          utils::type_list<ExplicitArgs...>{},                                      \
+          std::forward<Self>(self),                                                 \
+          std::forward<Args>(args)...                                               \
+        )                                                                           \
+      )                                                                             \
+  }                                                                                 \
 
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_PREAMBLE(member)        \
   namespace reflectable {                                                \
