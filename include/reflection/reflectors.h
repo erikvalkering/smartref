@@ -60,7 +60,6 @@ using fail_if_in_hierarchy = std::enable_if_t<
 } // namespace reflection
 
 // TODO: Rename 'member'
-// TODO: Use 'struct' where possible
 // TODO: Delay parameter for free function invoker is not necessary I think
 // TODO: Remove more copy-paste
 
@@ -83,7 +82,6 @@ using fail_if_in_hierarchy = std::enable_if_t<
   template<class Delayed>                                                                   \
   class reflector_member_type_invoker                                                       \
   {                                                                                         \
-  private:                                                                                  \
     template<typename Obj>                                                                  \
     friend auto call(const reflector_member_type_invoker &, utils::type_list<>, Obj &&obj)  \
       -> typename utils::remove_cvref_t<Obj>::member;                                       \
@@ -94,7 +92,6 @@ using fail_if_in_hierarchy = std::enable_if_t<
   class reflector_member_type                                   \
     : public reflection::reflector_base<Derived>                \
   {                                                             \
-  private:                                                      \
     template<typename Reflector>                                \
     friend class reflection::InvokerImpl;                       \
                                                                 \
@@ -113,7 +110,6 @@ using fail_if_in_hierarchy = std::enable_if_t<
   template<typename Delayed>                                                                    \
   class reflector_member_function_invoker                                                       \
   {                                                                                             \
-  private:                                                                                      \
     template<typename Obj>                                                                      \
     friend auto call(const reflector_member_function_invoker &, utils::type_list<>, Obj &&obj)  \
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member())                                        \
@@ -147,7 +143,6 @@ using fail_if_in_hierarchy = std::enable_if_t<
   template<typename Delayed>                                                                            \
   class reflector_free_function_invoker                                                                 \
   {                                                                                                     \
-  private:                                                                                                \
     template<typename Obj, typename Arg>                                                                \
     friend auto call(const reflector_free_function_invoker &, utils::type_list<>, Obj &&obj, Arg &&arg) \
       SFINAEABLE_RETURN(std::forward<Obj>(obj) member std::forward<Arg>(arg))                           \
@@ -189,7 +184,6 @@ using fail_if_in_hierarchy = std::enable_if_t<
   template<typename Delay>                                                                                      \
   class reflector_member_function_invoker                                                                       \
   {                                                                                                             \
-  private:                                                                                                      \
     template<typename Obj, typename... Args>                                                                    \
     friend auto call(const reflector_member_function_invoker &, utils::type_list<>, Obj &&obj, Args &&... args) \
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member(std::forward<Args>(args)...))                             \
@@ -237,7 +231,6 @@ using fail_if_in_hierarchy = std::enable_if_t<
   template<typename Delay>                                                                          \
   class reflector_free_function_invoker                                                             \
   {                                                                                                 \
-  public:                                                                                           \
     template<typename Obj, typename... Args>                                                        \
     friend auto call(                                                                               \
       const reflector_free_function_invoker &,                                                      \
