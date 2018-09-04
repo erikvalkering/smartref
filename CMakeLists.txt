@@ -90,4 +90,8 @@ target_sources(sandbox PRIVATE ${PROJECT_SOURCE_DIR}/examples/stdlibs_for_debugg
 target_link_libraries(sandbox PRIVATE libreflection)
 target_link_libraries(sandbox PRIVATE libsmartref)
 add_test(examples sandbox)
+
+add_executable(ufcs examples/ufcs.cpp)
+target_link_libraries(ufcs PRIVATE libsmartref)
+add_test(examples ufcs)
 ################################################################################
