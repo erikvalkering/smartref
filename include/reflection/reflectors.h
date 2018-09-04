@@ -92,10 +92,12 @@ using fail_if_in_hierarchy = std::enable_if_t<
   class reflector_member_type                                   \
     : public reflection::reflector_base<Derived>                \
   {                                                             \
+    struct invoker : reflector_member_type_invoker<Derived> {}; \
+                                                                \
     template<typename Reflector>                                \
     friend class reflection::InvokerImpl;                       \
                                                                 \
-    using Invoker = reflector_member_type_invoker<Derived>;     \
+    using Invoker = invoker;                                    \
                                                                 \
   public:                                                       \
     using member = utils::detected_or_t<                        \
@@ -120,7 +122,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     SFINAEABLE_RETURN(                                                                                        \
       on_call(                                                                                                \
         static_cast<Derived *>(nullptr),                                                                      \
-        reflector_member_function_invoker<Derived>{},                                                         \
+        invoker{},                                                                                            \
         utils::type_list<Hierarchy...>{},                                                                     \
         utils::type_list<>{},                                                                                 \
         derived(MOVE_FUNCTION(*this))                                                                         \
@@ -132,6 +134,8 @@ using fail_if_in_hierarchy = std::enable_if_t<
   class reflector_member_function                                                 \
     : public reflection::reflector_base<Derived>                                  \
   {                                                                               \
+    struct invoker : reflector_member_function_invoker<Derived> {};               \
+                                                                                  \
   public:                                                                         \
     REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , & ,          )  \
     REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , &&, std::move)  \
@@ -154,7 +158,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     SFINAEABLE_RETURN(                                                                          \
       on_call(                                                                                  \
         static_cast<utils::Delayed<Derived, Arg> *>(nullptr),                                   \
-        reflector_free_function_invoker<Arg>{},                                                                         \
+        invoker<Arg>{},                                                                         \
         utils::type_list<Hierarchy...>{},                                                       \
         utils::type_list<>{},                                                                   \
         derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<Arg>{}))),                 \
@@ -167,6 +171,9 @@ using fail_if_in_hierarchy = std::enable_if_t<
   class reflector_member_function                                                       \
     : public reflection::reflector_base<Derived>                                        \
   {                                                                                     \
+    template<typename T>                                                                \
+    struct invoker : reflector_free_function_invoker<T> {};                             \
+                                                                                        \
   public:                                                                               \
     reflector_member_function() = default;                                              \
     reflector_member_function(const reflector_member_function &) = default;             \
@@ -207,7 +214,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     SFINAEABLE_RETURN(                                                                            \
       on_call(                                                                                    \
         static_cast<utils::Delayed<Derived, Args...> *>(nullptr),                                 \
-        reflector_member_function_invoker<Derived>{},                                             \
+        invoker<Derived>{},                                                                       \
         utils::type_list<Hierarchy...>{},                                                         \
         utils::type_list<ExplicitArgs...>{},                                                      \
         derived(MOVE_FUNCTION(utils::delayed(*this, utils::type_list<ExplicitArgs...>{}))),       \
@@ -220,6 +227,9 @@ using fail_if_in_hierarchy = std::enable_if_t<
   class reflector_member_function                                   \
     : public reflection::reflector_base<Derived>                    \
   {                                                                 \
+    template<typename T>                                            \
+    struct invoker : reflector_member_function_invoker<T> {};       \
+                                                                    \
   public:                                                           \
     REFLECTION_INJECT_MEMBER_FUNCTION(member, const, & ,          ) \
     REFLECTION_INJECT_MEMBER_FUNCTION(member, const, &&, std::move) \
@@ -265,13 +275,16 @@ using fail_if_in_hierarchy = std::enable_if_t<
   class reflector_free_function                                             \
     : public reflection::reflector_base<Derived>                            \
   {                                                                         \
+    template<typename T>                                                    \
+    struct invoker : reflector_free_function_invoker<T> {};                 \
+                                                                            \
   public:                                                                   \
     template<typename... ExplicitArgs, typename Self, typename... Args>     \
     friend auto member(Self &&self, Args &&... args)                        \
       SFINAEABLE_RETURN(                                                    \
         on_call(                                                            \
           static_cast<utils::Delayed<Derived, Args...> *>(nullptr),         \
-          reflector_free_function_invoker<Delay>{},                                       \
+          invoker<Delay>{},                                                 \
           utils::type_list<Hierarchy...>{},                                 \
           utils::type_list<ExplicitArgs...>{},                              \
           std::forward<Self>(self),                                         \
