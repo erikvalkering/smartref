@@ -91,7 +91,7 @@ target_link_libraries(sandbox PRIVATE libreflection)
 target_link_libraries(sandbox PRIVATE libsmartref)
 add_test(examples sandbox)
 
-add_executable(ufcs examples/ufcs.cpp)
+add_executable(ufcs examples/unified_call_syntax.cpp)
 target_link_libraries(ufcs PRIVATE libsmartref)
 add_test(examples ufcs)
 ################################################################################
