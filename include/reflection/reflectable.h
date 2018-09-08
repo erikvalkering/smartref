@@ -74,8 +74,17 @@ struct reflected_namespace_count<reflected_namespace_slot_t, Delay, count, void>
 template<typename Delay>
 constexpr auto reflected_namespace_count_v = reflected_namespace_count<reflected_namespace_t, Delay>::value;
 
+template<typename, typename>
+struct adl_enabler_impl;
+
+template<typename T, size_t... slot_ids>
+struct adl_enabler_impl<T, std::index_sequence<slot_ids...>>
+{
+  using type = utils::type_list<reflected_namespace_t<utils::Delayed<void, T>, slot_ids>...>;
+};
+
 template<typename T>
-using adl_enabler = reflected_namespace_t<utils::Delayed<void, T>, 0>;
+using adl_enabler = typename adl_enabler_impl<T, std::make_index_sequence<reflected_namespace_count_v<T>>>::type;
 
 template<typename T, typename = adl_enabler<T>>
 struct adl_finder
