@@ -264,18 +264,10 @@ using fail_if_in_hierarchy = std::enable_if_t<
       Obj &&obj,                                                                                    \
       Args &&... args                                                                               \
     )                                                                                               \
-    /*  -> decltype(                                                                                  */\
-    /*    adl_tricks::member(                                                                         */\
-    /*      adl_finder<Obj>{std::forward<Obj>(obj)},      */\
-    /*      std::forward<Args>(args)... */\
-    /*    )                                                                                           */\
-    /*  )                                                                                             */\
+      -> decltype(adl_tricks::member(std::forward<Obj>(obj), std::forward<Args>(args)...))          \
     {                                                                                               \
       using reflectable::member;                                                                    \
-      return member(                                                                                \
-        adl_finder<Obj>{std::forward<Obj>(obj)},                                                    \
-        std::forward<Args>(args)...                                                                 \
-      );                                                                                            \
+      return member(std::forward<Obj>(obj), std::forward<Args>(args)...);                           \
     }                                                                                               \
                                                                                                     \
     template<typename... ExplicitArgs, typename Obj, typename... Args>                              \
