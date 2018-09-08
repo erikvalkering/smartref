@@ -41,7 +41,55 @@ struct reflected_member_count<reflected_member_slot_t, T, count, void>
 template<typename T>
 constexpr auto reflected_member_count_v = reflected_member_count<reflected_member_t, T>::value;
 
+template<typename Delay, size_t counter>
+struct reflected_namespace
+{
+  using type = void;
+};
+
+template<typename Delay, size_t counter>
+using reflected_namespace_t = typename reflected_namespace<Delay, counter>::type;
+
+template<
+  template<typename, size_t> class reflected_namespace_slot_t,
+  typename Delay,
+  size_t count = 0,
+  typename = reflected_namespace_slot_t<Delay, count>
+>
+struct reflected_namespace_count
+{
+  static constexpr auto value = reflected_namespace_count<reflected_namespace_slot_t, Delay, count + 1>::value;
+};
+
+template<
+  template<typename, size_t> class reflected_namespace_slot_t,
+  typename Delay,
+  size_t count
+>
+struct reflected_namespace_count<reflected_namespace_slot_t, Delay, count, void>
+{
+  static constexpr auto value = count;
+};
+
+template<typename Delay>
+constexpr auto reflected_namespace_count_v = reflected_namespace_count<reflected_namespace_t, Delay>::value;
+
 } // namespace reflection
+
+#define REFLECTABLE_NAMESPACE(name)         \
+  namespace name {                          \
+    struct adl_tag {};                      \
+  } /* namespace name */                    \
+                                            \
+  namespace reflection {                    \
+                                            \
+  template<typename Delay>                  \
+  struct reflected_namespace<Delay, 0>      \
+  {                                         \
+    using type = name::adl_tag;             \
+  };                                        \
+                                            \
+  } /* namespace reflection */              \
 
 // TODO: -cmaster Have a quick look whether we can simplify these macros.
 // TODO: -cmaster We can replace the using type = ... with a simple boolean, such that we can inline the reflectors
