@@ -51,10 +51,17 @@ REFLECTABLE(unique);
 REFLECTABLE(filtered);
 REFLECTABLE(transform);
 REFLECTABLE(sum);
+REFLECTABLE_NAMESPACE(algorithms1);
+REFLECTABLE_NAMESPACE(algorithms2);
 
 // Algorithms
+
+namespace algorithms1 {
 auto sorted(std::vector<int> container) { return container; }
 auto unique(std::vector<int> container) { return container; }
+}
+
+namespace algorithms2 {
 template<typename Predicate>
 auto filtered(std::vector<int> container, Predicate predicate)   { return container; }
 template<typename Operation>
