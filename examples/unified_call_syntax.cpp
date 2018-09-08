@@ -59,14 +59,15 @@ REFLECTABLE_NAMESPACE(algorithms2);
 namespace algorithms1 {
 auto sorted(std::vector<int> container) { return container; }
 auto unique(std::vector<int> container) { return container; }
-}
+} // namespace algorithms1
 
 namespace algorithms2 {
 template<typename Predicate>
 auto filtered(std::vector<int> container, Predicate predicate)   { return container; }
 template<typename Operation>
 auto transform(std::vector<int> container, Operation operation)  { return container; }
-auto sum(std::vector<int> container)                      { return 42;        }
+auto sum(std::vector<int> container)                             { return 42;        }
+} // namespace algorithms2
 
 // Functors
 auto is_even = [](auto x) { return x % 2 == 0; };
