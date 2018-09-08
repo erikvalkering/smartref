@@ -10,7 +10,36 @@ using namespace std;
 
 namespace magic {
 
-auto wand = [](auto x) { return x; };
+template<typename T>
+class UFCS : public smartref::using_<T, UFCS<T>>
+{
+public:
+  explicit UFCS(T data) : data{data} {}
+
+  using smartref::using_<T, UFCS<T>>::operator=;
+
+private:
+  friend class smartref::access;
+
+  operator T()
+
+  T data;
+};
+
+auto wand = [](auto x) { return UFCS<utils::remove_cvref_t<decltype(x)>>{x}; };
+
+template<typename T, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
+auto on_call(UFCS<T> *, const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
+  SFINAEABLE_RETURN(
+    wand(
+      call(
+        invoker.as_nonmember(),
+        explicitArgs,
+        enable_adl(smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self))),
+        smartref::delegate_if_is_using<Hierarchy...>(std::forward<Args>(args))...
+      )
+    )
+  )
 
 } // namespace magic
 
