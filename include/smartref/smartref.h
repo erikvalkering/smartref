@@ -1,7 +1,9 @@
 #pragma once
 
+#ifndef SMARTREF_NO_DEFAULT_SUPPORT
 #include "operators.h"
 #include "stl.h"
+#endif
 
 #include "members.h"
 
