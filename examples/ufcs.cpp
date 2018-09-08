@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 
+#define SMARTREF_NO_DEFAULT_SUPPORT
 #include <smartref/smartref.h>
 
 using namespace std;
