@@ -43,14 +43,22 @@ auto on_call(UFCS<T> *, const Invoker &invoker, utils::type_list<Hierarchy...>, 
 
 } // namespace magic
 
-using namespace std;
+REFLECTABLE_OPERATOR_INFIX(<<);
+
+REFLECTABLE(sorted);
+REFLECTABLE(unique);
+REFLECTABLE(filtered);
+REFLECTABLE(transform);
+REFLECTABLE(sum);
 
 // Algorithms
-auto sorted    = [](auto container)                 { return container; };
-auto unique    = [](auto container)                 { return container; };
-auto filtered  = [](auto container, auto predicate) { return container; };
-auto transform = [](auto container, auto operation) { return container; };
-auto sum       = [](auto container)                 { return 42;        };
+auto sorted(std::vector<int> container) { return container; }
+auto unique(std::vector<int> container) { return container; }
+template<typename Predicate>
+auto filtered(std::vector<int> container, Predicate predicate)   { return container; }
+template<typename Operation>
+auto transform(std::vector<int> container, Operation operation)  { return container; }
+auto sum(std::vector<int> container)                      { return 42;        }
 
 // Functors
 auto is_even = [](auto x) { return x % 2 == 0; };
