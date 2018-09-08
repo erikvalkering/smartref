@@ -74,6 +74,17 @@ struct reflected_namespace_count<reflected_namespace_slot_t, Delay, count, void>
 template<typename Delay>
 constexpr auto reflected_namespace_count_v = reflected_namespace_count<reflected_namespace_t, Delay>::value;
 
+template<typename T>
+using adl_enabler = reflected_namespace_t<utils::Delayed<void, T>, 0>;
+
+template<typename T, typename = adl_enabler<T>>
+struct adl_finder
+{
+  adl_finder(T data) : data{data} {}
+  operator T &() { return data; }
+  T data;
+};
+
 } // namespace reflection
 
 #define REFLECTABLE_NAMESPACE(name)         \
