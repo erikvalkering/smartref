@@ -2,8 +2,11 @@
 /* Example: unified call syntax              */
 /*********************************************/
 #include <vector>
+#include <iostream>
 
 #include <smartref/smartref.h>
+
+using namespace std;
 
 namespace magic {
 
@@ -34,6 +37,7 @@ int main()
   {
     // Variant 1a: single-line, read from inside outwards (continuously looking left *and* right)
     auto s = sum(transform(filtered(unique(sorted(v)), is_even), squared));
+    cout << "Variant 1a: " << s << endl;
   }
 
   {
@@ -47,11 +51,14 @@ int main()
                  squared
                )
              );
+
+    cout << "Variant 1b: " << s << endl;
   }
 
   {
     // Variant 2a: single-line, read from left to right
     auto s = $(v).sorted().unique().filtered(is_even).transform(squared).sum();
+    cout << "Variant 2a: " << s << endl;
   }
 
   {
@@ -61,5 +68,7 @@ int main()
                  .filtered(is_even)
                  .transform(squared)
                  .sum();
+
+    cout << "Variant 2b: " << s << endl;
   }
 }
