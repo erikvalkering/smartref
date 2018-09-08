@@ -77,8 +77,9 @@ auto delegate_type_impl(const using_<Delegate, Derived> &) -> Delegate;
 template<typename Using_>
 using DelegateType = decltype(delegate_type_impl(std::declval<utils::remove_cvref_t<Using_>>()));
 
-struct access
+class access
 {
+public:
   template<typename Using_>
   static auto delegate(Using_ &&base)
     -> utils::like_t<Using_, DelegateType<Using_>>

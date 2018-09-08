@@ -11,7 +11,7 @@ class reflector_base
 {
 private:
   template<typename Self>
-  friend auto reflector(Self &&self)
+  friend auto reflector(Self &&)
   {
     return std::add_const_t<utils::remove_cvref_t<Self>>{};
   }
@@ -99,7 +99,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     };                                                                          \
                                                                                 \
     template<typename Reflector>                                                \
-    friend class reflection::InvokerImpl;                                       \
+    friend struct reflection::InvokerImpl;                                      \
                                                                                 \
     using Invoker = invoker;                                                    \
                                                                                 \
