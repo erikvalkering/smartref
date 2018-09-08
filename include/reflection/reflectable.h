@@ -98,7 +98,7 @@ struct reflected_namespace_counter {};
 
 } // namespace reflection
 
-#define REFLECTABLE_NAMESPACE(name)         \
+#define REFLECTION_REFLECTABLE_NAMESPACE(name)                \
   namespace name {                                            \
     struct adl_tag {};                                        \
   } /* namespace name */                                      \
@@ -277,4 +277,5 @@ struct reflected_namespace_counter {};
 #define REFLECTABLE_OPERATOR_UNARY(...)       REFLECTION_REFLECTABLE_OPERATOR_UNARY(__VA_ARGS__)
 #define REFLECTABLE_OPERATOR_INFIX(...)       REFLECTION_REFLECTABLE_OPERATOR_INFIX(__VA_ARGS__)
 #define REFLECTABLE_OPERATOR_ASSIGNMENT(...)  REFLECTION_REFLECTABLE_OPERATOR_ASSIGNMENT(__VA_ARGS__)
+#define REFLECTABLE_NAMESPACE(...)            REFLECTION_REFLECTABLE_NAMESPACE(__VA_ARGS__)
 #endif
