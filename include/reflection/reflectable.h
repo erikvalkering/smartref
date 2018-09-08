@@ -85,22 +85,25 @@ struct adl_finder
   T data;
 };
 
+struct reflected_namespace_counter {};
+
 } // namespace reflection
 
 #define REFLECTABLE_NAMESPACE(name)         \
-  namespace name {                          \
-    struct adl_tag {};                      \
-  } /* namespace name */                    \
-                                            \
-  namespace reflection {                    \
-                                            \
-  template<typename Delay>                  \
-  struct reflected_namespace<Delay, 0>      \
-  {                                         \
-    using type = name::adl_tag;             \
-  };                                        \
-                                            \
-  } /* namespace reflection */              \
+  namespace name {                                            \
+    struct adl_tag {};                                        \
+  } /* namespace name */                                      \
+                                                              \
+  template<typename Delay>                                    \
+  struct reflection::reflected_namespace<                     \
+    Delay,                                                    \
+    CURRENT_COUNTER(reflection::reflected_namespace_counter)  \
+  >                                                           \
+  {                                                           \
+    using type = name::adl_tag;                               \
+  };                                                          \
+                                                              \
+  INC_COUNTER(reflection::reflected_namespace_counter);       \
 
 // TODO: -cmaster Have a quick look whether we can simplify these macros.
 // TODO: -cmaster We can replace the using type = ... with a simple boolean, such that we can inline the reflectors
