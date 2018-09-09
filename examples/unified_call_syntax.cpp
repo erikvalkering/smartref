@@ -22,7 +22,10 @@ public:
 private:
   friend class smartref::access;
 
-  operator T()
+  operator T&() &{ return data; }
+  operator T&&() &&{ return std::move(data); }
+  operator const T &() &{ return data; }
+  operator const T &&() &&{ return std::move(data); }
 
   T data;
 };
@@ -36,7 +39,7 @@ auto on_call(UFCS<T> *, const Invoker &invoker, utils::type_list<Hierarchy...>, 
       call(
         invoker.as_nonmember(),
         explicitArgs,
-        enable_adl(smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self))),
+        smartref::enable_adl(smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self))),
         smartref::delegate_if_is_using<Hierarchy...>(std::forward<Args>(args))...
       )
     )
@@ -81,12 +84,18 @@ int main()
   // auto v = vector{1, 2, 2, 1, 3, 2, 4, 5};
 
   {
+    using namespace algorithms1;
+    using namespace algorithms2;
+
     // Variant 1a: single-line, read from inside outwards (continuously looking left *and* right)
     auto s = sum(transform(filtered(unique(sorted(v)), is_even), squared));
     cout << "Variant 1a: " << s << endl;
   }
 
   {
+    using namespace algorithms1;
+    using namespace algorithms2;
+
     // Variant 1b: multi-line, read from inside outwards (continuously looking left *and* right)
     auto s = sum(
                transform(
