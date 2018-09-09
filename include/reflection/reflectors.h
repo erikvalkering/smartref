@@ -121,19 +121,19 @@ using fail_if_in_hierarchy = std::enable_if_t<
       SFINAEABLE_RETURN(std::forward<Obj>(obj).member())                                        \
   }                                                                                             \
 
-#define REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
-  auto member() CONST_QUALIFIER REF_QUALIFIER                                                                 \
-    SFINAEABLE_RETURN(                                                                                        \
-      on_call(                                                                                                \
-        static_cast<Derived *>(nullptr),                                                                      \
-        invoker{},                                                                                            \
-        utils::type_list<Hierarchy...>{},                                                                     \
-        utils::type_list<>{},                                                                                 \
-        derived(MOVE_FUNCTION(*this))                                                                         \
-      )                                                                                                       \
-    )                                                                                                         \
+#define REFLECTION_INJECT_MEMBER_FUNCTION_OPERATOR_UNARY(member, CONST_QUALIFIER, REF_QUALIFIER, MOVE_FUNCTION) \
+  auto member() CONST_QUALIFIER REF_QUALIFIER                                                                   \
+    SFINAEABLE_RETURN(                                                                                          \
+      on_call(                                                                                                  \
+        static_cast<Derived *>(nullptr),                                                                        \
+        invoker{},                                                                                              \
+        utils::type_list<Hierarchy...>{},                                                                       \
+        utils::type_list<>{},                                                                                   \
+        derived(MOVE_FUNCTION(*this))                                                                           \
+      )                                                                                                         \
+    )                                                                                                           \
 
-#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_EXPOSER(member)           \
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_UNARY_EXPOSER(member)         \
   template<typename Derived, typename... Hierarchy>                                       \
   class reflector_member_function                                                         \
     : public reflection::reflector_base<Derived>                                          \
@@ -145,10 +145,10 @@ using fail_if_in_hierarchy = std::enable_if_t<
     };                                                                                    \
                                                                                           \
   public:                                                                                 \
-    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , & ,          )          \
-    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member,      , &&, std::move)          \
-    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, & ,          )          \
-    REFLECTION_INJECT_MEMBER_FUNCTION_NON_TEMPLATE(member, const, &&, std::move)          \
+    REFLECTION_INJECT_MEMBER_FUNCTION_OPERATOR_UNARY(member,      , & ,          )        \
+    REFLECTION_INJECT_MEMBER_FUNCTION_OPERATOR_UNARY(member,      , &&, std::move)        \
+    REFLECTION_INJECT_MEMBER_FUNCTION_OPERATOR_UNARY(member, const, & ,          )        \
+    REFLECTION_INJECT_MEMBER_FUNCTION_OPERATOR_UNARY(member, const, &&, std::move)        \
   }                                                                                       \
 
 #define REFLECTION_REFLECTABLE_ADD_OPERATOR_INFIX_INVOKER(member)                                       \
