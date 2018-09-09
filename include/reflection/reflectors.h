@@ -253,6 +253,25 @@ using fail_if_in_hierarchy = std::enable_if_t<
     REFLECTION_INJECT_MEMBER_FUNCTION(member,      , &&, std::move)                       \
   }                                                                                       \
 
+#define REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_EXPOSER(member)               \
+  template<typename Derived, typename... Hierarchy>                                       \
+  class reflector_member_function                                                         \
+    : public reflection::reflector_base<Derived>                                          \
+  {                                                                                       \
+    template<typename T>                                                                  \
+    struct invoker : reflector_member_function_invoker<T>                                 \
+    {                                                                                     \
+      auto as_member()    const { return reflector_member_function_invoker<Derived>{}; }  \
+      auto as_nonmember() const { return reflector_member_function_invoker<Derived>{}; }  \
+    };                                                                                    \
+                                                                                          \
+  public:                                                                                 \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, & ,          )                       \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member, const, &&, std::move)                       \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , & ,          )                       \
+    REFLECTION_INJECT_MEMBER_FUNCTION(member,      , &&, std::move)                       \
+  }                                                                                       \
+
 #define REFLECTION_REFLECTABLE_ADD_FREE_FUNCTION_INVOKER(member)                                    \
   template<typename Delay>                                                                          \
   class reflector_free_function_invoker                                                             \

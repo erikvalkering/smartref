@@ -145,34 +145,34 @@ struct reflected_namespace_counter {};
 #define REFLECTION_REFLECTABLE1(member) \
   REFLECTION_REFLECTABLE2(auto, member) \
 
-#define REFLECTION_REFLECTABLE_OPERATOR2(Class, member)     \
-  REFLECTION_REFLECTABLE_UNIFIED(                           \
-    Class,                                                  \
-    member,                                                 \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,              \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_INVOKER,     \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,               \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,               \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_EXPOSER,     \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_MEMBER_TYPE_EXPOSER,   \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_FREE_FUNCTION_EXPOSER  \
-  )                                                         \
+#define REFLECTION_REFLECTABLE_OPERATOR2(Class, member)           \
+  REFLECTION_REFLECTABLE_UNIFIED(                                 \
+    Class,                                                        \
+    member,                                                       \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                    \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_INVOKER,           \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                     \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                     \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_OPERATOR_EXPOSER,  \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_MEMBER_TYPE_EXPOSER,         \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_FREE_FUNCTION_EXPOSER        \
+  )                                                               \
 
 #define REFLECTION_REFLECTABLE_OPERATOR1(member)  \
   REFLECTION_REFLECTABLE_OPERATOR2(auto, member)  \
 
-#define REFLECTION_REFLECTABLE_OPERATOR_UNARY2(Class, member)         \
-  REFLECTION_REFLECTABLE_UNIFIED(                                     \
-    Class,                                                            \
-    member,                                                           \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                        \
-    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_INVOKER,  \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                         \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                         \
+#define REFLECTION_REFLECTABLE_OPERATOR_UNARY2(Class, member)           \
+  REFLECTION_REFLECTABLE_UNIFIED(                                       \
+    Class,                                                              \
+    member,                                                             \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_PREAMBLE,                          \
+    REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_INVOKER,    \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_INVOKER,                           \
     REFLECTION_REFLECTABLE_ADD_MEMBER_FUNCTION_NON_TEMPLATE_EXPOSER,  \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_MEMBER_TYPE_EXPOSER,             \
-    REFLECTION_REFLECTABLE_ADD_EMPTY_FREE_FUNCTION_EXPOSER            \
-  )                                                                   \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_MEMBER_TYPE_EXPOSER,               \
+    REFLECTION_REFLECTABLE_ADD_EMPTY_FREE_FUNCTION_EXPOSER              \
+  )                                                                     \
 
 #define REFLECTION_REFLECTABLE_OPERATOR_UNARY1(member)  \
   REFLECTION_REFLECTABLE_OPERATOR_UNARY2(auto, member)  \
