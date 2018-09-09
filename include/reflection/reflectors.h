@@ -141,7 +141,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
     struct invoker : reflector_member_function_invoker<Derived>                           \
     {                                                                                     \
       auto as_member()    const { return reflector_member_function_invoker<Derived>{}; }  \
-      auto as_nonmember() const { return reflector_free_function_invoker<Derived>{};   }  \
+      auto as_nonmember() const { return reflector_member_function_invoker<Derived>{}; }  \
     };                                                                                    \
                                                                                           \
   public:                                                                                 \
