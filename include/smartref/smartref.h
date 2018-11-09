@@ -138,7 +138,7 @@ template<typename T>
 using adl_enabler = typename adl_enabler_impl<T, std::make_index_sequence<reflection::reflected_namespace_count_v<T>>>::type;
 
 template<typename T, typename ADL = adl_enabler<T>>
-struct adl_finder
+struct adl_finder : using_<T, adl_finder<T, ADL>>
 {
   adl_finder(T data) : data{data} {}
   operator T &() { return data; }
