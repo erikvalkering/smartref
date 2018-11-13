@@ -30,7 +30,16 @@ private:
   T data;
 };
 
-auto wand = [](auto x) { return UFCS<utils::remove_cvref_t<decltype(x)>>{x}; };
+auto wand = [](auto &&x) -> decltype(auto) {
+  if constexpr (is_lvalue_reference<decltype(x)>::value)
+  {
+    return x; // TODO: not supported yet. Requires full reference-leaking support.
+  }
+  else
+  {
+    return UFCS<decltype(x) &&>{std::forward<decltype(x)>(x)};
+  }
+};
 
 template<typename T, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
 auto on_call(UFCS<T> *, const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
