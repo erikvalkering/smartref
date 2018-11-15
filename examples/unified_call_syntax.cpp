@@ -108,7 +108,7 @@ auto $ = magic::wand;
 auto test_value_categories() {
   using namespace algorithms3;
 
-  { // 1. non-wrapped, non-deduced
+  {
           double   a1 = value_category(1234, xvalue{});
     const double   a2 = value_category(1234, xvalue{});
           // double & a3 = value_category(1234, xvalue{}); // <- should not compile
@@ -160,6 +160,64 @@ auto test_value_categories() {
     const double & a4 = value_category(1234, rvalue_ref_const{});
           // double &&a5 = value_category(1234, rvalue_ref_const{}); // <- should not compile
     const double &&a6 = value_category(1234, rvalue_ref_const{});
+  }
+}
+
+auto test_value_categories_non_wrapped_deduced() {
+  using namespace algorithms3;
+
+  {
+          auto   a1 = value_category(1234, xvalue{});
+    const auto   a2 = value_category(1234, xvalue{});
+          // auto & a3 = value_category(1234, xvalue{}); // <- should not compile
+    const auto & a4 = value_category(1234, xvalue{});
+          auto &&a5 = value_category(1234, xvalue{});
+    const auto &&a6 = value_category(1234, xvalue{});
+  }
+
+  {
+          auto   a1 = value_category(1234, xvalue_const{});
+    const auto   a2 = value_category(1234, xvalue_const{});
+          // auto & a3 = value_category(1234, xvalue_const{}); // <- should not compile
+    const auto & a4 = value_category(1234, xvalue_const{});
+          auto &&a5 = value_category(1234, xvalue_const{});
+    const auto &&a6 = value_category(1234, xvalue_const{});
+  }
+
+  {
+          auto   a1 = value_category(1234, lvalue_ref{});
+    const auto   a2 = value_category(1234, lvalue_ref{});
+          auto & a3 = value_category(1234, lvalue_ref{});
+    const auto & a4 = value_category(1234, lvalue_ref{});
+          auto &&a5 = value_category(1234, lvalue_ref{});
+    // const auto &&a6 = value_category(1234, lvalue_ref{}); // <- should not compile
+  }
+
+  {
+          auto   a1 = value_category(1234, lvalue_ref_const{});
+    const auto   a2 = value_category(1234, lvalue_ref_const{});
+          auto & a3 = value_category(1234, lvalue_ref_const{});
+    const auto & a4 = value_category(1234, lvalue_ref_const{});
+          auto &&a5 = value_category(1234, lvalue_ref_const{});
+    // const auto &&a6 = value_category(1234, lvalue_ref_const{}); // <- should not compile
+  }
+
+  {
+          auto   a1 = value_category(1234, rvalue_ref{});
+    const auto   a2 = value_category(1234, rvalue_ref{});
+          // auto & a3 = value_category(1234, rvalue_ref{}); // <- should not compile
+    const auto & a4 = value_category(1234, rvalue_ref{});
+          auto &&a5 = value_category(1234, rvalue_ref{});
+    const auto &&a6 = value_category(1234, rvalue_ref{});
+  }
+
+  {
+          auto   a1 = value_category(1234, rvalue_ref_const{});
+    const auto   a2 = value_category(1234, rvalue_ref_const{});
+          auto & a3 = value_category(1234, rvalue_ref_const{});
+    const auto & a4 = value_category(1234, rvalue_ref_const{});
+          auto &&a5 = value_category(1234, rvalue_ref_const{});
+    const auto &&a6 = value_category(1234, rvalue_ref_const{});
   }
 }
 
