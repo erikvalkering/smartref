@@ -63,8 +63,10 @@ REFLECTABLE(unique);
 REFLECTABLE(filtered);
 REFLECTABLE(transform);
 REFLECTABLE(sum);
+REFLECTABLE(value_category);
 REFLECTABLE_NAMESPACE(algorithms1);
 REFLECTABLE_NAMESPACE(algorithms2);
+REFLECTABLE_NAMESPACE(algorithms3);
 
 // Algorithms
 
@@ -81,11 +83,85 @@ auto transform(std::vector<int> container, Operation operation)  { return contai
 auto sum(std::vector<int> container)                             { return 42;        }
 } // namespace algorithms2
 
+namespace algorithms3 {
+struct lvalue_ref {};
+struct lvalue_ref_const {};
+struct rvalue_ref {};
+struct rvalue_ref_const {};
+struct xvalue {};
+struct xvalue_const {};
+
+template<typename T>       double   value_category(T container, xvalue)           { return 42.0; }
+template<typename T> const double   value_category(T container, xvalue_const)     { return 42.0; }
+template<typename T>       double & value_category(T container, lvalue_ref)       { static double x = 42; return x; }
+template<typename T> const double & value_category(T container, lvalue_ref_const) { static double x = 42; return x; }
+template<typename T>       double &&value_category(T container, rvalue_ref)       { return std::move(42.0); }
+template<typename T> const double &&value_category(T container, rvalue_ref_const) { return std::move(42.0); }
+
+} // namespace algorithms3
+
 // Functors
 auto is_even = [](auto x) { return x % 2 == 0; };
 auto squared = [](auto x) { return x * x;      };
 
 auto $ = magic::wand;
+auto test_value_categories() {
+  using namespace algorithms3;
+
+  { // 1. non-wrapped, non-deduced
+          double   a1 = value_category(1234, xvalue{});
+    const double   a2 = value_category(1234, xvalue{});
+          // double & a3 = value_category(1234, xvalue{}); // <- should not compile
+    const double & a4 = value_category(1234, xvalue{});
+          double &&a5 = value_category(1234, xvalue{});
+    const double &&a6 = value_category(1234, xvalue{});
+  }
+
+  {
+          double   a1 = value_category(1234, xvalue_const{});
+    const double   a2 = value_category(1234, xvalue_const{});
+          // double & a3 = value_category(1234, xvalue_const{}); // <- should not compile
+    const double & a4 = value_category(1234, xvalue_const{});
+          double &&a5 = value_category(1234, xvalue_const{});
+    const double &&a6 = value_category(1234, xvalue_const{});
+  }
+
+  {
+          double   a1 = value_category(1234, lvalue_ref{});
+    const double   a2 = value_category(1234, lvalue_ref{});
+          double & a3 = value_category(1234, lvalue_ref{});
+    const double & a4 = value_category(1234, lvalue_ref{});
+          // double &&a5 = value_category(1234, lvalue_ref{}); // <- should not compile
+    // const double &&a6 = value_category(1234, lvalue_ref{}); // <- should not compile
+  }
+
+  {
+          double   a1 = value_category(1234, lvalue_ref_const{});
+    const double   a2 = value_category(1234, lvalue_ref_const{});
+          // double & a3 = value_category(1234, lvalue_ref_const{}); // <- should not compile
+    const double & a4 = value_category(1234, lvalue_ref_const{});
+          // double &&a5 = value_category(1234, lvalue_ref_const{}); // <- should not compile
+    // const double &&a6 = value_category(1234, lvalue_ref_const{}); // <- should not compile
+  }
+
+  {
+          double   a1 = value_category(1234, rvalue_ref{});
+    const double   a2 = value_category(1234, rvalue_ref{});
+          // double & a3 = value_category(1234, rvalue_ref{}); // <- should not compile
+    const double & a4 = value_category(1234, rvalue_ref{});
+          double &&a5 = value_category(1234, rvalue_ref{});
+    const double &&a6 = value_category(1234, rvalue_ref{});
+  }
+
+  {
+          double   a1 = value_category(1234, rvalue_ref_const{});
+    const double   a2 = value_category(1234, rvalue_ref_const{});
+          // double & a3 = value_category(1234, rvalue_ref_const{}); // <- should not compile
+    const double & a4 = value_category(1234, rvalue_ref_const{});
+          // double &&a5 = value_category(1234, rvalue_ref_const{}); // <- should not compile
+    const double &&a6 = value_category(1234, rvalue_ref_const{});
+  }
+}
 
 int main()
 {
