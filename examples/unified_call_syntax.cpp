@@ -221,6 +221,64 @@ auto test_value_categories_non_wrapped_deduced() {
   }
 }
 
+auto test_value_categories_wrapped_non_deduced() {
+  using namespace algorithms3;
+
+  {
+          double   a1 = value_category($(1234), xvalue{});
+    const double   a2 = value_category($(1234), xvalue{});
+          // double & a3 = value_category($(1234), xvalue{}); // <- should not compile
+    const double & a4 = value_category($(1234), xvalue{});
+          double &&a5 = value_category($(1234), xvalue{});
+    const double &&a6 = value_category($(1234), xvalue{});
+  }
+
+  {
+          double   a1 = value_category($(1234), xvalue_const{});
+    const double   a2 = value_category($(1234), xvalue_const{});
+          // double & a3 = value_category($(1234), xvalue_const{}); // <- should not compile
+    const double & a4 = value_category($(1234), xvalue_const{});
+          double &&a5 = value_category($(1234), xvalue_const{});
+    const double &&a6 = value_category($(1234), xvalue_const{});
+  }
+
+  {
+          double   a1 = value_category($(1234), lvalue_ref{});
+    const double   a2 = value_category($(1234), lvalue_ref{});
+          double & a3 = value_category($(1234), lvalue_ref{});
+    const double & a4 = value_category($(1234), lvalue_ref{});
+    //       double &&a5 = value_category($(1234), lvalue_ref{}); // <- should not compile
+    // const double &&a6 = value_category($(1234), lvalue_ref{}); // <- should not compile
+  }
+
+  {
+          double   a1 = value_category($(1234), lvalue_ref_const{});
+    const double   a2 = value_category($(1234), lvalue_ref_const{});
+          // double & a3 = value_category($(1234), lvalue_ref_const{}); // <- should not compile
+    const double & a4 = value_category($(1234), lvalue_ref_const{});
+          // double &&a5 = value_category($(1234), lvalue_ref_const{}); // <- should not compile
+    // const double &&a6 = value_category($(1234), lvalue_ref_const{}); // <- should not compile
+  }
+
+  {
+          double   a1 = value_category($(1234), rvalue_ref{});
+    const double   a2 = value_category($(1234), rvalue_ref{});
+          // double & a3 = value_category($(1234), rvalue_ref{}); // <- should not compile
+    const double & a4 = value_category($(1234), rvalue_ref{});
+          double &&a5 = value_category($(1234), rvalue_ref{});
+    const double &&a6 = value_category($(1234), rvalue_ref{});
+  }
+
+  {
+          double   a1 = value_category($(1234), rvalue_ref_const{});
+    const double   a2 = value_category($(1234), rvalue_ref_const{});
+          // double & a3 = value_category($(1234), rvalue_ref_const{}); // <- should not compile
+    const double & a4 = value_category($(1234), rvalue_ref_const{});
+          // double &&a5 = value_category($(1234), rvalue_ref_const{}); // <- should not compile
+    const double &&a6 = value_category($(1234), rvalue_ref_const{});
+  }
+}
+
 int main()
 {
   auto v = vector<int>{1, 2, 2, 1, 3, 2, 4, 5};
