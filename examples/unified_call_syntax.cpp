@@ -15,23 +15,23 @@ template<typename T>
 class UFCS : public smartref::using_<T, UFCS<T>>
 {
 public:
-  explicit UFCS(T data) : data{data} {}
+  explicit UFCS(T &&data) : data{std::forward<T>(data)} {}
 
   using smartref::using_<T, UFCS<T>>::operator=;
 
-private:
+public:
   friend class smartref::access;
 
-  operator T&() &{ return data; }
-  operator T&&() &&{ return std::move(data); }
-  operator const T &() &{ return data; }
-  operator const T &&() &&{ return std::move(data); }
+  operator utils::remove_cvref_t<T> &()   &       { return data;                  }
+  operator utils::remove_cvref_t<T> &&()  &&      { return std::move(data);       }
+  operator const utils::remove_cvref_t<T> &()  &  { return std::forward<T>(data); }
+  operator const utils::remove_cvref_t<T> &&() && { return std::move(data);       }
 
-  T data;
+  T &&data;
 };
 
 auto wand = [](auto &&x) -> decltype(auto) {
-  if constexpr (is_lvalue_reference<decltype(x)>::value)
+  if constexpr (is_lvalue_reference<decltype(x) &&>::value && !is_const<remove_reference_t<decltype(x)>>::value)
   {
     return x; // TODO: not supported yet. Requires full reference-leaking support.
   }
@@ -63,6 +63,7 @@ REFLECTABLE(unique);
 REFLECTABLE(filtered);
 REFLECTABLE(transform);
 REFLECTABLE(sum);
+REFLECTABLE(supersum);
 REFLECTABLE(value_category);
 REFLECTABLE_NAMESPACE(algorithms1);
 REFLECTABLE_NAMESPACE(algorithms2);
@@ -81,6 +82,8 @@ auto filtered(std::vector<int> container, Predicate predicate)   { return contai
 template<typename Operation>
 auto transform(std::vector<int> container, Operation operation)  { return container; }
 auto sum(std::vector<int> container)                             { return 42;        }
+template<typename T> auto supersum(T) { return 42; }
+
 } // namespace algorithms2
 
 namespace algorithms3 {
@@ -105,7 +108,7 @@ auto is_even = [](auto x) { return x % 2 == 0; };
 auto squared = [](auto x) { return x * x;      };
 
 auto $ = magic::wand;
-auto test_value_categories() {
+auto test_value_categories_non_wrapped_non_deduced() {
   using namespace algorithms3;
 
   {
@@ -384,5 +387,44 @@ int main()
                  .sum();
 
     cout << "Variant 2b: " << s << endl;
+  }
+
+  {
+    using namespace algorithms2;
+
+    // Variant 3a: function template support
+    auto s = supersum(v);
+    // cout << s << endl;
+  }
+
+  {
+    using namespace algorithms2;
+
+    // Variant 3b: function template support
+    auto s = supersum($(v));
+    // cout << s << endl;
+  }
+
+  {
+    // Variant 3c: function template support (using automatic namespace injection)
+    // auto s = supersum($(v));
+    // cout << s << endl;
+  }
+
+  {
+    // Variant 3d: function template support
+    // auto s = $(v).supersum();
+    // cout << s << endl;
+
+    test_value_categories_non_wrapped_non_deduced();
+    test_value_categories_non_wrapped_deduced();
+    test_value_categories_wrapped_non_deduced();
+    test_value_categories_wrapped_deduced();
+  }
+
+  {
+    // Variant 3e: chaining
+    auto s = $(0).supersum().supersum().supersum();
+    // cout << s << endl;
   }
 }
