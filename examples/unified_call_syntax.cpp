@@ -279,6 +279,64 @@ auto test_value_categories_wrapped_non_deduced() {
   }
 }
 
+auto test_value_categories_wrapped_deduced() {
+  using namespace algorithms3;
+
+  {
+          auto   a1 = value_category($(1234), xvalue{});
+    const auto   a2 = value_category($(1234), xvalue{});
+          // auto & a3 = value_category($(1234), xvalue{}); // <- should not compile
+    const auto & a4 = value_category($(1234), xvalue{});
+          auto &&a5 = value_category($(1234), xvalue{});
+    const auto &&a6 = value_category($(1234), xvalue{});
+  }
+
+  {
+          auto   a1 = value_category($(1234), xvalue_const{});
+    const auto   a2 = value_category($(1234), xvalue_const{});
+          // auto & a3 = value_category($(1234), xvalue_const{}); // <- should not compile
+    const auto & a4 = value_category($(1234), xvalue_const{});
+          auto &&a5 = value_category($(1234), xvalue_const{});
+    const auto &&a6 = value_category($(1234), xvalue_const{});
+  }
+
+  {
+          auto   a1 = value_category($(1234), lvalue_ref{});
+    const auto   a2 = value_category($(1234), lvalue_ref{});
+          auto & a3 = value_category($(1234), lvalue_ref{});
+    const auto & a4 = value_category($(1234), lvalue_ref{});
+          auto &&a5 = value_category($(1234), lvalue_ref{});
+    // const auto &&a6 = value_category($(1234), lvalue_ref{}); // <- should not compile
+  }
+
+  {
+          auto   a1 = value_category($(1234), lvalue_ref_const{});
+    const auto   a2 = value_category($(1234), lvalue_ref_const{});
+          auto & a3 = value_category($(1234), lvalue_ref_const{});
+    const auto & a4 = value_category($(1234), lvalue_ref_const{});
+          auto &&a5 = value_category($(1234), lvalue_ref_const{});
+    // const auto &&a6 = value_category($(1234), lvalue_ref_const{}); // <- should not compile
+  }
+
+  {
+          auto   a1 = value_category($(1234), rvalue_ref{});
+    const auto   a2 = value_category($(1234), rvalue_ref{});
+          // auto & a3 = value_category($(1234), rvalue_ref{}); // <- should not compile
+    const auto & a4 = value_category($(1234), rvalue_ref{});
+          auto &&a5 = value_category($(1234), rvalue_ref{});
+    const auto &&a6 = value_category($(1234), rvalue_ref{});
+  }
+
+  {
+          auto   a1 = value_category($(1234), rvalue_ref_const{});
+    const auto   a2 = value_category($(1234), rvalue_ref_const{});
+          auto & a3 = value_category($(1234), rvalue_ref_const{});
+    const auto & a4 = value_category($(1234), rvalue_ref_const{});
+          auto &&a5 = value_category($(1234), rvalue_ref_const{});
+    const auto &&a6 = value_category($(1234), rvalue_ref_const{});
+  }
+}
+
 int main()
 {
   auto v = vector<int>{1, 2, 2, 1, 3, 2, 4, 5};
