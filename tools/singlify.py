@@ -1,6 +1,6 @@
-import sys
 import re
 import pathlib
+import argparse
 
 
 def search_filename(filename, search_paths):
@@ -47,10 +47,12 @@ def singlify(filename, search_paths, cache=set()):
 
 
 def main():
-    filename = pathlib.Path(sys.argv[1])
-    search_paths = [pathlib.Path(sys.argv[2] if len(sys.argv) >= 3 else '')]
+    parser = argparse.ArgumentParser(description='Create a self-contained c/c++ file.')
+    parser.add_argument('filename', type=pathlib.Path)
+    parser.add_argument('--include-dirs', metavar='<dir>', type=pathlib.Path, nargs='*', default=[])
 
-    for line in singlify(filename, search_paths):
+    args = parser.parse_args()
+    for line in singlify(args.filename, args.include_dirs):
         print(line)
 
 if __name__ == '__main__':
