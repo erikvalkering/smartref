@@ -113,6 +113,11 @@ struct DelegateType2<using_<Delegate, Derived>>
   using type = Delegate;
 };
 
+//! Here, the hierarchy is used for determining whether a type is a smart reference,
+//! by checking whether the type is part of the inheritance chain.
+//! Apparently, is_base_of was not possible here, most likely because one of the arguments
+//! might be a base class of the using_ type, which is then still an incomplete type.
+// TODO: Check whether we can simplify this check, because it's *extremely* slow
 template<typename... Hierarchy, typename Using_, typename = std::enable_if_t<utils::any_of<utils::remove_cvref_t<Using_>, Hierarchy...>>>
 auto delegate_if_is_using_impl(Using_ &&base, int, ...)
   -> typename DelegateType2<utils::find<IsUsingType, Hierarchy...>>::type;
