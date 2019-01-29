@@ -48,6 +48,13 @@ struct InvokerImpl
 template<typename Reflector>
 using Invoker = typename InvokerImpl<Reflector>::type;
 
+//! This check is in order to stop infinite recursion at template instantiation time.
+//! I think it is only necessary for operator=(), which has likely only this problem,
+//! while generating the default assignment operator, in which case the type is not
+//! dependent, and a direct instantiation happens. Unfortunately, all the infix operators
+//! now pay the compile-time cost for this check.
+// TODO: Perform this check for operator=() only.
+// TODO: Find a faster way, because it is *extremely* slow.
 template<typename T, typename... Hierarchy>
 using fail_if_in_hierarchy = std::enable_if_t<
   utils::none_of<
