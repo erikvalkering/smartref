@@ -33,7 +33,17 @@ public:
 auto wand = [](auto &&x) -> decltype(auto) {
   if constexpr (is_lvalue_reference<decltype(x) &&>::value && !is_const<remove_reference_t<decltype(x)>>::value)
   {
-    return x; // TODO: not supported yet. Requires full reference-leaking support.
+    // TODO: Support for full control of reference-leaking
+    //   Problem: a function returns a non-const lvalue-reference
+    //            and we wrap it in a smart reference.
+    //            The result will now be a const rvalue-reference
+    //            How to deal with this?
+    //            Example:
+    //            int &foo(int x)  { return x; }
+    //            auto &y = $(1234).foo();
+    //
+    //            Can be done by marking the member functions const, and returning non-const
+    return x;
   }
   else
   {
