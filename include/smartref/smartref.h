@@ -159,7 +159,7 @@ decltype(auto) enable_adl(T &&obj)
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
-// TODO: See if we can simplify on_call, by passing explicitargs only as template parameter
+// TODO: See if we can simplify on_call, by passing explicitArgs only as template parameter
 
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 template<typename ADLTag, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
