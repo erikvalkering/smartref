@@ -375,7 +375,7 @@ using fail_if_in_hierarchy = std::enable_if_t<
   /* 'using reflection::foo', which will treat 'foo' as */               \
   /* a function template.                                */              \
   template<typename... Args>                                             \
-  auto member(Args...)                                                   \
+  auto member(Args &&...)                                                   \
     -> std::enable_if_t<utils::always_false<Args...>>;                   \
                                                                          \
   } /* namespace reflectable */                                          \
