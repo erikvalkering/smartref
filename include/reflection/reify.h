@@ -61,7 +61,7 @@ constexpr auto reify(Reflection<T>) -> T;
 //                 have a single reify function to turn it back into a type.
 
 template<class Derived, typename... Hierarchy, class Reflection>
-constexpr auto reify_members(Reflection refl)
+constexpr auto reify_members(Reflection)
 {
   if constexpr (detail::is_member_type<Reflection, Derived, Hierarchy...>())
   {

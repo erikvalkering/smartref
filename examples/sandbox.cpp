@@ -187,6 +187,8 @@ int main()
     assert(z == 9);
     cout << "z: " << z << " [9]" << endl;
     cout << "typeid(z).name(): " << typeid(z).name() << endl;
+
+    u = move(u);
   }
 
   {

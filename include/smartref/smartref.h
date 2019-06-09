@@ -1,7 +1,9 @@
 #pragma once
 
+#ifndef SMARTREF_NO_DEFAULT_SUPPORT
 #include "operators.h"
 #include "stl.h"
+#endif
 
 #include "members.h"
 
@@ -77,8 +79,42 @@ auto delegate_type_impl(const using_<Delegate, Derived> &) -> Delegate;
 template<typename Using_>
 using DelegateType = decltype(delegate_type_impl(std::declval<utils::remove_cvref_t<Using_>>()));
 
-struct access
+template<typename, typename>
+struct adl_enabler_impl;
+
+template<typename T, size_t... slot_ids>
+struct adl_enabler_impl<T, std::index_sequence<slot_ids...>>
 {
+  using type = utils::type_list<reflection::reflected_namespace_t<utils::Delayed<void, T>, slot_ids>...>;
+};
+
+template<typename T>
+using adl_enabler = typename adl_enabler_impl<T, std::make_index_sequence<reflection::reflected_namespace_count_v<T>>>::type;
+
+template<typename FunctionTag>
+struct RecursionDetector {};
+
+template<typename FunctionTag, typename T>
+constexpr auto will_recurse = std::is_base_of_v<RecursionDetector<FunctionTag>, T>;
+
+template<typename FunctionTag, typename T, typename ADL = adl_enabler<T>>
+struct adl_finder : using_<T, adl_finder<T, ADL>>,
+                    RecursionDetector<FunctionTag>
+{
+  adl_finder(T data) : data{data} {}
+  operator T &() { return data; }
+  T data;
+};
+
+template<typename FunctionTag, typename T>
+decltype(auto) enable_adl(T &&obj)
+{
+  return adl_finder<FunctionTag, T>{std::forward<T>(obj)};
+}
+
+class access
+{
+public:
   template<typename Using_>
   static auto delegate(Using_ &&base)
     -> utils::like_t<Using_, DelegateType<Using_>>
@@ -110,6 +146,11 @@ struct DelegateType2<using_<Delegate, Derived>>
   using type = Delegate;
 };
 
+//! Here, the hierarchy is used for determining whether a type is a smart reference,
+//! by checking whether the type is part of the inheritance chain.
+//! Apparently, is_base_of was not possible here, most likely because one of the arguments
+//! might be a base class of the using_ type, which is then still an incomplete type.
+// TODO: Check whether we can simplify this check, because it's *extremely* slow
 template<typename... Hierarchy, typename Using_, typename = std::enable_if_t<utils::any_of<utils::remove_cvref_t<Using_>, Hierarchy...>>>
 auto delegate_if_is_using_impl(Using_ &&base, int, ...)
   -> typename DelegateType2<utils::find<IsUsingType, Hierarchy...>>::type;
@@ -125,7 +166,7 @@ auto delegate_if_is_using(Obj &&obj)
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
 //       which requires a runtime double dispatch mechanism.
-// TODO: See if we can simplify on_call, by passing explicitargs only as template parameter
+// TODO: See if we can simplify on_call, by passing explicitArgs only as template parameter
 
 // TODO: -cmaster Document "Incomplete type support" (e.g. perfect pimpl)
 template<typename ADLTag, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
