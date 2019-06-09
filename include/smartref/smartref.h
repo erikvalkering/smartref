@@ -79,6 +79,32 @@ auto delegate_type_impl(const using_<Delegate, Derived> &) -> Delegate;
 template<typename Using_>
 using DelegateType = decltype(delegate_type_impl(std::declval<utils::remove_cvref_t<Using_>>()));
 
+template<typename, typename>
+struct adl_enabler_impl;
+
+template<typename T, size_t... slot_ids>
+struct adl_enabler_impl<T, std::index_sequence<slot_ids...>>
+{
+  using type = utils::type_list<reflection::reflected_namespace_t<utils::Delayed<void, T>, slot_ids>...>;
+};
+
+template<typename T>
+using adl_enabler = typename adl_enabler_impl<T, std::make_index_sequence<reflection::reflected_namespace_count_v<T>>>::type;
+
+template<typename T, typename ADL = adl_enabler<T>>
+struct adl_finder : using_<T, adl_finder<T, ADL>>
+{
+  adl_finder(T data) : data{data} {}
+  operator T &() { return data; }
+  T data;
+};
+
+template<typename T>
+decltype(auto) enable_adl(T &&obj)
+{
+  return adl_finder<T>{std::forward<T>(obj)};
+}
+
 class access
 {
 public:
@@ -129,32 +155,6 @@ auto delegate_if_is_using_impl(Obj &&obj, ...)
 template<typename... Hierarchy, typename Obj>
 auto delegate_if_is_using(Obj &&obj)
   SFINAEABLE_RETURN(delegate_if_is_using_impl<Hierarchy...>(std::forward<Obj>(obj), 0, 0))
-
-template<typename, typename>
-struct adl_enabler_impl;
-
-template<typename T, size_t... slot_ids>
-struct adl_enabler_impl<T, std::index_sequence<slot_ids...>>
-{
-  using type = utils::type_list<reflection::reflected_namespace_t<utils::Delayed<void, T>, slot_ids>...>;
-};
-
-template<typename T>
-using adl_enabler = typename adl_enabler_impl<T, std::make_index_sequence<reflection::reflected_namespace_count_v<T>>>::type;
-
-template<typename T, typename ADL = adl_enabler<T>>
-struct adl_finder : using_<T, adl_finder<T, ADL>>
-{
-  adl_finder(T data) : data{data} {}
-  operator T &() { return data; }
-  T data;
-};
-
-template<typename T>
-decltype(auto) enable_adl(T &&obj)
-{
-  return adl_finder<T>{std::forward<T>(obj)};
-}
 
 // TODO: -cmaster on_call() and call() are too similar. Come up with a different naming.
 // TODO: this hook cannot be overridden if the using_<T> syntax is used,
