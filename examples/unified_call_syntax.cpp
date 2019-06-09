@@ -51,14 +51,19 @@ auto wand = [](auto &&x) -> decltype(auto) {
   }
 };
 
-template<typename T, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args>
+template<typename T, typename Invoker, typename... Hierarchy, typename ExplicitArgs, typename Using_, typename... Args,
+  typename = std::enable_if_t<!smartref::will_recurse<Invoker, Using_>>
+>
 auto on_call(UFCS<T> *, const Invoker &invoker, utils::type_list<Hierarchy...>, ExplicitArgs explicitArgs, Using_ &&self, Args &&... args)
   SFINAEABLE_RETURN(
     wand(
       call(
         invoker.as_nonmember(),
         explicitArgs,
-        smartref::enable_adl(smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self))),
+        smartref::enable_adl<Invoker>(
+          smartref::delegate_if_is_using<Hierarchy...>(std::forward<Using_>(self))
+        )
+        ,
         smartref::delegate_if_is_using<Hierarchy...>(std::forward<Args>(args))...
       )
     )

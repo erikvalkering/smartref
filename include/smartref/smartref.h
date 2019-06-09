@@ -91,18 +91,25 @@ struct adl_enabler_impl<T, std::index_sequence<slot_ids...>>
 template<typename T>
 using adl_enabler = typename adl_enabler_impl<T, std::make_index_sequence<reflection::reflected_namespace_count_v<T>>>::type;
 
-template<typename T, typename ADL = adl_enabler<T>>
-struct adl_finder : using_<T, adl_finder<T, ADL>>
+template<typename FunctionTag>
+struct RecursionDetector {};
+
+template<typename FunctionTag, typename T>
+constexpr auto will_recurse = std::is_base_of_v<RecursionDetector<FunctionTag>, T>;
+
+template<typename FunctionTag, typename T, typename ADL = adl_enabler<T>>
+struct adl_finder : using_<T, adl_finder<T, ADL>>,
+                    RecursionDetector<FunctionTag>
 {
   adl_finder(T data) : data{data} {}
   operator T &() { return data; }
   T data;
 };
 
-template<typename T>
+template<typename FunctionTag, typename T>
 decltype(auto) enable_adl(T &&obj)
 {
-  return adl_finder<T>{std::forward<T>(obj)};
+  return adl_finder<FunctionTag, T>{std::forward<T>(obj)};
 }
 
 class access
